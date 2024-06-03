@@ -7,7 +7,7 @@ link_directories("/opt/homebrew/lib/")
 
 option(DISABLE_GRAPHICS "Disable graphic output" OFF)
 option(DISABLE_VIDEO "Disable video output" ON)
-option(DISABLE_AUDIO "Disable audio output + input" ON)
+option(DISABLE_AUDIO "Disable audio output + input" OFF)
 
 # add source + header files from this directory
 

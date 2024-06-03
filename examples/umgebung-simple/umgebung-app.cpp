@@ -4,13 +4,11 @@ using namespace umgebung;
 
 class UmgebungApp : public PApplet {
 
-    PVector mVector{16, 16};
     PShape  mShape;
-    int     mouseMoveCounter = 0;
     int     mWidth           = 1024;
     int     mHeight          = 768;
 
-    void arguments(std::vector<std::string> args) {
+    void arguments(std::vector<std::string> args) override {
         for (std::string s: args) {
             println("> ", s);
             if (begins_with(s, "--width")) {
@@ -22,7 +20,7 @@ class UmgebungApp : public PApplet {
         }
     }
 
-    void settings() {
+    void settings() override {
         size(mWidth, mHeight);
         antialiasing          = 8;
         enable_retina_support = true;
@@ -31,12 +29,12 @@ class UmgebungApp : public PApplet {
         monitor               = DEFAULT;
     }
 
-    void setup() {
+    void setup() override {
         println("width : ", width);
         println("height: ", height);
     }
 
-    void draw() {
+    void draw() override {
         background(1);
 
         stroke(0);
@@ -48,7 +46,7 @@ class UmgebungApp : public PApplet {
         rect(20, 20, width / 2 - 40, height / 2 - 40);
     }
 
-    void audioblock(float** input, float** output, int length) {
+    void audioblock(float** input, float** output, int length) override {
         for (int i = 0; i < length; i++) {
             float sample = random(-0.1, 0.1);
             for (int j = 0; j < audio_output_channels; ++j) {
@@ -57,7 +55,7 @@ class UmgebungApp : public PApplet {
         }
     }
 
-    void keyPressed() {
+    void keyPressed() override {
         if (key == 'q') {
             exit();
         }
