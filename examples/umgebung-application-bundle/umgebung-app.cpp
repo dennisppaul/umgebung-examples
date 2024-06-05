@@ -16,12 +16,12 @@ class UmgebungApp : public PApplet {
     }
 
     void setup() override {
-        if (!exists(sketchPath() + "../RobotoMono-Regular.ttf")) {
+        if (!exists(sketchPath() + "../assets/RobotoMono-Regular.ttf")) {
             println("cannot find required files at:", sketchPath());
             println("... exiting");
             exit();
         }
-        mFont = loadFont(sketchPath() + "../RobotoMono-Regular.ttf", 48);
+        mFont = loadFont(sketchPath() + "../assets/RobotoMono-Regular.ttf", 48);
         textFont(mFont);
     }
 

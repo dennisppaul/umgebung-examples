@@ -33,9 +33,19 @@ set(CMAKE_OSX_ARCHITECTURES "x86_64;arm64" CACHE STRING "Build architectures for
 
 # make application bundle
 
+# bundle assets
 # install(FILES "${PROJECT_SOURCE_DIR}/RobotoMono-Regular.ttf" DESTINATION "../")   # include single resources files or ...
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/assets/ DESTINATION "../")                    # ... entire directories
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/assets/ DESTINATION "../assets")                    # ... entire directories
 
+# bundle dynamic libraries
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E echo "Bundling dynamic libraries using dylibbundler..."
+    COMMAND dylibbundler -od -b -x $<TARGET_FILE_DIR:${PROJECT_NAME}>/${PROJECT_NAME} -d $<TARGET_FILE_DIR:${PROJECT_NAME}>/../libs/
+    COMMENT ${CMAKE_COMMAND} -E echo "Dynamic libraries are bundled."
+)
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/libs/ DESTINATION "../libs")
+
+# configure cpack
 set(CPACK_PACKAGE_NAME "Umgebung")
 set(CPACK_PACKAGE_VENDOR "Dennis P Paul")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Umgebung is a ...")
@@ -53,3 +63,5 @@ set(CPACK_BUNDLE_STARTUP_COMMAND ${PROJECT_NAME})
 include(CPack)
 
 # run with `cmake -B build ; cmake --build build ; cd build ; cpack ; cd ..` from sketch folder
+# cpack --config ./build/CPackConfig.cmake
+
