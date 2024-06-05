@@ -35,12 +35,3 @@ add_custom_target(run
         DEPENDS ${PROJECT_NAME}
         WORKING_DIRECTORY ${CMAKE_PROJECT_DIR}
 )
-
-# create application bundle
-# 
-# set(CPACK_GENERATOR "Bundle")
-# set(CPACK_BUNDLE_NAME Umgebung)
-# set(CPACK_BUNDLE_ICON Umgebung.icns)
-# set(CPACK_BUNDLE_PLIST Info.plist)
-# set(CPACK_BUNDLE_STARTUP_COMMAND umgebung-app)
-# include(CPack)

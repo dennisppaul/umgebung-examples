@@ -4,12 +4,12 @@ using namespace umgebung;
 
 class UmgebungApp : public PApplet {
 
-    PShape  mShape;
-    int     mWidth           = 1024;
-    int     mHeight          = 768;
+    PShape mShape;
+    int    mWidth  = 1024;
+    int    mHeight = 768;
 
     void arguments(std::vector<std::string> args) override {
-        for (std::string s: args) {
+        for (std::string& s: args) {
             println("> ", s);
             if (begins_with(s, "--width")) {
                 mWidth = get_int_from_argument(s);
@@ -27,6 +27,8 @@ class UmgebungApp : public PApplet {
         headless              = false;
         no_audio              = false;
         monitor               = DEFAULT;
+        audio_output_device   = 0;
+        audio_output_channels = 8;
     }
 
     void setup() override {
