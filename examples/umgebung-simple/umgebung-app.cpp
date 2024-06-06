@@ -27,8 +27,6 @@ class UmgebungApp : public PApplet {
         headless              = false;
         no_audio              = false;
         monitor               = DEFAULT;
-        audio_output_device   = 0;
-        audio_output_channels = 8;
     }
 
     void setup() override {

@@ -11,16 +11,16 @@ using namespace umgebung;
 
 class UmgebungApp : public PApplet {
 
-    PFont*                 mFont;
+    PFont*                 mFont{};
     klangwellen::ADSR      fADSR;
     klangwellen::Wavetable fWavetable{1024, klangwellen::KlangWellen::DEFAULT_SAMPLING_RATE};
     klangwellen::Reverb    fReverb;
 
-    void settings() {
+    void settings() override {
         size(1024, 768);
     }
 
-    void setup() {
+    void setup() override {
         mFont = loadFont("../RobotoMono-Regular.ttf", 48);
         textFont(mFont);
 
@@ -28,14 +28,14 @@ class UmgebungApp : public PApplet {
         fWavetable.set_frequency(55);
     }
 
-    void draw() {
+    void draw() override {
         background(1);
         fill(0);
         noStroke();
         text("23", mouseX, mouseY);
     }
 
-    void audioblock(float** input, float** output, int length) {
+    void audioblock(float** input, float** output, int length) override {
         for (int i = 0; i < length; i++) {
             float mSample = fWavetable.process();
             mSample       = fADSR.process(mSample);
@@ -46,11 +46,11 @@ class UmgebungApp : public PApplet {
         }
     }
 
-    void mousePressed() {
+    void mousePressed() override {
         fADSR.start();
     }
 
-    void mouseReleased() {
+    void mouseReleased() override {
         fADSR.stop();
     }
 };
