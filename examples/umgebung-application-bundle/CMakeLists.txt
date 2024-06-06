@@ -35,7 +35,7 @@ set(CMAKE_OSX_ARCHITECTURES "x86_64;arm64" CACHE STRING "Build architectures for
 
 # bundle assets
 # install(FILES "${PROJECT_SOURCE_DIR}/RobotoMono-Regular.ttf" DESTINATION "../")   # include single resources files or ...
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/assets/ DESTINATION "../assets")                    # ... entire directories
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/assets/ DESTINATION "../assets")              # ... entire directories
 
 # bundle dynamic libraries
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
@@ -48,7 +48,7 @@ install(DIRECTORY ${CMAKE_SOURCE_DIR}/libs/ DESTINATION "../libs")
 # configure cpack
 set(CPACK_PACKAGE_NAME "Umgebung")
 set(CPACK_PACKAGE_VENDOR "Dennis P Paul")
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Umgebung is a ...")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Umgebung is an Environment")
 set(CPACK_PACKAGE_VERSION "1.0.0")
 set(CPACK_PACKAGE_VERSION_MAJOR "1")
 set(CPACK_PACKAGE_VERSION_MINOR "0")
@@ -63,5 +63,3 @@ set(CPACK_BUNDLE_STARTUP_COMMAND ${PROJECT_NAME})
 include(CPack)
 
 # run with `cmake -B build ; cmake --build build ; cd build ; cpack ; cd ..` from sketch folder
-# cpack --config ./build/CPackConfig.cmake
-
