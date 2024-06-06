@@ -22,11 +22,19 @@ class UmgebungApp : public PApplet {
 
     void settings() override {
         size(mWidth, mHeight);
+        audio_input_device    = DEFAULT_AUDIO_DEVICE;
+        audio_output_device   = DEFAULT_AUDIO_DEVICE;
+        audio_input_channels  = DEFAULT_NUMBER_OF_INPUT_CHANNELS;
+        audio_output_channels = DEFAULT_NUMBER_OF_OUTPUT_CHANNELS;
+        monitor               = 0;
+        fullscreen            = false;
+        borderless            = true;
         antialiasing          = 8;
+        resizable             = false;
+        always_on_top         = true;
         enable_retina_support = true;
         headless              = false;
         no_audio              = false;
-        monitor               = DEFAULT;
     }
 
     void setup() override {
