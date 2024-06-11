@@ -16,20 +16,23 @@ option(ENABLE_PORTAUDIO "Enable Portaudio Driver for output + input" OFF)
 
 file(GLOB SOURCE_FILES 
     "*.cpp"
-    "./klangstrom-emulator/src/*.cpp"
-    "./klangstrom-libraries/Klangstrom/src/*.cpp"
-    "./klangstrom-libraries/Klangstrom_KLST_EMU/src/*.cpp"
+    "${KLST_EMU_LIB_PATH}/klangstrom-emulator/emulator/cores/sdl2/*.cpp"
+    "${KLST_EMU_LIB_PATH}/klangstrom-libraries/Klangstrom/src/*.cpp"
+    "${KLST_EMU_LIB_PATH}/klangstrom-libraries/Klangstrom_KLST_EMU/src/*.cpp"
 )
 include_directories(
     "."
-    "./klangstrom-emulator/src"
-    "./klangstrom-libraries/Klangstrom/src"
-    "./klangstrom-libraries/Klangstrom_KLST_EMU/src"
+    "${KLST_EMU_LIB_PATH}/klangwellen/include"
+    "${KLST_EMU_LIB_PATH}/klangstrom-emulator/emulator/cores/sdl2"
+    "${KLST_EMU_LIB_PATH}/klangstrom-libraries/Klangstrom/src"
+    "${KLST_EMU_LIB_PATH}/klangstrom-libraries/Klangstrom_KLST_EMU/src"
 )
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE UMGEBUNG_WINDOW_TITLE="${PROJECT_NAME}") # set window title
-target_compile_definitions(${PROJECT_NAME} PUBLIC KLST_ENV=0x46)                            # set environment KLST_PANDA_EMU=0x46 KLST_CATERPILLAR_EMU=0x47
+target_compile_definitions(${PROJECT_NAME} PUBLIC KLST_ENV=0x46)                            # set environment 
+                                                                                            # 0x46=KLST_PANDA_EMU
+                                                                                            # 0x47=KLST_CATERPILLAR_EMU
 
 # add umgebung
 

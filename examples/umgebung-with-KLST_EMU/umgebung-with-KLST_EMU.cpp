@@ -5,6 +5,9 @@
 #include "KlangstromLEDs.h"
 #include "Wavetable.h"
 
+#define KLANG_SAMPLES_PER_AUDIO_BLOCK DEFAULT_FRAMES_PER_BUFFER
+#define KLANG_SAMPLING_RATE DEFAULT_AUDIO_SAMPLE_RATE
+
 void audioblock(float** input_signal, float** output_signal, uint16_t length);
 
 SerialDebug console;
@@ -14,7 +17,7 @@ LEDs        leds;
 uint8_t     fLEDIntensity = 0;
 
 float     wavetable[512];
-Wavetable oscillator{wavetable, 512, 48000};
+klangwellen::Wavetable oscillator{wavetable, 512, 48000};
 
 void setup() {
     /* init section */
@@ -34,7 +37,7 @@ void setup() {
     console.println("starting setup");
     klangstrom.setup();
 
-    Wavetable::fill(wavetable, 512, Wavetable::WAVEFORM_SINE);
+    klangwellen::Wavetable::fill(wavetable, 512, klangwellen::KlangWellen::WAVEFORM_SINE);
 
     console.timestamp();
     console.println("finished setup");
