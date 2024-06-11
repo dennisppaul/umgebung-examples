@@ -7,3 +7,12 @@
 [submodule "examples/umgebung-with-paulstretch/paulstretch"]
 	path = examples/umgebung-with-paulstretch/paulstretch
 	url = https://github.com/dennisppaul/paulstretch.git
+[submodule "examples/umgebung-with-KLST_EMU/libraries/klangstrom-emulator"]
+	path = examples/umgebung-with-KLST_EMU/libraries/klangstrom-emulator
+	url = https://github.com/dennisppaul/klangstrom-emulator.git
+[submodule "examples/umgebung-with-KLST_EMU/libraries/klangstrom-libraries"]
+	path = examples/umgebung-with-KLST_EMU/libraries/klangstrom-libraries
+	url = https://github.com/dennisppaul/klangstrom-libraries.git
+[submodule "examples/umgebung-with-KLST_EMU/libraries/klangwellen"]
+	path = examples/umgebung-with-KLST_EMU/libraries/klangwellen
+	url = https://github.com/dennisppaul/klangwellen.git
