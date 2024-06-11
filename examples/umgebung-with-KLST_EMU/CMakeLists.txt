@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
 
 project(umgebung-with-KLST_EMU)                                    # set application name
-set(KLST_EMU_LIB_PATH "${CMAKE_CURRENT_SOURCE_DIR}/libraries")     # set path to libraries
+set(LIBRARY_PATH "${CMAKE_CURRENT_SOURCE_DIR}/libraries")          # set path to libraries
 
 set(UMGEBUNG_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../../../umgebung") # set path to umgebung library e.g `set(UMGEBUNG_PATH "<absolute/path/to/library>")`
 link_directories("/usr/local/lib")                                 # optional, can help to fix issues with Homebrew on macOS
@@ -16,21 +16,23 @@ option(ENABLE_PORTAUDIO "Enable Portaudio Driver for output + input" OFF)
 
 file(GLOB SOURCE_FILES 
     "*.cpp"
-    "${KLST_EMU_LIB_PATH}/klangstrom-emulator/emulator/cores/sdl2/*.cpp"
-    "${KLST_EMU_LIB_PATH}/klangstrom-libraries/Klangstrom/src/*.cpp"
-    "${KLST_EMU_LIB_PATH}/klangstrom-libraries/Klangstrom_KLST_EMU/src/*.cpp"
+    "${LIBRARY_PATH}/klangstrom-emulator/emulator/cores/sdl2/*.cpp"
+    "${LIBRARY_PATH}/klangstrom-libraries/Klangstrom/src/*.cpp"
+    "${LIBRARY_PATH}/klangstrom-libraries/Klangstrom_KLST_EMU/src/*.cpp"
 )
 include_directories(
     "."
-    "${KLST_EMU_LIB_PATH}/klangwellen/include"
-    "${KLST_EMU_LIB_PATH}/klangstrom-emulator/emulator/cores/sdl2"
-    "${KLST_EMU_LIB_PATH}/klangstrom-libraries/Klangstrom/src"
-    "${KLST_EMU_LIB_PATH}/klangstrom-libraries/Klangstrom_KLST_EMU/src"
+    "${LIBRARY_PATH}/klangwellen/include"
+    "${LIBRARY_PATH}/klangstrom-emulator/emulator/cores/sdl2"
+    "${LIBRARY_PATH}/klangstrom-libraries/Klangstrom/src"
+    "${LIBRARY_PATH}/klangstrom-libraries/Klangstrom_KLST_EMU/src"
 )
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
+# add definitions
+
 target_compile_definitions(${PROJECT_NAME} PRIVATE UMGEBUNG_WINDOW_TITLE="${PROJECT_NAME}") # set window title
-target_compile_definitions(${PROJECT_NAME} PUBLIC KLST_ENV=0x46)                            # set environment 
+target_compile_definitions(${PROJECT_NAME} PUBLIC KLST_ENV=0x46)                            # set KLST environment 
                                                                                             # 0x46=KLST_PANDA_EMU
                                                                                             # 0x47=KLST_CATERPILLAR_EMU
 
