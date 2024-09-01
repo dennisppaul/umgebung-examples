@@ -28,11 +28,13 @@ class UmgebungApp : public PApplet {
         }
         if (!headless) {
             mImage = loadImage(sketchPath() + "../image.png");
-            float pixels[100 * 100 * mImage->channels];
-            for (int i = 0; i < 100 * 100 * mImage->channels; ++i) {
-                pixels[i] = random(1);
+
+            uint32_t pixels[64 * 64];
+            for (int i = 0; i < 64 * 64; ++i) {
+                pixels[i] = color(random(1), random(1), random(1), 0.5f);
             }
-            mImage->update(pixels, 100, 100, 10, 10);
+            mImage->update(pixels, 64, 64, 32, 32);
+
             mFont = loadFont(sketchPath() + "../RobotoMono-Regular.ttf", 48);
             textFont(mFont);
         }
@@ -49,7 +51,9 @@ class UmgebungApp : public PApplet {
     }
 
     void draw() {
-        if (headless) return;
+        if (headless) {
+            return;
+        }
         background(1);
 
         /* rectangle */
@@ -83,10 +87,22 @@ class UmgebungApp : public PApplet {
         translate(mouseX, mouseY);
         rotate(PI * 0.25);
         textSize(11);
-        text(to_string((int) mouseX, ", ", (int) mouseY, " > ", nf(mouseMoveCounter, 4)), 0, 0);
+        fill(0, 0.5, 1);
+        text(to_string((int) mouseX, ", ", (int) mouseY, " > ", nf(mouseMoveCounter * 0.01, 2)), 0, 0);
         popMatrix();
 
         /* image */
+        constexpr int length = 64 * 64 * 4; // number of channels is always 4
+        float         pixels[length];
+        for (int i = 0; i < length; i += 4) {
+            const float c = (i + frameCount) % 252 / 255.0;
+            pixels[i + 0] = c;
+            pixels[i + 1] = 1.0 - c;
+            pixels[i + 2] = 1.0;
+            pixels[i + 3] = 0.5;
+        }
+        mImage->update(pixels, 64, 64, 32, 32);
+
         fill(1);
         image(mImage, padding, padding + spacing, grid, grid);
         image(mImage, padding + spacing, padding + spacing);
@@ -121,8 +137,8 @@ class UmgebungApp : public PApplet {
         // NOTE length is the number of samples per channel
         // TODO change to `void audioblock(float** input_signal, float** output_signal) {}`
         static float phase     = 0.0;
-        float        frequency = 220.0 + sin(frameCount * 0.1) * 110.0;
-        float        amplitude = 0.5;
+        const float  frequency = 220.0 + sin(frameCount * 0.1) * 110.0;
+        const float  amplitude = 0.5;
 
         for (int i = 0; i < length; i++) {
             float sample = amplitude * sin(phase);

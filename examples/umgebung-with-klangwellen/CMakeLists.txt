@@ -8,6 +8,12 @@ option(DISABLE_GRAPHICS "Disable graphic output" OFF)
 option(DISABLE_VIDEO "Disable video output" OFF)
 option(DISABLE_AUDIO "Disable audio output + input" OFF)
 
+# set compiler flags to C++17 ( minimum required by umgebung, needs to go before `add_executable` )
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+#set(CMAKE_OSX_ARCHITECTURES "x86_64;arm64" CACHE STRING "Build architectures for Mac OS X")
+
 # add source + header files from this directory
 
 file(GLOB SOURCE_FILES "*.cpp")
@@ -21,9 +27,3 @@ include_directories("./klangwellen/include")           # add klangwellen library
 
 add_subdirectory(${UMGEBUNG_PATH} ${CMAKE_BINARY_DIR}/umgebung-lib-${PROJECT_NAME})
 add_umgebung_libs()
-
-# set compiler flags to C++17 ( minimum required by umgebung )
-
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
