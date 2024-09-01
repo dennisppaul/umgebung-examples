@@ -48,21 +48,31 @@ class UmgebungApp : public PApplet {
 
         loadPixels();
         updatePixels();
+        fill(1, 0.5);
         image(this, mImage->width + 20, 10, width / 4, height / 4);
 
         PGraphics& pg = *pg_ptr;
         pg.beginDraw();
         pg.background(0);
         pg.noStroke();
-        pg.fill(0, 0, 1);
+        pg.fill(1);
         pg.rect(10, 10, 20, 20);
         pg.rect(10, 30, 10, 10);
-        pg.stroke(1, 0.5, 0);
+        pg.stroke(1);
         pg.line(10, 10, pg.width * (mouseX / (float) width), pg.height * (mouseY / (float) height));
         pg.endDraw();
 
         fill(1, 0.5);
         image(pg_ptr, mouseX, mouseY, pg.width, pg.height);
+
+        fill(1);
+        texture(mImage);
+        beginShape(QUADS);
+        vertex(140, 80, 0, 0, 0);
+        vertex(420, 20, 0, 1, 0);
+        vertex(480, 360, 0, 1, 1);
+        vertex(260, 380, 0, 0, 1);
+        endShape();
     }
 };
 
