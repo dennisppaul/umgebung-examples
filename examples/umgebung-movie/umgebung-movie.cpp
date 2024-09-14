@@ -5,19 +5,16 @@ using namespace umgebung;
 
 class UmgebungExampleAppWithMovie : public PApplet {
 
-    Movie*  myMovie;
-    PImage* mImage;
+    Movie* movie;
 
     void settings() override {
         size(1024, 768);
     }
 
     void setup() override {
-        myMovie = new Movie("../video.mp4");
-        myMovie->play();
-        myMovie->loop();
-
-        mImage = loadImage(sketchPath() + "../image.png");
+        movie = new Movie("../video.mp4");
+        movie->play();
+        movie->loop();
     }
 
     void draw() override {
@@ -26,9 +23,8 @@ class UmgebungExampleAppWithMovie : public PApplet {
         //     myMovie->read();
         // }
         fill(1);
-        myMovie->reload(); // TODO if run from thread ( i.e `myMovie->play();` ) this needs to be called in draw
-        image(myMovie, mouseX, mouseY);
-        image(mImage, 10, 10);
+        movie->reload(); // TODO if run from thread ( i.e `myMovie->play();` ) this needs to be called in draw
+        image(movie, mouseX, mouseY);
     }
 
     void keyPressed() override {
@@ -36,10 +32,10 @@ class UmgebungExampleAppWithMovie : public PApplet {
             exit();
         }
         if (key == 'p') {
-            myMovie->play();
+            movie->play();
         }
         if (key == 's') {
-            myMovie->pause();
+            movie->pause();
         }
     }
 };

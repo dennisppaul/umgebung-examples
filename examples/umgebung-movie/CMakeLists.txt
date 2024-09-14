@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 
-project(umgebung-with-movie)                                       # set application name
+project(umgebung-with-movie VERSION 1.0 LANGUAGES CXX OBJCXX)                                       # set application name
 set(UMGEBUNG_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../../../umgebung") # set path to umgebung library e.g `set(UMGEBUNG_PATH "<absolute/path/to/library>")`
 link_directories("/usr/local/lib")                                 # optional, can help to fix issues with Homebrew on macOS
 
