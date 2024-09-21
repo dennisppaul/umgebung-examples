@@ -1,14 +1,9 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.12)
 
-project(umgebung-capture)                                          # set application name
-set(UMGEBUNG_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../../../umgebung") # set path to umgebung library e.g `set(UMGEBUNG_PATH "<absolute/path/to/library>")`
-link_directories("/usr/local/lib")                                 # optional, can help to fix issues with Homebrew on macOS
-link_directories("/opt/homebrew/lib/")
-
-option(ENABLE_CAPTURE "Enable camera capture" OFF)
-option(DISABLE_GRAPHICS "Disable graphic output" OFF)
-option(DISABLE_VIDEO "Disable video output" OFF)
-option(DISABLE_AUDIO "Disable audio output + input" OFF)
+project(umgebung-opencv)                                                                   # set application name
+set(UMGEBUNG_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../../../umgebung")                         # set path to umgebung library e.g `set(UMGEBUNG_PATH "<absolute/path/to/library>")`
+set(OPENCV_UMGEBUNG_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../../../umgebung-libraries/opencv") # set path to umgebung-opencv library
+link_directories("/usr/local/lib")                                                         # optional, can help to fix issues with Homebrew on macOS
 
 # set compiler flags to C++17 ( minimum required by umgebung, needs to go before `add_executable` )
 
@@ -28,6 +23,13 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE UMGEBUNG_WINDOW_TITLE="${PROJ
 add_subdirectory(${UMGEBUNG_PATH} ${CMAKE_BINARY_DIR}/umgebung-lib-${PROJECT_NAME})
 add_umgebung_libs()
 
+# add umgebung-opencv
+
+add_subdirectory(${OPENCV_UMGEBUNG_PATH}
+        ${CMAKE_BINARY_DIR}/umgebung-opencv-${PROJECT_NAME}
+)
+target_link_libraries(${PROJECT_NAME} PRIVATE umgebung-library-opencv)
+
 # embed Info.plist if on macOS to allow camera access
 if (APPLE)
     # Specify the path to your Info.plist file
@@ -40,10 +42,3 @@ if (APPLE)
         message(FATAL_ERROR "Info.plist not found at ${INFO_PLIST}")
     endif ()
 endif ()
-
-# add run target
-add_custom_target(run
-        COMMAND ${PROJECT_NAME}
-        DEPENDS ${PROJECT_NAME}
-        WORKING_DIRECTORY ${CMAKE_PROJECT_DIR}
-)
