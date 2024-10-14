@@ -26,7 +26,7 @@ class UmgebungApp : public PApplet {
     }
 
     void draw() {
-        background(0.2);
+        background(0.2f);
 
         /* image */
         // constexpr int length = 64 * 64 * 4; // number of channels is always 4
@@ -40,7 +40,7 @@ class UmgebungApp : public PApplet {
         // }
         // mImage->update(pixels, 64, 64, 32, 32);
 
-        fill(1);
+        fill(1.0f);
         image(mImage, mouseX, mouseY);
         // image(mImage, padding, padding + spacing, grid, grid);
     }

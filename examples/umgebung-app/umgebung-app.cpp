@@ -69,16 +69,16 @@ class UmgebungApp : public PApplet {
         fill(0, 1, 0);
         rect(padding + spacing, padding, grid, grid);
 
-        stroke(0.75);
+        stroke(0.75f);
         fill(0, 0, 1);
         rect(padding + 2 * spacing, padding, grid, grid);
 
         /* line */
-        stroke(0);
+        stroke(0.0f);
         line(padding + 3 * spacing, padding, padding + 3 * spacing + grid, padding + grid);
         line(padding + 3 * spacing, padding + grid, padding + 3 * spacing + grid, padding);
         /* text + nf + push/popMatrix */
-        fill(0);
+        fill(0.0f);
         noStroke();
         textSize(48);
         text("23", padding + 4 * spacing, padding + grid);
@@ -103,7 +103,7 @@ class UmgebungApp : public PApplet {
         }
         mImage->update(pixels, 64, 64, 32, 32);
 
-        fill(1);
+        fill(1.0f);
         image(mImage, padding, padding + spacing, grid, grid);
         image(mImage, padding + spacing, padding + spacing);
 

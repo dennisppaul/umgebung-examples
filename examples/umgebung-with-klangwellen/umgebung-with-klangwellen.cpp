@@ -13,7 +13,7 @@ class UmgebungApp : public PApplet {
 
     PFont*                 mFont{};
     klangwellen::ADSR      fADSR;
-    klangwellen::Wavetable fWavetable{1024, klangwellen::KlangWellen::DEFAULT_SAMPLING_RATE};
+    klangwellen::Wavetable fWavetable{1024, klangwellen::KlangWellen::DEFAULT_SAMPLE_RATE};
     klangwellen::Reverb    fReverb;
 
     void settings() override {
@@ -24,13 +24,13 @@ class UmgebungApp : public PApplet {
         mFont = loadFont("../RobotoMono-Regular.ttf", 48);
         textFont(mFont);
 
-        klangwellen::Wavetable::sawtooth(fWavetable.get_wavetable(), fWavetable.get_wavetable_size(), 5);
+        klangwellen::Wavetable::sawtooth(fWavetable.get_wavetable(), fWavetable.get_wavetable_size());
         fWavetable.set_frequency(55);
     }
 
     void draw() override {
-        background(1);
-        fill(0);
+        background(1.0f);
+        fill(0.0f);
         noStroke();
         text("23", mouseX, mouseY);
     }

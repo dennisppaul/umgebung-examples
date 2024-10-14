@@ -5,7 +5,7 @@ using namespace umgebung;
 
 class UmgebungApp : public PApplet {
 
-    PFont*                 mFont{};
+    PFont* mFont{};
 
     void settings() override {
         size(1024, 768);
@@ -14,12 +14,11 @@ class UmgebungApp : public PApplet {
     void setup() override {
         mFont = loadFont("../RobotoMono-Regular.ttf", 48);
         textFont(mFont);
-        foobar();
     }
 
     void draw() override {
-        background(1);
-        fill(0);
+        background(1.0f);
+        fill(0.0f);
         noStroke();
         text("23", mouseX, mouseY);
     }

@@ -43,11 +43,11 @@ class UmgebungExampleAppWithOSC : public PApplet, OSCListener {
     void draw() {
         if (message_event) {
             message_event = false;
-            fill(1);
-            const int   num_rects = 20;
-            const float size_rect = width / num_rects;
-            float       x         = (message_counter % num_rects) * size_rect;
-            float       y         = (message_counter / num_rects) * size_rect;
+            fill(1.0f);
+            constexpr int num_rects = 20;
+            const float   size_rect = width / num_rects;
+            const float   x         = (message_counter % num_rects) * size_rect;
+            const float   y         = (message_counter / num_rects) * size_rect;
             rect(x, y, size_rect, size_rect);
             message_counter++;
             if (message_counter > num_rects * num_rects) {

@@ -4,13 +4,12 @@
 
 using namespace umgebung;
 
-#include "KlangWellen.h"
 #include "PaulStretch.h"
 #include "AudioFileReader.h"
 
 class UmgebungApp : public PApplet {
-    PaulStretch     fStretcher{8, (int) (DEFAULT_AUDIO_SAMPLE_RATE * 0.25f), DEFAULT_AUDIO_SAMPLE_RATE};
-    AudioFileReader fAudioFileReader;
+    PaulStretch       fStretcher{8, (int) (DEFAULT_AUDIO_SAMPLE_RATE * 0.25f), DEFAULT_AUDIO_SAMPLE_RATE};
+    AudioFileReader   fAudioFileReader;
     float*            fStretchedSampleBuffer;
     std::queue<float> fSampleFIFOBuffer;
 
@@ -27,10 +26,10 @@ class UmgebungApp : public PApplet {
         background(1);
         const int   mPadding  = 10;
         const float mProgress = (float) fAudioFileReader.current_position() / (float) fAudioFileReader.length();
-        stroke(0);
+        stroke(0.0f);
         noFill();
         rect(mPadding, height * 0.5 - mPadding, width - mPadding * 2, mPadding * 2);
-        fill(0);
+        fill(0.0f);
         noStroke();
         rect(mPadding, height * 0.5 - mPadding, (width - mPadding * 2) * mProgress, mPadding * 2);
     }

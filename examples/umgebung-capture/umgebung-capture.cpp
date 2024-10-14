@@ -51,9 +51,9 @@ class UmgebungApp : public PApplet, public CaptureListener {
     }
 
     void draw() {
-        background(0.2);
+        background(0.2f);
 
-        fill(1);
+        fill(1.0f);
         if (capture_facetime != nullptr && capture_iphone != nullptr) {
             // TODO if run from thread ( i.e `myMovie->play();` ) this needs to be called in draw
             capture_facetime->reload();

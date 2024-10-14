@@ -18,11 +18,11 @@ class UmgebungExampleAppWithMovie : public PApplet {
     }
 
     void draw() override {
-        background(0.2);
+        background(0.2f);
         // if (myMovie->available()) {
         //     myMovie->read();
         // }
-        fill(1);
+        fill(1.0f);
         movie->reload(); // TODO if run from thread ( i.e `myMovie->play();` ) this needs to be called in draw
         image(movie, mouseX, mouseY);
     }

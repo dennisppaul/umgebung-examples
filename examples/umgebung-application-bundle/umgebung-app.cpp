@@ -26,10 +26,10 @@ class UmgebungApp : public PApplet {
     }
 
     void draw() override {
-        background(1);
+        background(1.0f);
 
         noStroke();
-        fill(0);
+        fill(0.0f);
         text("42", mouseX, mouseY);
     }
 };

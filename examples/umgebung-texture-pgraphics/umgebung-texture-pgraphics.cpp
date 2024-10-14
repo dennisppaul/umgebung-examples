@@ -43,7 +43,7 @@ class UmgebungApp : public PApplet {
     void draw() {
         background(0.2);
 
-        fill(1);
+        fill(1.0f);
         image(mImage, 10, 10);
 
         loadPixels();
@@ -55,17 +55,17 @@ class UmgebungApp : public PApplet {
         pg.beginDraw();
         pg.background(0);
         pg.noStroke();
-        pg.fill(1);
+        pg.fill(1.0f);
         pg.rect(10, 10, 20, 20);
         pg.rect(10, 30, 10, 10);
-        pg.stroke(1);
+        pg.stroke(1.0f);
         pg.line(10, 10, pg.width * (mouseX / (float) width), pg.height * (mouseY / (float) height));
         pg.endDraw();
 
         fill(1, 0.5);
         image(pg_ptr, mouseX, mouseY, pg.width, pg.height);
 
-        fill(1);
+        fill(1.0f);
         texture(mImage);
         beginShape(QUADS);
         vertex(140, 80, 0, 0, 0);
