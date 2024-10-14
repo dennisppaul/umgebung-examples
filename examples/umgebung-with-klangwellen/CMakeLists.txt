@@ -21,7 +21,7 @@ add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 include_directories(".")
 target_compile_definitions(${PROJECT_NAME} PRIVATE UMGEBUNG_WINDOW_TITLE="${PROJECT_NAME}") # set window title
 
-include_directories("./klangwellen/include")           # add klangwellen library
+include_directories("./klangwellen/src")           # add klangwellen library
 
 # add umgebung
 
