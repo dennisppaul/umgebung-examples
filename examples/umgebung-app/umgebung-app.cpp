@@ -131,6 +131,15 @@ class UmgebungApp : public PApplet {
         translate(padding + spacing, padding + 3 * spacing);
         mShape.draw();
         popMatrix();
+
+        noFill();
+        stroke(1.0f, 0.5f, 0);
+        line(340, 80, 40, 40);
+        line(360, 360, 60, 320);
+        stroke(0.0f);
+        strokeWeight(20);
+        bezier(340, 80, 40, 40, 360, 360, 60, 320);
+        strokeWeight(1);
     }
 
     void audioblock(float** input, float** output, int length) {
