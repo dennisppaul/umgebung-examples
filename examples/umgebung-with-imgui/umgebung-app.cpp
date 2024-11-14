@@ -67,11 +67,10 @@ class UmgebungApp : public PApplet {
         translate(width / 2, height / 2);
         constexpr int s = 100;
         auto& [r,g,b] = mColor;
+        fill(1-r,1-g,1-b);
+        ellipse(-mHorizontalPosition, -mVerticalPosition, 100, 100);
         fill(r,g,b);
         ellipse(mHorizontalPosition, mVerticalPosition, 100, 100);
-        fill(1-r,1-g,1-b);
-
-        ellipse(-mHorizontalPosition, -mVerticalPosition, 100, 100);
 
         noFill();
         line(0, -s, 0, s);
