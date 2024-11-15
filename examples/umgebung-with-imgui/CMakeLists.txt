@@ -9,6 +9,9 @@ option(DISABLE_GRAPHICS "Disable graphic output" OFF)
 option(DISABLE_VIDEO "Disable video output" ON)
 option(DISABLE_AUDIO "Disable audio output + input" OFF)
 option(ENABLE_PORTAUDIO "Enable Portaudio Driver for output + input" OFF)
+
+# enable imgui and set path
+set(IMGUI_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../../../imgui")
 option(ENABLE_IMGUI "Enable IMGui" ON)
 
 # set compiler flags to C++17 ( minimum required by umgebung, needs to go before `add_executable` )
