@@ -1,8 +1,6 @@
 #include "Umgebung.h"
 #include "imgui.h"
 
-
-
 using namespace umgebung;
 
 class UmgebungApp : public PApplet {
@@ -11,12 +9,10 @@ class UmgebungApp : public PApplet {
     int    mWidth  = 1024;
     int    mHeight = 768;
 
-    int mVerticalPosition = 0;
-    int mHorizontalPosition = 0;
-    bool mShowDemoWindow = 0;
-    float mColor[3] = {1.0, 0.5f, 0.0};
-
-
+    int   mVerticalPosition   = 0;
+    int   mHorizontalPosition = 0;
+    bool  mShowDemoWindow     = false;
+    float mColor[3]           = {1.0, 0.5f, 0.0};
 
     void arguments(std::vector<std::string> args) override {
         for (std::string& s: args) {
@@ -66,17 +62,16 @@ class UmgebungApp : public PApplet {
 
         translate(width / 2, height / 2);
         constexpr int s = 100;
-        auto& [r,g,b] = mColor;
-        fill(1-r,1-g,1-b);
+        auto& [r, g, b] = mColor;
+        fill(1 - r, 1 - g, 1 - b);
         ellipse(-mHorizontalPosition, -mVerticalPosition, 100, 100);
-        fill(r,g,b);
+        fill(r, g, b);
         ellipse(mHorizontalPosition, mVerticalPosition, 100, 100);
 
         noFill();
         line(0, -s, 0, s);
         line(-s, 0, s, 0);
     }
-
 
     void keyPressed() override {
         if (key == 'q') {
