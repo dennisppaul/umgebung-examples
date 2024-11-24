@@ -3,7 +3,7 @@
 
 using namespace umgebung;
 
-class UmgebungExampleAppWithMovie : public PApplet {
+class UmgebungExampleAppWithMovie : public PApplet, MovieListener {
 
     Movie* movie;
 
@@ -15,6 +15,7 @@ class UmgebungExampleAppWithMovie : public PApplet {
         movie = new Movie("../video.mp4");
         movie->play();
         movie->loop();
+        movie->set_listener(this);
     }
 
     void draw() override {
@@ -37,6 +38,13 @@ class UmgebungExampleAppWithMovie : public PApplet {
         if (key == 's') {
             movie->pause();
         }
+    }
+
+    void movieVideoEvent(Movie* m, float* audio_buffer, int length, int channels) override {}
+
+    void movieAudioEvent(Movie* m, float* audio_buffer, int length, int channels) override {
+        std::cout << "+++ audio samples : " << length << std::endl;
+        std::cout << "+++       channels: " << channels << std::endl;
     }
 };
 
