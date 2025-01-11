@@ -1,5 +1,5 @@
 #include "Umgebung.h"
-#include "imgui.h"
+#include "UmgebungImGui.h"
 
 using namespace umgebung;
 
@@ -27,6 +27,7 @@ class UmgebungApp : public PApplet {
     }
 
     void settings() override {
+        imgui_font(sketchPath() + "../RobotoMono-Regular.ttf", 12); // set custom font + size
         size(mWidth, mHeight);
         monitor               = 0;
         fullscreen            = false;
