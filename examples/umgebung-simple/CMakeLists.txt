@@ -9,6 +9,7 @@ option(DISABLE_GRAPHICS "Disable graphic output" OFF)
 option(DISABLE_VIDEO "Disable video output" OFF)
 option(DISABLE_AUDIO "Disable audio output + input" OFF)
 option(ENABLE_PORTAUDIO "Enable Portaudio Driver for output + input" OFF)
+option(DISABLE_MAIN "Disable main function entry point" OFF)
 
 # set compiler flags to C++17 ( minimum required by umgebung, needs to go before `add_executable` )
 
@@ -23,7 +24,6 @@ add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 include_directories(".")
 
 # add umgebung
-
 target_compile_definitions(${PROJECT_NAME} PRIVATE UMGEBUNG_WINDOW_TITLE="${PROJECT_NAME}") # set window title
 add_subdirectory(${UMGEBUNG_PATH} ${CMAKE_BINARY_DIR}/umgebung-lib-${PROJECT_NAME})
 add_umgebung_libs()
