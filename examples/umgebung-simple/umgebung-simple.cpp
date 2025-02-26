@@ -48,11 +48,11 @@ void settings() {
     // audio_output_device = DEFAULT_AUDIO_DEVICE;
     // audio_input_channels  = DEFAULT_NUMBER_OF_INPUT_CHANNELS;
     // audio_output_channels = DEFAULT_NUMBER_OF_OUTPUT_CHANNELS;
-    display = 0;
-    // fullscreen            = true;
-    // borderless            = true;
+    display      = 0;
+    fullscreen   = false;
+    borderless   = false;
     antialiasing = 8;
-    // resizable             = true;
+    resizable    = true;
     // always_on_top         = true;
     // retina_support = true;
     // headless              = false;
@@ -99,7 +99,7 @@ void draw() {
     line(0, 0, width, height);
 
     stroke(1, 0, 0);
-    bezier(0, height, mouseX, mouseY, mouseX, mouseY, width, 0);
+    bezier(0, height, 0, mouseX, mouseY, 0, mouseX, mouseY, 0, width, 0, 0);
     bezier(width, height, mouseX, mouseY, mouseX, mouseY, 0, 0);
 
     /* points + pointSize */
@@ -139,6 +139,8 @@ void draw() {
 
     fill(0);
     text(to_string("(", static_cast<int>(mouseX), ",", static_cast<int>(mouseY), ")").c_str(), 300, 10 + 16);
+
+    // TODO add 3D shapes
 }
 
 // void audioblock(float** input, float** output, int length) {
