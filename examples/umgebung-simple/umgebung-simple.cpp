@@ -52,9 +52,9 @@ void settings() {
     fullscreen   = false;
     borderless   = false;
     antialiasing = 8;
-    resizable    = true;
+    resizable    = false;
     // always_on_top         = true;
-    // retina_support = true;
+    retina_support = false;
     // headless              = false;
     // no_audio              = false;
     subsystem_graphics = umgebung_subsystem_graphics_create_openglv33();
@@ -82,18 +82,23 @@ void draw() {
     rect(10, 10, 40, 40);
 
     noStroke();
-    fill(0);
+    fill(1, 0, 0);
     rect(60, 10, 40, 40);
 
     /* circle ( + ellipse ) */
 
+    noStroke();
     fill(1, 0, 0);
+    circle(10 + 20, 60 + 20, 40);
+
+    stroke(1, 0, 0);
+    noFill();
     circle(mouseX, mouseY, 40);
 
     /* lines + bezier */
 
+    strokeWeight(1);
     noFill();
-
     stroke(0);
     line(width, 0, 0, height);
     line(0, 0, width, height);
@@ -115,19 +120,31 @@ void draw() {
 
     /* shape + transforms */
 
-    noStroke(); // TODO stroke shape do not work ATM
-    fill(1, 0, 0);
     pushMatrix();
     translate(180, 30);
     rotate(PI / 4);
     const float s = 20 / sqrtf(20 * 20 + 20 * 20);
     scale(s);
+
+    stroke(1, 0, 0);
+    noFill();
+    beginShape(POLYGON); // TODO POLYGON only drawn as stroke ATM
+    vertex(-20, -20);
+    vertex(20, -20);
+    vertex(20, 20);
+    vertex(-20, 20);
+    endShape(CLOSE);
+
+    translate(40, 40, 0);
+    stroke(0);
+    noFill();
     beginShape(POLYGON);
     vertex(-20, -20);
     vertex(20, -20);
     vertex(20, 20);
     vertex(-20, 20);
-    endShape();
+    endShape(CLOSE);
+
     popMatrix();
 
     /* image */
@@ -141,6 +158,47 @@ void draw() {
     text(to_string("(", static_cast<int>(mouseX), ",", static_cast<int>(mouseY), ")").c_str(), 300, 10 + 16);
 
     // TODO add 3D shapes
+
+    stroke(1, 0, 0);
+    strokeWeight(10);
+    pushMatrix();
+    translate(mouseX, mouseY);
+    rotateX(frameCount * 0.01f);
+    scale(3);
+    // beginShape();
+    // vertex(-50, -50, 0);
+    // vertex(50, -50, 0);
+    // vertex(50, 50, 0);
+    // vertex(-50, 50, 0);
+    // endShape(CLOSE);
+    line(-50, -50, 0, 50, -50, 0);
+    line(50, -50, 0, 50, 50, 0);
+    line(50, 50, 0, -50, 50, 0);
+    line(-50, 50, 0, -50, -50, 0);
+    popMatrix();
+    strokeWeight(1);
+
+    strokeWeight(20);
+    stroke(1, 0, 0);
+    beginShape();
+    vertex(width * 0.5 - 200, height * 0.5 - 200);
+    vertex(width * 0.5 + 200, height * 0.5 - 200);
+    vertex(width * 0.5 + 200, height * 0.5 + 200);
+    vertex(width * 0.5 - 200, height * 0.5 + 200);
+    vertex(width * 0.5 - 300, height * 0.5 + 20);
+    vertex(mouseX, mouseY);
+    endShape(CLOSE);
+    strokeWeight(1);
+
+    // strokeWeight(10);
+    // stroke(0);
+    // beginShape();
+    // vertex(10, height / 2);
+    // vertex(width / 2, height / 2);
+    // vertex(mouseX, mouseY);
+    // vertex(width - 10, height / 2);
+    // endShape();
+    // strokeWeight(1);
 }
 
 // void audioblock(float** input, float** output, int length) {
