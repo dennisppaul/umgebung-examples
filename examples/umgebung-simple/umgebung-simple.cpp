@@ -67,6 +67,8 @@ void setup() {
     println("pixelHeight: ", pixelHeight);
     add_generic_subsystem();
 
+    hint(HINT_ENABLE_SMOOTH_LINES);
+
     mImage = loadImage(sketchPath() + "../image.png");
     mFont  = loadFont(sketchPath() + "../JetBrainsMono-Regular.ttf", 16);
     textFont(mFont);
@@ -120,32 +122,33 @@ void draw() {
 
     /* shape + transforms */
 
-    pushMatrix();
-    translate(180, 30);
-    rotate(PI / 4);
-    const float s = 20 / sqrtf(20 * 20 + 20 * 20);
-    scale(s);
+    // pushMatrix();
 
-    stroke(1, 0, 0);
-    noFill();
-    beginShape(POLYGON); // TODO POLYGON only drawn as stroke ATM
-    vertex(-20, -20);
-    vertex(20, -20);
-    vertex(20, 20);
-    vertex(-20, 20);
-    endShape(CLOSE);
+    // translate(180, 30);
+    // rotate(PI / 4);
+    // const float s = 20 / sqrtf(20 * 20 + 20 * 20);
+    // scale(s);
 
-    translate(40, 40, 0);
-    stroke(0);
-    noFill();
-    beginShape(POLYGON);
-    vertex(-20, -20);
-    vertex(20, -20);
-    vertex(20, 20);
-    vertex(-20, 20);
-    endShape(CLOSE);
+    // stroke(1, 0, 0);
+    // noFill();
+    // beginShape(POLYGON); // TODO POLYGON only drawn as stroke ATM
+    // vertex(-20, -20);
+    // vertex(20, -20);
+    // vertex(20, 20);
+    // vertex(-20, 20);
+    // endShape(CLOSE);
 
-    popMatrix();
+    // translate(40, 40, 0);
+    // stroke(0);
+    // noFill();
+    // beginShape(POLYGON);
+    // vertex(-20, -20);
+    // vertex(20, -20);
+    // vertex(20, 20);
+    // vertex(-20, 20);
+    // endShape(CLOSE);
+
+    // popMatrix();
 
     /* image */
 
@@ -165,22 +168,23 @@ void draw() {
     translate(mouseX, mouseY);
     rotateX(frameCount * 0.01f);
     scale(3);
-    // beginShape();
-    // vertex(-50, -50, 0);
-    // vertex(50, -50, 0);
-    // vertex(50, 50, 0);
-    // vertex(-50, 50, 0);
-    // endShape(CLOSE);
-    line(-50, -50, 0, 50, -50, 0);
-    line(50, -50, 0, 50, 50, 0);
-    line(50, 50, 0, -50, 50, 0);
-    line(-50, 50, 0, -50, -50, 0);
+    beginShape(LINE_STRIP);
+    vertex(-50, -50, 0);
+    vertex(50, -50, 0);
+    vertex(50, 50, 0);
+    vertex(-50, 50, 0);
+    endShape(CLOSE);
+    // line(-50, -50, 0, 50, -50, 0);
+    // line(50, -50, 0, 50, 50, 0);
+    // line(50, 50, 0, -50, 50, 0);
+    // line(-50, 50, 0, -50, -50, 0);
     popMatrix();
     strokeWeight(1);
 
     strokeWeight(20);
     stroke(1, 0, 0);
-    beginShape();
+    fill(0, 1, 0);
+    beginShape(LINE_STRIP);
     vertex(width * 0.5 - 200, height * 0.5 - 200);
     vertex(width * 0.5 + 200, height * 0.5 - 200);
     vertex(width * 0.5 + 200, height * 0.5 + 200);
