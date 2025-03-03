@@ -1,9 +1,11 @@
 #include "Umgebung.h"
+#include "PFontSDL.h"
 
 using namespace umgebung;
 
-PImage* mImage;
-PFont*  mFont;
+PImage*   mImage;
+PFont*    mFont;
+PFontSDL* font_sdl;
 
 void arguments(const std::vector<std::string>& args) {
     if (args.size() == 2) {
@@ -54,7 +56,7 @@ void settings() {
     antialiasing = 8;
     resizable    = false;
     // always_on_top         = true;
-    retina_support = false;
+    retina_support = true;
     // headless              = false;
     // no_audio              = false;
     subsystem_graphics = umgebung_subsystem_graphics_create_openglv33();
@@ -69,17 +71,18 @@ void setup() {
 
     hint(HINT_ENABLE_SMOOTH_LINES);
 
-    mImage = loadImage(sketchPath() + "../image.png");
-    mFont  = loadFont(sketchPath() + "../JetBrainsMono-Regular.ttf", 16);
+    mImage   = loadImage(sketchPath() + "../image.png");
+    mFont    = loadFont(sketchPath() + "../JetBrainsMono-Regular.ttf", 16);
+    font_sdl = new PFontSDL(sketchPath() + "../JetBrainsMono-Regular.ttf", 64);
     textFont(mFont);
 }
 
 void draw() {
-    background(1); // TODO would this flush everything?!?
+    background(1); // TODO should this flush everything?!?
 
     /* rects */
 
-    stroke(0.0f);
+    stroke(0);
     noFill();
     rect(10, 10, 40, 40);
 
@@ -87,31 +90,95 @@ void draw() {
     fill(1, 0, 0);
     rect(60, 10, 40, 40);
 
+    stroke(0);
+    fill(1, 0, 0);
+    rect(110, 10, 40, 40);
+
     /* circle ( + ellipse ) */
+
+    stroke(0);
+    noFill();
+    circle(10 + 20, 60 + 20, 40);
+
+    stroke(0);
+    fill(1, 0, 0);
+    circle(110 + 20, 60 + 20, 40);
 
     noStroke();
     fill(1, 0, 0);
-    circle(10 + 20, 60 + 20, 40);
+    circle(60 + 20, 60 + 20, 40);
 
-    stroke(1, 0, 0);
+    stroke(0);
     noFill();
-    circle(mouseX, mouseY, 40);
+    ellipseDetail((int) (mouseX / width * 72));
+    circle(mouseX, mouseY, 500);
 
     /* lines + bezier */
 
-    strokeWeight(1);
-    noFill();
     stroke(0);
-    line(width, 0, 0, height);
-    line(0, 0, width, height);
+    strokeWeight(3);
+    line(0, 0, mouseX, mouseY);
+    strokeWeight(9);
+    line(mouseX, mouseY, width, height);
+    strokeWeight(1);
 
-    stroke(1, 0, 0);
-    bezier(0, height, 0, mouseX, mouseY, 0, mouseX, mouseY, 0, width, 0, 0);
+    /* bezier */
+
+    stroke(0);
+    noFill();
+    strokeWeight(6);
     bezier(width, height, mouseX, mouseY, mouseX, mouseY, 0, 0);
+    strokeWeight(1);
+
+    /* triangle */
+
+    stroke(0);
+    fill(1, 0, 0);
+    triangle(width * 0.66f + 5, height * 0.33f, 0,
+             width * 0.66f + 5, height * 0.66f, 0,
+             mouseX, mouseY, 0);
+
+    /* shape */
+
+    stroke(0);
+    fill(1, 0, 0);
+    beginShape(POLYGON);
+    vertex(width * 0.33f, height * 0.33f);
+    vertex(width * 0.66f, height * 0.33f);
+    vertex(width * 0.66f, height * 0.66f);
+    vertex(width * 0.33f, height * 0.66f);
+    vertex(mouseX, mouseY);
+    endShape(CLOSE);
+
+    /* image */
+
+    fill(1);
+    noStroke();
+    pushMatrix();
+    translate(width - mImage->width, mImage->height);
+    rotateX(frameCount * 0.007f);
+    rotateY(frameCount * 0.02f);
+    rectMode(CENTER);
+    image(mImage, 0, 0, 80, 80);
+    rectMode(CORNER);
+    popMatrix();
+
+    /* textured shape */
+
+    noStroke();
+    fill(1);
+    texture(mImage);
+    beginShape(POLYGON);
+    vertex(10, 110, 0, 1, 1);
+    vertex(10 + mImage->width, 110, 0, 0, 1);
+    vertex(10 + mImage->width, 110 + mImage->height, 0, 0, 0);
+    // vertex(10, 110 + mImage->height, 0, 1, 0);
+    vertex(mouseX, mouseY, 0, 1, 0);
+    endShape(CLOSE);
 
     /* points + pointSize */
 
-    pointSize(2);
+    pointSize(mouseX / width * 64); // NOTE does not work on all machines ... and looks ugly
     stroke(0);
     for (int i = 0; i < 100; ++i) {
         const float x = random(110, 150);
@@ -119,6 +186,23 @@ void draw() {
         point(x, y);
     }
     pointSize(1);
+
+    /* text + font */
+
+    g->fill(0);
+    // text(to_string("(", static_cast<int>(mouseX), ",", static_cast<int>(mouseY), ")").c_str(), 300, 10 + 16);
+    g->bind_texture(font_sdl->texture_id);
+    g->rect(mouseX, mouseY, font_sdl->width, font_sdl->height);
+    g->unbind_texture();
+
+    g->fill(1,0,0);
+    g->noStroke();
+    pushMatrix();
+    translate(mouseX, mouseY);
+    // font_sdl->render(g, to_string("FRAMES: ", (2 * mouseX / width - 1)), 0, 0, 0.5f, 0);
+    font_sdl->render(g, to_string("AVTAWaToVAWeYoyo Hamburgefonts"), 0, 48, 1, 0);
+    // font_sdl->render(g, to_string("Hamburgefonts"), 0, 128, 1, 2 * mouseX / width - 1);
+    popMatrix();
 
     /* shape + transforms */
 
@@ -131,7 +215,7 @@ void draw() {
 
     // stroke(1, 0, 0);
     // noFill();
-    // beginShape(POLYGON); // TODO POLYGON only drawn as stroke ATM
+    // beginShape(POLYGON);
     // vertex(-20, -20);
     // vertex(20, -20);
     // vertex(20, 20);
@@ -150,49 +234,40 @@ void draw() {
 
     // popMatrix();
 
-    /* image */
+    /* transformed lines */
 
-    fill(1);
-    image(mImage, 210, 10, 80, 80);
+    // stroke(1, 0, 0);
+    // strokeWeight(10);
+    // pushMatrix();
+    // translate(mouseX, mouseY);
+    // rotateX(frameCount * 0.01f);
+    // scale(3);
+    // beginShape(LINE_STRIP);
+    // vertex(-50, -50, 0);
+    // vertex(50, -50, 0);
+    // vertex(50, 50, 0);
+    // vertex(-50, 50, 0);
+    // endShape(CLOSE);
+    // // line(-50, -50, 0, 50, -50, 0);
+    // // line(50, -50, 0, 50, 50, 0);
+    // // line(50, 50, 0, -50, 50, 0);
+    // // line(-50, 50, 0, -50, -50, 0);
+    // popMatrix();
+    // strokeWeight(1);
 
-    /* text + font */
-
-    fill(0);
-    text(to_string("(", static_cast<int>(mouseX), ",", static_cast<int>(mouseY), ")").c_str(), 300, 10 + 16);
-
-    // TODO add 3D shapes
-
-    stroke(1, 0, 0);
-    strokeWeight(10);
-    pushMatrix();
-    translate(mouseX, mouseY);
-    rotateX(frameCount * 0.01f);
-    scale(3);
-    beginShape(LINE_STRIP);
-    vertex(-50, -50, 0);
-    vertex(50, -50, 0);
-    vertex(50, 50, 0);
-    vertex(-50, 50, 0);
-    endShape(CLOSE);
-    // line(-50, -50, 0, 50, -50, 0);
-    // line(50, -50, 0, 50, 50, 0);
-    // line(50, 50, 0, -50, 50, 0);
-    // line(-50, 50, 0, -50, -50, 0);
-    popMatrix();
-    strokeWeight(1);
-
-    strokeWeight(20);
-    stroke(1, 0, 0);
-    fill(0, 1, 0);
-    beginShape(LINE_STRIP);
-    vertex(width * 0.5 - 200, height * 0.5 - 200);
-    vertex(width * 0.5 + 200, height * 0.5 - 200);
-    vertex(width * 0.5 + 200, height * 0.5 + 200);
-    vertex(width * 0.5 - 200, height * 0.5 + 200);
-    vertex(width * 0.5 - 300, height * 0.5 + 20);
-    vertex(mouseX, mouseY);
-    endShape(CLOSE);
-    strokeWeight(1);
+    // strokeWeight(20);
+    // stroke(1, 0, 0);
+    // fill(0, 1, 0);
+    // fill(0);
+    // beginShape(POINTS);
+    // vertex(width * 0.5f - 200, height * 0.5f - 200);
+    // vertex(width * 0.5f + 200, height * 0.5f - 200);
+    // vertex(width * 0.5f + 200, height * 0.5f + 200);
+    // vertex(width * 0.5f - 200, height * 0.5f + 200);
+    // vertex(width * 0.5f - 300, height * 0.5f + 20);
+    // vertex(mouseX, mouseY);
+    // endShape(CLOSE);
+    // strokeWeight(1);
 
     // strokeWeight(10);
     // stroke(0);
