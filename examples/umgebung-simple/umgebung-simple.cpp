@@ -1,11 +1,13 @@
 #include "Umgebung.h"
 #include "PFontSDL.h"
+#include "PFontGeneric.h"
 
 using namespace umgebung;
 
-PImage*   mImage;
-PFont*    mFont;
-PFontSDL* font_sdl;
+PImage*       mImage;
+PFont*        mFont;
+PFontSDL*     font_sdl;
+PFontGeneric* font;
 
 void arguments(const std::vector<std::string>& args) {
     if (args.size() == 2) {
@@ -56,7 +58,7 @@ void settings() {
     antialiasing = 8;
     resizable    = false;
     // always_on_top         = true;
-    retina_support = true;
+    retina_support = false;
     // headless              = false;
     // no_audio              = false;
     subsystem_graphics = umgebung_subsystem_graphics_create_openglv33();
@@ -71,9 +73,12 @@ void setup() {
 
     hint(HINT_ENABLE_SMOOTH_LINES);
 
-    mImage   = loadImage(sketchPath() + "../image.png");
-    mFont    = loadFont(sketchPath() + "../JetBrainsMono-Regular.ttf", 16);
-    font_sdl = new PFontSDL(sketchPath() + "../JetBrainsMono-Regular.ttf", 64);
+    mImage                      = loadImage(sketchPath() + "../image.png");
+    const std::string font_name = "SF-Pro-Display-Thin.otf";
+    mFont                       = loadFont(sketchPath() + "../" + font_name, 64);
+    font_sdl                    = new PFontSDL(sketchPath() + "../" + font_name, 64);
+    font                        = new PFontGeneric("../" + font_name, 64);
+
     textFont(mFont);
 }
 
@@ -189,20 +194,25 @@ void draw() {
 
     /* text + font */
 
-    g->fill(0);
     // text(to_string("(", static_cast<int>(mouseX), ",", static_cast<int>(mouseY), ")").c_str(), 300, 10 + 16);
+
+    g->fill(0);
     g->bind_texture(font_sdl->texture_id);
     g->rect(mouseX, mouseY, font_sdl->width, font_sdl->height);
     g->unbind_texture();
 
-    g->fill(1,0,0);
-    g->noStroke();
+    fill(1, 0, 0);
+    noStroke();
     pushMatrix();
     translate(mouseX, mouseY);
     // font_sdl->render(g, to_string("FRAMES: ", (2 * mouseX / width - 1)), 0, 0, 0.5f, 0);
     font_sdl->render(g, to_string("AVTAWaToVAWeYoyo Hamburgefonts"), 0, 48, 1, 0);
     // font_sdl->render(g, to_string("Hamburgefonts"), 0, 128, 1, 2 * mouseX / width - 1);
     popMatrix();
+
+    fill(0);
+    noStroke();
+    font->draw(g, mouseX, mouseY + 96);
 
     /* shape + transforms */
 
