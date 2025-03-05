@@ -6,6 +6,7 @@ PImage* mImage;
 
 void settings() {
     size(1024, 768);
+    subsystem_graphics = umgebung_subsystem_graphics_create_openglv33();
 }
 
 void setup() {
@@ -21,6 +22,7 @@ void setup() {
     //             pixels[i] = color(random(1), random(1), random(1), 0.5f);
     //         }
     // mImage->update(pixels, 64, 64, 32, 32);
+    rectMode(CENTER);
 }
 
 void draw() {
@@ -41,6 +43,10 @@ void draw() {
     fill(1.0f);
     image(mImage, mouseX, mouseY);
     // image(mImage, padding, padding + spacing, grid, grid);
+
+    if (is_mouse_pressed) {
+        console(".");
+    }
 }
 
 void keyPressed() {
@@ -48,4 +54,13 @@ void keyPressed() {
         exit();
     }
     println((char) key, " pressed");
+}
+
+void mouseMoved() {
+    for (int i = 0; i < 1000; i++) {
+        const int x = random(0, width);
+        const int y = random(0, width);
+        mImage->set(x, y, 0x00000000); // RGBA format
+    }
+    mImage->updatePixels(g);
 }

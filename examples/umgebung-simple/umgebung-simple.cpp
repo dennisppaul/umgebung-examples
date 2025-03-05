@@ -1,13 +1,9 @@
 #include "Umgebung.h"
-#include "PFontSDL.h"
-#include "PFontGeneric.h"
 
 using namespace umgebung;
 
-PImage*       mImage;
-PFont*        mFont;
-PFontSDL*     font_sdl;
-PFontGeneric* font;
+PImage* mImage;
+PFont*  font;
 
 void arguments(const std::vector<std::string>& args) {
     if (args.size() == 2) {
@@ -52,7 +48,7 @@ void settings() {
     // audio_output_device = DEFAULT_AUDIO_DEVICE;
     // audio_input_channels  = DEFAULT_NUMBER_OF_INPUT_CHANNELS;
     // audio_output_channels = DEFAULT_NUMBER_OF_OUTPUT_CHANNELS;
-    display      = 0;
+    display      = 2;
     fullscreen   = false;
     borderless   = false;
     antialiasing = 8;
@@ -61,25 +57,18 @@ void settings() {
     retina_support = false;
     // headless              = false;
     // no_audio              = false;
+    render_to_buffer   = true;
     subsystem_graphics = umgebung_subsystem_graphics_create_openglv33();
 }
 
 void setup() {
-    println("width      : ", width);
-    println("height     : ", height);
-    println("pixelWidth : ", pixelWidth);
-    println("pixelHeight: ", pixelHeight);
     add_generic_subsystem();
 
     hint(HINT_ENABLE_SMOOTH_LINES);
 
-    mImage                      = loadImage(sketchPath() + "../image.png");
-    const std::string font_name = "SF-Pro-Display-Thin.otf";
-    mFont                       = loadFont(sketchPath() + "../" + font_name, 64);
-    font_sdl                    = new PFontSDL(sketchPath() + "../" + font_name, 64);
-    font                        = new PFontGeneric("../" + font_name, 64);
-
-    textFont(mFont);
+    mImage = loadImage(sketchPath() + "../image.png");
+    font   = loadFont("../InterDisplay-Light.otf", 64);
+    textFont(font);
 }
 
 void draw() {
@@ -194,25 +183,17 @@ void draw() {
 
     /* text + font */
 
-    // text(to_string("(", static_cast<int>(mouseX), ",", static_cast<int>(mouseY), ")").c_str(), 300, 10 + 16);
-
-    g->fill(0);
-    g->bind_texture(font_sdl->texture_id);
-    g->rect(mouseX, mouseY, font_sdl->width, font_sdl->height);
-    g->unbind_texture();
-
-    fill(1, 0, 0);
-    noStroke();
-    pushMatrix();
-    translate(mouseX, mouseY);
-    // font_sdl->render(g, to_string("FRAMES: ", (2 * mouseX / width - 1)), 0, 0, 0.5f, 0);
-    font_sdl->render(g, to_string("AVTAWaToVAWeYoyo Hamburgefonts"), 0, 48, 1, 0);
-    // font_sdl->render(g, to_string("Hamburgefonts"), 0, 128, 1, 2 * mouseX / width - 1);
-    popMatrix();
-
     fill(0);
     noStroke();
-    font->draw(g, mouseX, mouseY + 96);
+    text("AVTAWaToVAWeYoyo Hamburgefonts", mouseX, mouseY);
+    pushMatrix();
+    translate(300, 10 + 16 + 0.5f);
+    scale(0.5f);
+    // TOOD change this to std::string
+    text(to_string("( ", static_cast<int>(mouseX), ", ", static_cast<int>(mouseY), " )").c_str(), 0, 0);
+    popMatrix();
+
+    /* -------------------- CUT BELOW THE LINE --- */
 
     /* shape + transforms */
 
