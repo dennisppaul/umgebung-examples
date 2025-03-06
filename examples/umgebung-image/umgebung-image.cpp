@@ -60,7 +60,7 @@ void mouseMoved() {
     for (int i = 0; i < 1000; i++) {
         const int x = random(0, width);
         const int y = random(0, width);
-        mImage->set(x, y, 0x00000000); // RGBA format
+        mImage->set(x, y, RGBA(0x00, 0x00, 0x00, 0xFF));
     }
     mImage->updatePixels(g);
 }

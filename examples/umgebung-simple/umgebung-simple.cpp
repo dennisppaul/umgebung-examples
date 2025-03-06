@@ -48,13 +48,13 @@ void settings() {
     // audio_output_device = DEFAULT_AUDIO_DEVICE;
     // audio_input_channels  = DEFAULT_NUMBER_OF_INPUT_CHANNELS;
     // audio_output_channels = DEFAULT_NUMBER_OF_OUTPUT_CHANNELS;
-    display      = 2;
-    fullscreen   = false;
-    borderless   = false;
+    display = 0;
+    // fullscreen   = false;
+    // borderless   = false;
     antialiasing = 8;
-    resizable    = false;
+    // resizable    = false;
     // always_on_top         = true;
-    retina_support = false;
+    retina_support = true;
     // headless              = false;
     // no_audio              = false;
     render_to_buffer   = true;
@@ -287,7 +287,9 @@ void keyPressed() {
     println((char) key, " pressed");
 }
 
-void mouseMoved() {}
+void mouseMoved() {
+    // console((int) mouseX, "x", (int) mouseY);
+}
 
 void shutdown() {
     delete subsystem;
