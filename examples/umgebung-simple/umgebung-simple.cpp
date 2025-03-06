@@ -57,7 +57,7 @@ void settings() {
     retina_support = true;
     // headless              = false;
     // no_audio              = false;
-    render_to_buffer   = true;
+    render_to_buffer   = false;
     subsystem_graphics = umgebung_subsystem_graphics_create_openglv33();
 }
 

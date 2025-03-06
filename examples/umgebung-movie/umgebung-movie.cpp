@@ -33,7 +33,7 @@ void draw() {
     //     myMovie->read();
     // }
     fill(1.0f);
-    movie->reload(g); // TODO if run from thread ( i.e `myMovie->play();` ) this needs to be called in draw
+    movie->reload(); // TODO if run from thread ( i.e `myMovie->play();` ) this needs to be called in draw
     image(movie, mouseX, mouseY);
 }
 

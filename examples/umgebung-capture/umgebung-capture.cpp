@@ -68,11 +68,11 @@ void draw() {
     fill(1.0f);
     // TODO if run from thread ( i.e `myMovie->play();` ) this needs to be called in draw
     if (capture_facetime != nullptr) {
-        capture_facetime->reload(g);
+        capture_facetime->reload();
         image(capture_facetime, 0, 0, width, height);
     }
     if (capture_iphone != nullptr) {
-        capture_iphone->reload(g);
+        capture_iphone->reload();
         image(capture_iphone,
               mouseX, mouseY,
               capture_iphone->width / 4, capture_iphone->height / 4);
