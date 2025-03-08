@@ -16,15 +16,14 @@ void settings() {
 void setup() {
     hint(HINT_ENABLE_SMOOTH_LINES);
 
-    stroke(0);
+    stroke(0.0f);
     fill(0.5f, 0.85f, 1.0f);
-    strokeWeight(5);
+    strokeWeight(20);
 }
 
 void draw() {
-    strokeWeight(20);
+    background(1.0f);
 
-    background(1);
     beginShape(POLYGON);
     vertex(120, 80);
     vertex(230, 80);
@@ -34,9 +33,3 @@ void draw() {
     vertex(120, 300);
     endShape(CLOSE);
 }
-
-void keyPressed() {}
-
-void mouseMoved() {}
-
-void shutdown() {}

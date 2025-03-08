@@ -57,7 +57,7 @@ void settings() {
     retina_support = true;
     // headless              = false;
     // no_audio              = false;
-    render_to_buffer   = false;
+    render_to_buffer   = true;
     subsystem_graphics = umgebung_subsystem_graphics_create_openglv33();
 }
 
@@ -162,6 +162,8 @@ void draw() {
     noStroke();
     fill(1);
     texture(mImage);
+    // TODO `beginShape(QUAD)` is broken, triangles are flipped
+    // TODO textured polygon only works in `polygon_triangulation_strategy = POLYGON_TRIANGULATION_BETTER`
     beginShape(POLYGON);
     vertex(10, 110, 0, 1, 1);
     vertex(10 + mImage->width, 110, 0, 0, 1);
