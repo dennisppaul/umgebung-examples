@@ -8,7 +8,7 @@ using namespace umgebung;
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-int stroke_join_mode = ROUND;
+int stroke_join_mode = MITER;
 
 float stroke_weight = 30;
 
@@ -32,14 +32,21 @@ void umgebung::create_stroke_join_tessellate(std::vector<glm::vec2>&     triangl
                                              const bool                  close_shape,
                                              const float                 half_width,
                                              const int                   stroke_join_mode,
+                                             const int                   stroke_cap_mode,
                                              const std::vector<Segment>& segments) {
     std::vector<glm::vec2> outline_left;
     std::vector<glm::vec2> outline_right;
 
-    const int num_Segments = segments.size() + (close_shape ? +1 : 0);
-    for (int i = 0; i < num_Segments; ++i) {
+    const int num_segments = segments.size() + (close_shape ? +1 : 0);
+    for (int i = 0; i < num_segments; ++i) {
         const Segment& s1 = segments[(i) % segments.size()];
         const Segment& s2 = segments[(i + 1) % segments.size()];
+
+        stroke(0);
+        fill(0);
+        circle(s1.position.x, s1.position.y, 10);
+        noFill();
+        circle(s2.position.x, s2.position.y, 15);
 
         const glm::vec2 s1_norm  = s1.normal * half_width;
         const glm::vec2 s1_left  = s1.position - s1_norm;
@@ -48,16 +55,36 @@ void umgebung::create_stroke_join_tessellate(std::vector<glm::vec2>&     triangl
         const glm::vec2 s2_right = s2.position + s1_norm;
         const glm::vec2 s2_norm  = s2.normal * half_width;
 
-        outline_left.push_back(s1_left);
-        outline_left.push_back(s2_left);
-        outline_right.push_back(s1_right);
-        outline_right.push_back(s2_right);
+        fill(1, 0, 0);
+        circle(s1_left.x, s1_left.y, 10 + i * 2);
+        fill(0, 1, 0);
+        circle(s1_right.x, s1_right.y, 10 + i * 2);
+
+        noFill();
+        stroke(1, 0, 0);
+        circle(s2_left.x, s2_left.y, 10 + i * 2);
+        stroke(0, 1, 0);
+        circle(s2_right.x, s2_right.y, 10 + i * 2);
+
+        if (close_shape) {
+            outline_left.push_back(s1_left);
+            outline_left.push_back(s2_left);
+            outline_right.push_back(s1_right);
+            outline_right.push_back(s2_right);
+        } else {
+            outline_left.push_back(s1_left);
+            outline_right.push_back(s1_right);
+            if (i < num_segments - 1) { // works for round & bevel but not vor miter
+                outline_left.push_back(s2_left);
+                outline_right.push_back(s2_right);
+            }
+        }
 
         /* ROUND */
 
         if (stroke_join_mode == ROUND) {
             // skip last one ( creates a cap )
-            if (i != num_Segments - 1) {
+            if (i != num_segments - 1) {
                 constexpr float circle_resolution = glm::radians(20.0f); // 20° resolution i.e 18 segment for whole circle
                 float           angle_s1          = atan2(s1.normal.y, s1.normal.x);
                 float           angle_s2          = atan2(s2.normal.y, s2.normal.x);
@@ -84,31 +111,43 @@ void umgebung::create_stroke_join_tessellate(std::vector<glm::vec2>&     triangl
                     // TODO check if it would be better to add this to right side depending on angle
                 }
             }
+            if (!close_shape && stroke_cap_mode == ROUND && i == num_segments - 1) {
+                // add cap at
+                fill(0);
+                circle(s1.position.x, s1.position.y, 10);
+                float cap_angle = atan2(s1.direction.y, s1.direction.x);
+            }
         }
+
+        /* BEVEL */
+
+        // NOTE no need to do anything special
 
         /* MITER */
 
         if (stroke_join_mode == MITER) {
-            const float angle     = glm::degrees(angle_between_vectors(s1.direction, s2.direction));
-            const float abs_angle = fabs(angle);
-            if (abs_angle < max_angle && angle > 0) {
-                const glm::vec2 s2_proj_left = s2.position - s2_norm;
-                glm::vec2       intersection_left;
-                const bool      result_left = intersect_lines(s1_left, s1.direction,
-                                                              s2_proj_left, s2.direction,
-                                                              intersection_left);
-                if (result_left) {
-                    outline_left.push_back(intersection_left);
+            if (close_shape || i < num_segments - 1) {
+                const float angle     = glm::degrees(angle_between_vectors(s1.direction, s2.direction));
+                const float abs_angle = fabs(angle);
+                if (abs_angle < max_angle && angle > 0) {
+                    const glm::vec2 s2_proj_left = s2.position - s2_norm;
+                    glm::vec2       intersection_left;
+                    const bool      result_left = intersect_lines(s1_left, s1.direction,
+                                                                  s2_proj_left, s2.direction,
+                                                                  intersection_left);
+                    if (result_left) {
+                        outline_left.push_back(intersection_left);
+                    }
                 }
-            }
-            if (abs_angle < max_angle && angle < 0) {
-                const glm::vec2 p2_proj_right = s2.position + s2_norm;
-                glm::vec2       intersection_right;
-                const bool      result_right = intersect_lines(s1_right, s1.direction,
-                                                               p2_proj_right, s2.direction,
-                                                               intersection_right);
-                if (result_right) {
-                    outline_right.push_back(intersection_right);
+                if (abs_angle < max_angle && angle < 0) {
+                    const glm::vec2 p2_proj_right = s2.position + s2_norm;
+                    glm::vec2       intersection_right;
+                    const bool      result_right = intersect_lines(s1_right, s1.direction,
+                                                                   p2_proj_right, s2.direction,
+                                                                   intersection_right);
+                    if (result_right) {
+                        outline_right.push_back(intersection_right);
+                    }
                 }
             }
         }
@@ -132,19 +171,26 @@ void draw() {
     vertex(340, 190);
     vertex(340, 300);
     vertex(120, 300);
-    endShape(is_mouse_pressed);
+    vertex(20, 190);
+    vertex(20, 80);
+    endShape(!is_mouse_pressed);
 
     std::vector<glm::vec3> points;
     points.emplace_back(120, 80, 0);
     points.emplace_back(230, 80, 0);
     points.emplace_back(mouseX, mouseY, 0);
     points.emplace_back(340, 190, 0);
-    points.emplace_back(340, 300, 0);
-    points.emplace_back(120, 300, 0);
-    const std::vector<glm::vec2> triangles = line_strip(points,
-                                                        is_mouse_pressed,
-                                                        stroke_weight,
-                                                        stroke_join_mode);
+    // points.emplace_back(340, 300, 0);
+    // points.emplace_back(120, 300, 0);
+    // points.emplace_back(20, 190, 0);
+    // points.emplace_back(20, 80, 0);
+    std::vector<glm::vec2> triangles;
+    line_strip(points,
+               !is_mouse_pressed,
+               stroke_weight,
+               stroke_join_mode,
+               is_mouse_pressed ? SQUARE : ROUND,
+               triangles);
 
     const std::vector colors = {
         glm::vec4{1, 0, 0, 0.5},
@@ -159,7 +205,7 @@ void draw() {
     for (const auto t: triangles) {
         const int       ii = (i / 3) % colors.size();
         const glm::vec4 c  = colors[ii];
-        fill(c.r, c.g, c.b, c.a);
+        // fill(c.r, c.g, c.b, c.a);
         vertex(t.x, t.y);
         i++;
     }
@@ -176,17 +222,26 @@ void keyPressed() {
     }
     if (key == '1') {
         stroke_join_mode = NONE;
+        console("NONE");
     }
     if (key == '2') {
         stroke_join_mode = BEVEL;
+        console("BEVEL");
     }
     if (key == '3') {
         stroke_join_mode = MITER;
+        console("MITER");
     }
     if (key == '4') {
         stroke_join_mode = ROUND;
+        console("ROUND");
     }
     if (key == '5') {
-        stroke_join_mode = BEVEL_TESSELATOR;
+        stroke_join_mode = MITER_FAST;
+        console("MITER_FAST");
+    }
+    if (key == '6') {
+        stroke_join_mode = BEVEL_FAST;
+        console("BEVEL_FAST");
     }
 }

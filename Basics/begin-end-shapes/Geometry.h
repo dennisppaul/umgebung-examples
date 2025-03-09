@@ -271,6 +271,8 @@ namespace umgebung {
         tessDeleteTess(tess);
     }
 
+    static constexpr float max_angle = 165.0f;
+
     inline void create_stroke_join_miter(std::vector<glm::vec2>& triangles,
                                          const bool              close_shape,
                                          const float             half_width,
@@ -310,9 +312,8 @@ namespace umgebung {
                 intersection_right = s2.position - p1_line_norm;
             }
 
-            bool            flip_intersection = false;
-            const float     angle             = glm::degrees(angle_between_vectors(s1.direction, s2.direction));
-            constexpr float max_angle         = 160.0f;
+            bool        flip_intersection = false;
+            const float angle             = glm::degrees(angle_between_vectors(s1.direction, s2.direction));
             if (fabs(angle) > max_angle) {
                 intersection_left  = s1.next_position + p1_line_norm;
                 intersection_right = s1.next_position - p1_line_norm;
@@ -403,14 +404,16 @@ namespace umgebung {
                                        bool                        close_shape,
                                        float                       half_width,
                                        int                         stroke_join_mode,
+                                       int                         stroke_cap_mode,
                                        const std::vector<Segment>& segments);
 
-    inline std::vector<glm::vec2> line_strip(const std::vector<glm::vec3>& points,
-                                             const bool                    close_shape,
-                                             const float                   stroke_weight,
-                                             const int                     stroke_join_mode) {
-        std::vector<glm::vec2> triangles;
-        const float            half_width = stroke_weight * 0.5f;
+    inline void line_strip(const std::vector<glm::vec3>& points,
+                           const bool                    close_shape,
+                           const float                   stroke_weight,
+                           const int                     stroke_join_mode,
+                           const int                     stroke_cap_mode,
+                           std::vector<glm::vec2>&       triangles) {
+        const float half_width = stroke_weight * 0.5f;
 
         // TODO test this case
         // if (points.size() < 2) {
@@ -428,34 +431,43 @@ namespace umgebung {
                     s.next_position = points[i] + (points[i] - points[i - 1]);
                 }
             } else { // for all other segments use next point
-                s.next_position = glm::vec2(points[i + 1].x, points[i + 1].y);
+                const int ii    = (i + 1) % points.size();
+                s.next_position = glm::vec2(points[ii].x, points[ii].y);
             }
             s.direction = s.next_position - s.position;
-            s.normal    = glm::normalize(s.direction);
-            s.normal    = glm::vec2(-s.normal.y, s.normal.x);
+            // s.normal    = glm::normalize(s.direction);
+            // s.normal    = glm::vec2(-s.normal.y, s.normal.x);
+            if (glm::length(s.direction) > 0.0001f) {
+                s.normal = glm::normalize(s.direction);
+                s.normal = glm::vec2(-s.normal.y, s.normal.x);
+            } else {
+                s.normal = glm::vec2(1.0f, 0.0f);
+            }
             segments[i] = s;
         }
 
-        // switch (stroke_join_mode) {
-        //     case ROUND:
-        //         create_stroke_join_round(triangles, close_shape, half_width, segments);
-        //         break;
-        //     case MITER:
-        //         create_stroke_join_miter(triangles, close_shape, half_width, segments);
-        //         break;
-        //     case BEVEL:
-        //         create_stroke_join_bevel(triangles, close_shape, half_width, segments);
-        //         break;
-        //     case BEVEL_TESSELATOR:
-        //         // create_stroke_join_none_tessellate(triangles, close_shape, half_width, segments);
-        //         create_stroke_join_miter_tessellate(triangles, close_shape, half_width, segments);
-        //         break;
-        //     case NONE:
-        //     default:
-        //         create_stroke_join_none(triangles, close_shape, half_width, segments);
-        //         break;
-        // }
-        create_stroke_join_tessellate(triangles, close_shape, half_width, stroke_join_mode, segments);
-        return triangles;
+        switch (stroke_join_mode) {
+            case NONE:
+                create_stroke_join_none(triangles, close_shape, half_width, segments);
+                break;
+            case MITER_FAST:
+                create_stroke_join_miter(triangles, close_shape, half_width, segments);
+                break;
+            case BEVEL_FAST:
+                create_stroke_join_bevel(triangles, close_shape, half_width, segments);
+                break;
+                // case ROUND_FAST: // NOT WORKING
+                //     create_stroke_join_round(triangles, close_shape, half_width, segments);
+                //     break;
+                // case BEVEL_TESSELATOR: // NOT USEFUL
+                //     // create_stroke_join_none_tessellate(triangles, close_shape, half_width, segments);
+                //     create_stroke_join_miter_tessellate(triangles, close_shape, half_width, segments);
+                // break;
+            case BEVEL:
+            case MITER:
+            case ROUND:
+            default:
+                create_stroke_join_tessellate(triangles, close_shape, half_width, stroke_join_mode, stroke_cap_mode, segments);
+        }
     }
 } // namespace umgebung
