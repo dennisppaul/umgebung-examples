@@ -10,6 +10,8 @@ int   stroke_cap_mode  = ROUND;
 float stroke_weight    = 30;
 bool  close_shape      = false;
 
+void debug_view();
+
 void settings() {
     size(1024, 768);
     display            = 0;
@@ -26,53 +28,13 @@ void setup() {
 
     hint(HINT_ENABLE_SMOOTH_LINES);
     g->stroke_properties(radians(10), radians(10), 179);
-}
-
-void debug_view() {
-    const std::vector<glm::vec2> points = {
-        {412, 204},
-        {522, 204},
-        {mouseX, mouseY},
-        {632, 314},
-        {632, 424},
-        {412, 424},
-        {312, 314}};
-    std::vector<glm::vec2> triangles;
-    line_strip(points,
-               close_shape,
-               stroke_weight,
-               stroke_join_mode,
-               stroke_cap_mode,
-               radians(20),
-               radians(20),
-               165,
-               triangles);
-
-    const std::vector colors = {
-        glm::vec4{1, 0, 0, 0.5},
-        glm::vec4{0, 1, 0, 0.5},
-        glm::vec4{0, 0, 1, 0.5},
-    };
-
-    int i = 0;
-    noStroke();
-    fill(0.0f, 0.5f);
-    fill(0.0f);
-    beginShape(TRIANGLES);
-    for (const auto t: triangles) {
-        const int       ii = (i / 3) % colors.size();
-        const glm::vec4 c  = colors[ii];
-        fill(c.r, c.g, c.b, c.a);
-        vertex(t.x, t.y);
-        i++;
-    }
-    endShape();
+    g->stroke_mode(STROKE_RENDER_MODE_TRIANGULATE);
 }
 
 void draw() {
     background(1.0f);
 
-    if (is_mouse_pressed) {
+    if (!is_mouse_pressed) {
         stroke(0.0f);
         fill(0.5f, 0.85f, 1.0f);
         beginShape(POLYGON);
@@ -154,4 +116,43 @@ void keyPressed() {
     if (key == ' ') {
         close_shape = !close_shape;
     }
+}
+
+void debug_view() {
+    const std::vector<glm::vec2> points = {
+        {412, 204},
+        {522, 204},
+        {mouseX, mouseY},
+        {632, 314},
+        {632, 424},
+        {412, 424},
+        {312, 314}};
+    std::vector<glm::vec2> triangles;
+    triangulate_line_strip(points,
+                           close_shape,
+                           stroke_weight,
+                           stroke_join_mode,
+                           stroke_cap_mode,
+                           radians(20),
+                           radians(20),
+                           165,
+                           triangles);
+
+    const std::vector colors = {
+        glm::vec4{1, 0, 0, 0.5},
+        glm::vec4{0, 1, 0, 0.5},
+        glm::vec4{0, 0, 1, 0.5},
+    };
+
+    int i = 0;
+    noStroke();
+    beginShape(TRIANGLES);
+    for (const auto t: triangles) {
+        const int       ii = (i / 3) % colors.size();
+        const glm::vec4 c  = colors[ii];
+        fill(c.r, c.g, c.b, c.a);
+        vertex(t.x, t.y);
+        i++;
+    }
+    endShape();
 }

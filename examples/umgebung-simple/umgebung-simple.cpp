@@ -2,7 +2,7 @@
 
 using namespace umgebung;
 
-PImage* mImage;
+PImage* m_image;
 PFont*  font;
 
 void arguments(const std::vector<std::string>& args) {
@@ -57,7 +57,7 @@ void settings() {
     retina_support = true;
     // headless              = false;
     // no_audio              = false;
-    render_to_buffer   = true;
+    render_to_buffer   = false;
     subsystem_graphics = umgebung_subsystem_graphics_create_openglv33();
 }
 
@@ -66,13 +66,14 @@ void setup() {
 
     hint(HINT_ENABLE_SMOOTH_LINES);
 
-    mImage = loadImage(sketchPath() + "../image.png");
-    font   = loadFont("../InterDisplay-Light.otf", 64);
+    m_image = loadImage(sketchPath() + "../image.png");
+    font    = loadFont("../InterDisplay-Light.otf", 64);
     textFont(font);
 }
 
 void draw() {
-    background(1); // TODO should this flush everything?!?
+    background(1);       // TODO should this flush everything?!?
+    background(m_image);
 
     /* rects */
 
@@ -144,16 +145,16 @@ void draw() {
     vertex(mouseX, mouseY);
     endShape(CLOSE);
 
-    /* image */
+    /* m_image */
 
     fill(1);
     noStroke();
     pushMatrix();
-    translate(width - mImage->width, mImage->height);
+    translate(width - m_image->width, m_image->height);
     rotateX(frameCount * 0.007f);
     rotateY(frameCount * 0.02f);
     rectMode(CENTER);
-    image(mImage, 0, 0, 80, 80);
+    image(m_image, 0, 0, 80, 80);
     rectMode(CORNER);
     popMatrix();
 
@@ -161,14 +162,14 @@ void draw() {
 
     noStroke();
     fill(1);
-    texture(mImage);
+    texture(m_image);
     // TODO `beginShape(QUAD)` is broken, triangles are flipped
     // TODO textured polygon only works in `polygon_triangulation_strategy = POLYGON_TRIANGULATION_BETTER`
     beginShape(POLYGON);
     vertex(10, 110, 0, 1, 1);
-    vertex(10 + mImage->width, 110, 0, 0, 1);
-    vertex(10 + mImage->width, 110 + mImage->height, 0, 0, 0);
-    // vertex(10, 110 + mImage->height, 0, 1, 0);
+    vertex(10 + m_image->width, 110, 0, 0, 1);
+    vertex(10 + m_image->width, 110 + m_image->height, 0, 0, 0);
+    // vertex(10, 110 + m_image->height, 0, 1, 0);
     vertex(mouseX, mouseY, 0, 1, 0);
     endShape(CLOSE);
 
