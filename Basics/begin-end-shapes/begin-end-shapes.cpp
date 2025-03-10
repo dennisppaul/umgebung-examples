@@ -9,6 +9,7 @@ using namespace umgebung;
 #include <glm/gtc/type_ptr.hpp>
 
 int stroke_join_mode = MITER;
+int stroke_cap_mode  = ROUND;
 
 float stroke_weight = 30;
 
@@ -26,8 +27,46 @@ void setup() {
 }
 
 
-constexpr float max_angle = 165.0f;
+constexpr float stroke_join_miter_max_angle  = 165.0f;
+constexpr float stroke_cap_round_resolution  = glm::radians(20.0f); // 20° resolution i.e 18 segment for whole circle
+constexpr float stroke_join_round_resolution = glm::radians(20.0f); // 20° resolution i.e 18 segment for whole circle
 
+void add_cap(const float half_width,
+             const int   stroke_cap_mode,
+             const float direction, std::vector<glm::vec2>& poly_list,
+             const Segment& cap_seg) {
+    /* POINTED */
+    if (stroke_cap_mode == POINTED) {
+        const glm::vec2 cap_point_project = cap_seg.position - cap_seg.direction * half_width * direction;
+        poly_list.push_back(cap_point_project);
+        fill(0, 0.5f, 1);
+        circle(cap_point_project.x, cap_point_project.y, 10);
+    }
+    /* PROJECT */
+    if (stroke_cap_mode == PROJECT) {
+        const glm::vec2 cap_point_project = cap_seg.position - cap_seg.direction * half_width * direction;
+        const glm::vec2 cap_norm          = cap_seg.normal * half_width;
+        poly_list.push_back(cap_point_project + cap_norm);
+        poly_list.push_back(cap_point_project - cap_norm);
+    }
+    /* ROUNG */
+    if (stroke_cap_mode == ROUND) {
+        const float angle       = atan2(cap_seg.normal.y, cap_seg.normal.x) - 3.0f * HALF_PI * direction;
+        const float angle_start = angle - HALF_PI;
+        const float angle_end   = angle + HALF_PI;
+        for (float r = angle_start; r <= angle_end; r += stroke_cap_round_resolution) {
+            glm::vec2 circle_segment = cap_seg.position + glm::vec2{
+                                                              cos(r),
+                                                              sin(r)} *
+                                                              half_width;
+            poly_list.push_back(circle_segment);
+            fill(0, 0.5f, 1);
+            circle(circle_segment.x, circle_segment.y, 3);
+        }
+    }
+    /* SQUARE */
+    // NOTE nothing to do here
+}
 void umgebung::create_stroke_join_tessellate(std::vector<glm::vec2>&     triangles,
                                              const bool                  close_shape,
                                              const float                 half_width,
@@ -36,6 +75,17 @@ void umgebung::create_stroke_join_tessellate(std::vector<glm::vec2>&     triangl
                                              const std::vector<Segment>& segments) {
     std::vector<glm::vec2> outline_left;
     std::vector<glm::vec2> outline_right;
+    outline_left.reserve(segments.size());
+    outline_right.reserve(segments.size());
+
+    /* CAP START */
+    if (!close_shape) {
+        constexpr int           seg_index = 0;
+        constexpr float         direction = 1.0f;
+        std::vector<glm::vec2>& poly_list = outline_left;
+        const Segment           cap_seg   = segments[seg_index];
+        add_cap(half_width, stroke_cap_mode, direction, poly_list, cap_seg);
+    }
 
     const int num_segments = segments.size() + (close_shape ? +1 : 0);
     for (int i = 0; i < num_segments; ++i) {
@@ -85,9 +135,8 @@ void umgebung::create_stroke_join_tessellate(std::vector<glm::vec2>&     triangl
         if (stroke_join_mode == ROUND) {
             // skip last one ( creates a cap )
             if (i != num_segments - 1) {
-                constexpr float circle_resolution = glm::radians(20.0f); // 20° resolution i.e 18 segment for whole circle
-                float           angle_s1          = atan2(s1.normal.y, s1.normal.x);
-                float           angle_s2          = atan2(s2.normal.y, s2.normal.x);
+                float angle_s1 = atan2(s1.normal.y, s1.normal.x);
+                float angle_s2 = atan2(s2.normal.y, s2.normal.x);
                 // compute the signed angular difference
                 float angular_diff = angle_s2 - angle_s1;
                 while (angular_diff <= -PI) {
@@ -102,7 +151,7 @@ void umgebung::create_stroke_join_tessellate(std::vector<glm::vec2>&     triangl
                     std::swap(angle_s1, angle_s2);
                     angular_diff = -angular_diff;
                 }
-                for (float r = angle_s1; r <= angle_s1 + angular_diff; r += circle_resolution) {
+                for (float r = angle_s1; r <= angle_s1 + angular_diff; r += stroke_join_round_resolution) {
                     glm::vec2 circle_segment = s2.position + glm::vec2{
                                                                  cos(r + r_offset),
                                                                  sin(r + r_offset)} *
@@ -110,12 +159,6 @@ void umgebung::create_stroke_join_tessellate(std::vector<glm::vec2>&     triangl
                     outline_left.push_back(circle_segment);
                     // TODO check if it would be better to add this to right side depending on angle
                 }
-            }
-            if (!close_shape && stroke_cap_mode == ROUND && i == num_segments - 1) {
-                // add cap at
-                fill(0);
-                circle(s1.position.x, s1.position.y, 10);
-                float cap_angle = atan2(s1.direction.y, s1.direction.x);
             }
         }
 
@@ -152,6 +195,33 @@ void umgebung::create_stroke_join_tessellate(std::vector<glm::vec2>&     triangl
             }
         }
     }
+
+    /* CAP END */
+    if (!close_shape) {
+        const int               seg_index = segments.size() - 1;
+        constexpr float         direction = -1.0f;
+        std::vector<glm::vec2>& poly_list = outline_right;
+        const Segment           cap_seg   = segments[seg_index];
+        add_cap(half_width, stroke_cap_mode, direction, poly_list, cap_seg);
+
+        // /* POINTED */
+        // constexpr float         direction = -1.0f;
+        // std::vector<glm::vec2>& poly_list = outline_right;
+        // /* POINTED */
+        // if (stroke_cap_mode == POINTED) {
+        //     const Segment s_start   = segments[segments.size() - 1];
+        //     glm::vec2     cap_start = s_start.position - s_start.direction * half_width * direction;
+        //     poly_list.push_back(cap_start);
+        //     fill(0, 0.5f, 1);
+        //     circle(cap_start.x, cap_start.y, 10);
+        // }
+        // /* PROJECT */
+        // /* ROUNG */
+        // if (stroke_cap_mode == ROUND) {}
+        // /* SQUARE */
+        // // NOTE do nothing
+    }
+
     std::vector<glm::vec2> polygon_outline;
     polygon_outline.insert(polygon_outline.end(), outline_left.begin(), outline_left.end());
     polygon_outline.insert(polygon_outline.end(), outline_right.rbegin(), outline_right.rend());
@@ -165,31 +235,31 @@ void draw() {
     stroke(0.0f);
     fill(0.5f, 0.85f, 1.0f);
     beginShape(POLYGON);
-    vertex(120, 80);
-    vertex(230, 80);
+    vertex(220, 80);
+    vertex(330, 80);
     vertex(mouseX, mouseY);
-    vertex(340, 190);
-    vertex(340, 300);
-    vertex(120, 300);
-    vertex(20, 190);
-    vertex(20, 80);
+    vertex(440, 190);
+    vertex(440, 300);
+    vertex(220, 300);
+    vertex(120, 190);
+    vertex(120, 80);
     endShape(!is_mouse_pressed);
 
     std::vector<glm::vec3> points;
-    points.emplace_back(120, 80, 0);
-    points.emplace_back(230, 80, 0);
+    points.emplace_back(220, 80, 0);
+    points.emplace_back(330, 80, 0);
     points.emplace_back(mouseX, mouseY, 0);
-    points.emplace_back(340, 190, 0);
-    // points.emplace_back(340, 300, 0);
-    // points.emplace_back(120, 300, 0);
-    // points.emplace_back(20, 190, 0);
-    // points.emplace_back(20, 80, 0);
+    points.emplace_back(440, 190, 0);
+    points.emplace_back(440, 300, 0);
+    points.emplace_back(220, 300, 0);
+    points.emplace_back(120, 190, 0);
+    points.emplace_back(120, 80, 0);
     std::vector<glm::vec2> triangles;
     line_strip(points,
-               !is_mouse_pressed,
+               is_mouse_pressed,
                stroke_weight,
                stroke_join_mode,
-               is_mouse_pressed ? SQUARE : ROUND,
+               stroke_cap_mode,
                triangles);
 
     const std::vector colors = {
@@ -243,5 +313,21 @@ void keyPressed() {
     if (key == '6') {
         stroke_join_mode = BEVEL_FAST;
         console("BEVEL_FAST");
+    }
+    if (key == 'q') {
+        stroke_cap_mode = POINTED;
+        console("POINTED");
+    }
+    if (key == 'w') {
+        stroke_cap_mode = PROJECT;
+        console("PROJECT");
+    }
+    if (key == 'e') {
+        stroke_cap_mode = ROUND;
+        console("ROUND");
+    }
+    if (key == 'r') {
+        stroke_cap_mode = SQUARE;
+        console("SQUARE");
     }
 }

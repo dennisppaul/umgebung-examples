@@ -190,8 +190,10 @@ namespace umgebung {
                                   p2_right,
                                   p1_right);
             //        circle(s.position.x, s.position.y, half_width * 2);
+            // TODO start cap
         }
         if (!close_shape) {
+            // TODO end cap
             const Segment& s = segments[segments.size() - 1];
             //        circle(s.position.x, s.position.y, half_width * 2);
         }
@@ -438,8 +440,8 @@ namespace umgebung {
             // s.normal    = glm::normalize(s.direction);
             // s.normal    = glm::vec2(-s.normal.y, s.normal.x);
             if (glm::length(s.direction) > 0.0001f) {
-                s.normal = glm::normalize(s.direction);
-                s.normal = glm::vec2(-s.normal.y, s.normal.x);
+                s.direction = glm::normalize(s.direction);
+                s.normal    = glm::vec2(-s.direction.y, s.direction.x);
             } else {
                 s.normal = glm::vec2(1.0f, 0.0f);
             }
