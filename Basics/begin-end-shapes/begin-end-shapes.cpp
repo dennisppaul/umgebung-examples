@@ -20,8 +20,12 @@ void settings() {
 }
 
 void setup() {
+    strokeJoin(stroke_join_mode);
+    strokeCap(stroke_cap_mode);
+    strokeWeight(stroke_weight);
+
     hint(HINT_ENABLE_SMOOTH_LINES);
-    g->stroke_properties(radians(45), radians(45), 179);
+    g->stroke_properties(radians(10), radians(10), 179);
 }
 
 void debug_view() {
@@ -69,7 +73,6 @@ void draw() {
     background(1.0f);
 
     if (is_mouse_pressed) {
-        strokeWeight(stroke_weight);
         stroke(0.0f);
         fill(0.5f, 0.85f, 1.0f);
         beginShape(POLYGON);
@@ -88,13 +91,15 @@ void draw() {
 
 void keyPressed() {
     if (key == '-') {
-        stroke_weight--;
+        stroke_weight -= 0.25f;
         if (stroke_weight < 0) { stroke_weight = 0; }
         strokeWeight(stroke_weight);
+        console("stroke_weight: ", stroke_weight);
     }
     if (key == '+') {
-        stroke_weight++;
+        stroke_weight += 0.25f;
         strokeWeight(stroke_weight);
+        console("stroke_weight: ", stroke_weight);
     }
     if (key == '1') {
         stroke_join_mode = NONE;
