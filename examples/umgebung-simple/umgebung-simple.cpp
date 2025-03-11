@@ -192,7 +192,7 @@ void draw() {
     pushMatrix();
     translate(300, 10 + 16 + 0.5f);
     scale(0.5f);
-    // TOOD change this to std::string
+    // TODO change this to std::string
     text(to_string("( ", static_cast<int>(mouseX), ", ", static_cast<int>(mouseY), " )").c_str(), 0, 0);
     popMatrix();
 
