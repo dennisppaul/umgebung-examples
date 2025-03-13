@@ -9,6 +9,8 @@ AudioFileReader audio_file_reader;
 PAudio*         second_audio_device;
 bool            toggle_pause = false;
 
+extern std::vector<AudioUnitInfo> get_audio_info();
+
 void settings() {
     size(1024, 768);
     // TODO this function creates a audio device with 1 input, 2 output channels
@@ -19,12 +21,25 @@ void settings() {
     //      ```
     //      this does the same except with an audio device info struct:
     //      ```
-    //      AudioDeviceInfo audio_device_properties;
+    //      AudioUnitInfo audio_device_properties;
     //      audio_device_properties.input_channels  = 1;
     //      audio_device_properties.output_channels = 2;
     //      audio_device_properties.sample_rate     = 48000;
     //      audio(&audio_device_properties);
     //      ```
+    // console("SDL_WasInit(SDL_INIT_AUDIO): ", SDL_WasInit(SDL_INIT_AUDIO));
+    // SDL_Init(SDL_INIT_AUDIO);
+    // console("SDL_WasInit(SDL_INIT_AUDIO): ", SDL_WasInit(SDL_INIT_AUDIO));
+    // const std::vector<AudioUnitInfo> info = get_audio_info();
+    // console("****************************************************************************************************");
+    // console("****************************************************************************************************");
+    // console("****************************************************************************************************");
+    // console("****************************************************************************************************");
+    // for (auto audio_device_info: info) {
+    //     console(audio_device_info.name, " :: ", audio_device_info.id);
+    // }
+    // SDL_QuitSubSystem(SDL_INIT_AUDIO);
+    // console("SDL_WasInit(SDL_INIT_AUDIO): ", SDL_WasInit(SDL_INIT_AUDIO));
     audio(0, 2, 48000, 1024);
     // input_channels  = 0;
     // output_channels = 2;
@@ -50,6 +65,7 @@ void write_WAV_file() {
 void setup() {
     audio_file_reader.open("../teilchen.wav");
 
+    console("WAV INFO ");
     console("sample_rate: ", audio_file_reader.sample_rate());
     console("channels   : ", audio_file_reader.channels());
     console("length     : ", audio_file_reader.length());
@@ -59,11 +75,13 @@ void setup() {
     console("SDL_GetBasePath: ", SDL_GetBasePath());
     console("sketchPath     : ", sketchPath());
 
-    // TODO test this carefully
-    AudioDeviceInfo info;
-    info.output_channels = 2;
-    second_audio_device  = createAudio(&info);
-    console("created second audio devide with id: ", second_audio_device->id);
+    // AudioUnitInfo info;
+    // info.id              = AUDIO_DEVICE_FIND_BY_NAME;
+    // info.name            = "MacBook";
+    // info.output_channels = 1;
+    // info.sample_rate     = 48000;
+    // second_audio_device  = createAudio(&info);
+    // console("created second audio device with id: ", second_audio_device->id);
 }
 
 void draw() {
@@ -109,18 +127,14 @@ void read_wav(float* samples, const size_t frames) {
     audio_file_reader.read(frames, samples, AudioFileReader::ReadStyle::LOOP);
 }
 
-void audioEvent(const AudioDeviceInfo& device) {
+void audioEvent(const AudioUnitInfo& device) {
     if (second_audio_device == nullptr) {
         return;
     }
     if (&device == second_audio_device) {
-        float left[device.buffer_size];
-        float right[device.buffer_size];
         for (int i = 0; i < device.buffer_size; i++) {
-            left[i]  = random(-0.1, 0.1);
-            right[i] = random(-0.1, 0.1);
+            device.output_buffer[i] = random(-0.1, 0.1);
         }
-        merge_interleaved(left, right, device.output_buffer, device.buffer_size);
     }
     if (&device == a) {
         float wav_sample_buffer[audio_buffer_size];
@@ -137,16 +151,18 @@ void audioEvent(const AudioDeviceInfo& device) {
     }
 }
 
-// void audioEvent() {
-//     float wav_sample_buffer[audio_buffer_size];
-//     read_wav(wav_sample_buffer, audio_buffer_size);
-//
-//     float left[audio_buffer_size];
-//     float right[audio_buffer_size];
-//     for (int i = 0; i < audio_buffer_size; i++) {
-//         const float sample = wav_sample_buffer[i];
-//         left[i]            = sample;
-//         right[i]           = sample;
-//     }
-//     merge_interleaved(left, right, audio_output_buffer, audio_buffer_size);
-// }
+void audioEvent() {
+    float wav_sample_buffer[audio_buffer_size];
+    read_wav(wav_sample_buffer, audio_buffer_size);
+    float left[audio_buffer_size];
+    float right[audio_buffer_size];
+    for (int i = 0; i < audio_buffer_size; i++) {
+        float sample = wav_sample_buffer[i];
+        if (input_channels == 1) {
+            sample += audio_input_buffer[i];
+        }
+        left[i]  = sample;
+        right[i] = sample;
+    }
+    merge_interleaved(left, right, audio_output_buffer, audio_buffer_size);
+}
