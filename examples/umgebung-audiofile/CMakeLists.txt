@@ -7,6 +7,7 @@ link_directories("/usr/local/lib")                                 # optional, c
 option(DISABLE_GRAPHICS "Disable graphic output" OFF)
 option(DISABLE_VIDEO "Disable video output" ON)
 option(DISABLE_AUDIO "Disable audio output + input" OFF)
+option(ENABLE_PORTAUDIO "Enable PortAudio output" ON)
 
 # set compiler flags to C++17 ( minimum required by umgebung, needs to go before `add_executable` )
 

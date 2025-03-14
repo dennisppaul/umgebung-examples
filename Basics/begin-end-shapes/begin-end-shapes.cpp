@@ -18,6 +18,7 @@ void settings() {
     antialiasing       = 8;
     render_to_buffer   = false;
     retina_support     = true;
+    enable_audio       = false;
     subsystem_graphics = umgebung_subsystem_graphics_create_openglv33();
 }
 

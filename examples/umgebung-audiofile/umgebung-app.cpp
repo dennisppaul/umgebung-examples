@@ -6,8 +6,8 @@ using namespace umgebung;
 #include "AudioFileWriter.h"
 
 AudioFileReader audio_file_reader;
-PAudio*         second_audio_device;
-bool            toggle_pause = false;
+PAudio*         second_audio_device = nullptr;
+bool            toggle_pause        = false;
 
 extern std::vector<AudioUnitInfo> get_audio_info();
 
@@ -40,7 +40,8 @@ void settings() {
     // }
     // SDL_QuitSubSystem(SDL_INIT_AUDIO);
     // console("SDL_WasInit(SDL_INIT_AUDIO): ", SDL_WasInit(SDL_INIT_AUDIO));
-    audio(0, 2, 48000, 1024);
+    umgebung::subsystem_audio = umgebung_subsystem_audio_create_portaudio();
+    audio(1, 2, 48000, 1024);
     // input_channels  = 0;
     // output_channels = 2;
     // sample_rate     = 48000;
@@ -102,14 +103,18 @@ void finish() {
 
 void keyPressed() {
     if (key == ' ') {
-        toggle_pause = !toggle_pause;
         if (toggle_pause) {
             audio_start();
-            audio_start(second_audio_device);
+            if (second_audio_device != nullptr) {
+                audio_start(second_audio_device);
+            }
         } else {
             audio_stop();
-            audio_stop(second_audio_device);
+            if (second_audio_device != nullptr) {
+                audio_stop(second_audio_device);
+            }
         }
+        toggle_pause = !toggle_pause;
     }
 }
 
