@@ -4,6 +4,7 @@ using namespace umgebung;
 
 #include "AudioFileReader.h"
 #include "AudioFileWriter.h"
+#include "PAudio.h"
 
 AudioFileReader audio_file_reader;
 PAudio*         second_audio_device = nullptr;
@@ -13,38 +14,37 @@ extern std::vector<AudioUnitInfo> get_audio_info();
 
 void settings() {
     size(1024, 768);
-    // TODO this function creates a audio device with 1 input, 2 output channels
+    umgebung::subsystem_audio = umgebung_subsystem_audio_portaudio_create(); // NOTE use portaudio instead of SDL
+
+    // NOTE this function creates a audio device with 1 input, 2 output channels
     //      and a sample rate of 48000 with default values of 32-bit float buffer
-    //      and default buffer size ( usually 8192 on macOS )
     //      ```
     //      audio(1,2,48000);
     //      ```
     //      this does the same except with an audio device info struct:
     //      ```
-    //      AudioUnitInfo audio_device_properties;
-    //      audio_device_properties.input_channels  = 1;
-    //      audio_device_properties.output_channels = 2;
-    //      audio_device_properties.sample_rate     = 48000;
-    //      audio(&audio_device_properties);
+    //      AudioUnitInfo info;
+    //      info.input_device_id    = AUDIO_DEVICE_FIND_BY_NAME;
+    //      info.input_device_name  = "MacBook";
+    //      info.input_channels     = 1;
+    //      info.output_device_id   = AUDIO_DEVICE_FIND_BY_NAME;
+    //      info.output_device_name = "MacBook";
+    //      info.output_channels    = 2;
+    //      info.sample_rate        = 48000;
     //      ```
-    // console("SDL_WasInit(SDL_INIT_AUDIO): ", SDL_WasInit(SDL_INIT_AUDIO));
-    // SDL_Init(SDL_INIT_AUDIO);
-    // console("SDL_WasInit(SDL_INIT_AUDIO): ", SDL_WasInit(SDL_INIT_AUDIO));
-    // const std::vector<AudioUnitInfo> info = get_audio_info();
-    // console("****************************************************************************************************");
-    // console("****************************************************************************************************");
-    // console("****************************************************************************************************");
-    // console("****************************************************************************************************");
-    // for (auto audio_device_info: info) {
-    //     console(audio_device_info.name, " :: ", audio_device_info.id);
-    // }
-    // SDL_QuitSubSystem(SDL_INIT_AUDIO);
-    // console("SDL_WasInit(SDL_INIT_AUDIO): ", SDL_WasInit(SDL_INIT_AUDIO));
-    umgebung::subsystem_audio = umgebung_subsystem_audio_create_portaudio();
-    audio(1, 2, 48000, 1024);
-    // input_channels  = 0;
-    // output_channels = 2;
-    // sample_rate     = 48000;
+
+    audio(1, 2);
+    // audio(2, 3, 48000, 1024, 0, 1); // NOTE intentionally wrong number of channels
+    // audio(1, 2, 48000, 1024, "MacBook", "MacBook");
+    // AudioUnitInfo info;
+    // info.input_device_id    = AUDIO_DEVICE_FIND_BY_NAME;
+    // info.input_device_name  = "MacBook";
+    // info.input_channels     = 1;
+    // info.output_device_id   = AUDIO_DEVICE_FIND_BY_NAME;
+    // info.output_device_name = "MacBook";
+    // info.output_channels    = 2;
+    // info.sample_rate        = 48000;
+    // audio(info);
 }
 
 void write_WAV_file() {
@@ -64,25 +64,34 @@ void write_WAV_file() {
 }
 
 void setup() {
+    console("AUDIO DEVICE");
+    console("audio device name    : ", audio_input_device_name, " / ", audio_output_device_name);
+    console("channels             : ", input_channels, " / ", output_channels);
+
     audio_file_reader.open("../teilchen.wav");
 
-    console("WAV INFO ");
-    console("sample_rate: ", audio_file_reader.sample_rate());
-    console("channels   : ", audio_file_reader.channels());
-    console("length     : ", audio_file_reader.length());
+    console("WAV FILE INFO");
+    console("sample_rate          : ", audio_file_reader.sample_rate());
+    console("channels             : ", audio_file_reader.channels());
+    console("length               : ", audio_file_reader.length());
 
     write_WAV_file();
 
-    console("SDL_GetBasePath: ", SDL_GetBasePath());
-    console("sketchPath     : ", sketchPath());
+    console("FILE PATH");
+    console("SDL_GetBasePath      : ", SDL_GetBasePath());
+    console("sketchPath           : ", sketchPath());
 
+    // TODO second device does not work with PortAudio atm
     // AudioUnitInfo info;
-    // info.id              = AUDIO_DEVICE_FIND_BY_NAME;
-    // info.name            = "MacBook";
-    // info.output_channels = 1;
-    // info.sample_rate     = 48000;
-    // second_audio_device  = createAudio(&info);
-    // console("created second audio device with id: ", second_audio_device->id);
+    // info.input_device_id    = AUDIO_DEVICE_FIND_BY_NAME;
+    // info.input_device_name  = "MacBook";
+    // info.input_channels     = 1;
+    // info.output_device_id   = AUDIO_DEVICE_FIND_BY_NAME;
+    // info.output_device_name = "MacBook";
+    // info.output_channels    = 2;
+    // info.sample_rate        = 48000;
+    // second_audio_device     = createAudio(&info);
+    // audio_start(second_audio_device); // NOTE start second audio device
 }
 
 void draw() {
@@ -118,21 +127,11 @@ void keyPressed() {
     }
 }
 
-void merge_interleaved(const float* left,
-                       const float* right,
-                       float*       interleaved,
-                       const size_t frames) {
-    for (size_t i = 0; i < frames; ++i) {
-        interleaved[i * 2]     = left[i];
-        interleaved[i * 2 + 1] = right[i];
-    }
-}
-
 void read_wav(float* samples, const size_t frames) {
     audio_file_reader.read(frames, samples, AudioFileReader::ReadStyle::LOOP);
 }
 
-void audioEvent(const AudioUnitInfo& device) {
+void audioEvent(const PAudio& device) {
     if (second_audio_device == nullptr) {
         return;
     }
@@ -152,7 +151,7 @@ void audioEvent(const AudioUnitInfo& device) {
             left[i]            = sample;
             right[i]           = sample;
         }
-        merge_interleaved(left, right, audio_output_buffer, audio_buffer_size);
+        merge_interleaved_stereo(left, right, audio_output_buffer, audio_buffer_size);
     }
 }
 
@@ -169,5 +168,5 @@ void audioEvent() {
         left[i]  = sample;
         right[i] = sample;
     }
-    merge_interleaved(left, right, audio_output_buffer, audio_buffer_size);
+    merge_interleaved_stereo(left, right, audio_output_buffer, audio_buffer_size);
 }

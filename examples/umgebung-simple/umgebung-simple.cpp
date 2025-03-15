@@ -44,10 +44,6 @@ void add_generic_subsystem() {
 
 void settings() {
     size(1024, 768);
-    // audio_input_device  = DEFAULT_AUDIO_DEVICE;
-    // audio_output_device = DEFAULT_AUDIO_DEVICE;
-    // audio_input_channels  = DEFAULT_NUMBER_OF_INPUT_CHANNELS;
-    // audio_output_channels = DEFAULT_NUMBER_OF_OUTPUT_CHANNELS;
     display = 0;
     // fullscreen   = false;
     // borderless   = false;
@@ -58,7 +54,7 @@ void settings() {
     // headless              = false;
     // no_audio              = false;
     render_to_buffer   = false;
-    subsystem_graphics = umgebung_subsystem_graphics_create_openglv33();
+    subsystem_graphics = umgebung_create_subsystem_graphics_openglv33();
 }
 
 void setup() {
@@ -72,8 +68,7 @@ void setup() {
 }
 
 void draw() {
-    background(1);       // TODO should this flush everything?!?
-    background(m_image);
+    background(1.0); // TODO should this flush everything?!?
 
     /* rects */
 
@@ -136,6 +131,7 @@ void draw() {
     /* shape */
 
     stroke(0);
+    strokeWeight(5);
     fill(1, 0, 0);
     beginShape(POLYGON);
     vertex(width * 0.33f, height * 0.33f);
@@ -144,6 +140,7 @@ void draw() {
     vertex(width * 0.33f, height * 0.66f);
     vertex(mouseX, mouseY);
     endShape(CLOSE);
+    strokeWeight(1);
 
     /* m_image */
 
@@ -163,8 +160,7 @@ void draw() {
     noStroke();
     fill(1);
     texture(m_image);
-    // TODO `beginShape(QUAD)` is broken, triangles are flipped
-    // TODO textured polygon only works in `polygon_triangulation_strategy = POLYGON_TRIANGULATION_BETTER`
+    // TODO textured polygon only works in `polygon_triangulation_strategy = POLYGON_TRIANGULATION_FASTER`
     beginShape(POLYGON);
     vertex(10, 110, 0, 1, 1);
     vertex(10 + m_image->width, 110, 0, 0, 1);
@@ -295,6 +291,5 @@ void mouseMoved() {
 }
 
 void shutdown() {
-    delete subsystem;
     println("finishing");
 }
