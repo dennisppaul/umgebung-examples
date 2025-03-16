@@ -19,7 +19,7 @@ void settings() {
     render_to_buffer   = false;
     retina_support     = true;
     enable_audio       = false;
-    subsystem_graphics = umgebung_create_subsystem_graphics_openglv33();
+    subsystem_graphics = umgebung_create_subsystem_graphics_openglv20();
 }
 
 void setup() {

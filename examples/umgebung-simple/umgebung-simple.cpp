@@ -73,11 +73,10 @@ void draw() {
     noStroke();
     fill(1, 0, 0);
     g->debug_text("FPS: " + to_string(frameRate), 10, height - 20);
-    popMatrix();
 
     /* rects */
 
-    stroke(0); // TODO fix non-closing rects and QUADS
+    stroke(0);
     noFill();
     rect(10, 10, 40, 40);
 
@@ -108,13 +107,13 @@ void draw() {
     ellipseDetail((int) (mouseX / width * 72));
     circle(mouseX, mouseY, 500);
 
-    /* lines + bezier */
+    /* lines */
 
     stroke(0);
     strokeWeight(3);
-    line(0, 0, mouseX, mouseY);
+    line(10, 10, mouseX, mouseY);
     strokeWeight(9);
-    line(mouseX, mouseY, width, height);
+    line(mouseX, mouseY, width - 10, height - 10);
     strokeWeight(1);
 
     /* bezier */
@@ -122,7 +121,7 @@ void draw() {
     stroke(0);
     strokeWeight(6);
     noFill();
-    bezier(width, height, mouseX, mouseY, mouseX, mouseY, 0, 0);
+    bezier(10, 10, mouseX, mouseY, mouseX, mouseY, width - 10, height - 10);
     strokeWeight(1);
 
     /* triangle */
@@ -206,7 +205,6 @@ void draw() {
 
     /* box + sphere */
 
-    texture(); // TODO this should not be necessary
     strokeJoin(NONE);
     strokeCap(NONE);
     stroke(0);
@@ -312,7 +310,12 @@ void keyPressed() {
     if (key == 'q') {
         exit();
     }
-    println((char) key, " pressed");
+    if (key == ',') {
+        g->stroke_mode(STROKE_RENDER_MODE_TRIANGULATE);
+    }
+    if (key == '.') {
+        g->stroke_mode(STROKE_RENDER_MODE_NATIVE);
+    }
 }
 
 void mouseMoved() {

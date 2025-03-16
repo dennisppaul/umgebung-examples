@@ -5,11 +5,15 @@
 
 #include "Umgebung.h"
 
+// see https://tchayen.github.io/posts/wireframes-with-barycentric-coordinates
+
 using namespace umgebung;
 
 const char* vertex_shader_barycentric_wireframe() {
     return R"(
 #version 330 core  // Use #version 310 es for OpenGL ES
+
+precision mediump float;
 
 layout(location = 0) in vec3 aPosition;
 layout(location = 1) in vec3 aBarycentric;
@@ -29,17 +33,77 @@ const char* fragment_shader_barycentric_wireframe() {
     return R"(
 #version 330 core  // Use #version 310 es for OpenGL ES
 
+precision mediump float;
+
+in vec3 vBarycentric;
+out vec4 FragColor;
+
+uniform vec4 uLineColor; // Color of the wireframe
+uniform float uLineWidth; // Thickness of the wireframe
+uniform float uFeatherWidth;
+
+float edgefactor(vec3 bary, float width) {
+    vec3 d = fwidth(bary);
+    vec3 a3 = smoothstep(d * (width - 0.5), d * (width + 0.5), bary);
+    return 1.0 - min(min(a3.x, a3.y), a3.z);
+}
+
+float _edgefactor_feather(vec3 bary, float width, float feather) {
+    float w1 = width - feather * 0.5;
+    vec3 d = fwidth(bary);
+    vec3 a3 = smoothstep(d * w1, d * (w1 + feather), bary);
+
+    float alpha = min(min(a3.x, a3.y), a3.z); // Compute raw edge factor
+    alpha = clamp(alpha, 0.0, 1.0);
+
+    // Remap 0 → 1 → 0 for smooth fading on both sides
+    alpha = 1.0 - pow(abs(alpha - 0.5) * 2.0, 2.0);
+
+    return alpha;
+}
+
+float edgefactor_feather(vec3 bary, float width, float feather) {
+    float w1 = width - feather * 0.5;
+    vec3 d = fwidth(bary);
+    vec3 a3 = smoothstep(d * w1, d * (w1 + feather), bary);
+    return 1.0 - min(min(a3.x, a3.y), a3.z);
+}
+
+void main() {
+    float alpha = edgefactor(vBarycentric, uLineWidth);
+    //float alpha = edgefactor_feather(vBarycentric, uLineWidth, uFeatherWidth);
+    alpha = clamp(alpha, 0.0, 1.0);
+    //alpha = 1.0 - pow(abs(alpha - 0.5) * 2.0, 2.0);
+    //alpha = 1.0 - pow(abs(alpha - 0.5) * 2.0, 4.0);
+    FragColor = vec4(uLineColor.rgb, uLineColor.a * alpha);
+}
+)";
+}
+
+const char* _fragment_shader_barycentric_wireframe() {
+    return R"(
+#version 330 core  // Use #version 310 es for OpenGL ES
+
+precision mediump float;
+
 in vec3 vBarycentric;
 out vec4 FragColor;
 
 uniform vec3 uLineColor; // Color of the wireframe
 uniform float uLineWidth; // Thickness of the wireframe
 
+float edgeFactor() {
+  vec3 d = fwidth(vBarycentric);
+  vec3 f = step(d * uLineWidth, vBarycentric);
+  return min(min(f.x, f.y), f.z);
+}
+
 void main() {
-    vec3 d = fwidth(vBarycentric);
-    vec3 edge = smoothstep(vec3(0.0), d * uLineWidth, vBarycentric);
-    float line = min(min(edge.x, edge.y), edge.z);
-    FragColor = mix(vec4(uLineColor, 1.0), vec4(uLineColor, 0.0), line);
+    //vec3 d = fwidth(vBarycentric);
+    //vec3 edge = smoothstep(vec3(0.0), d * uLineWidth, vBarycentric);
+    //float line = min(min(edge.x, edge.y), edge.z);
+    //FragColor = mix(vec4(uLineColor, 1.0), vec4(uLineColor, 0.0), line);
+    FragColor = vec4(min(vec3(edgeFactor()), uLineColor), 1.0);
 }
 )";
 }
@@ -102,13 +166,13 @@ GLuint SHARED_build_shader(const char* vertexShaderSource, const char* fragmentS
 }
 
 void setup() {
-    // hint(HINT_ENABLE_SMOOTH_LINES);
+    hint(HINT_ENABLE_SMOOTH_LINES);
 
     constexpr GLfloat vertices[] = {
         // Positions       // Barycentric Coords
         -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
         0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
-        0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f};
+        0.f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f};
 
     constexpr GLuint indices[] = {0, 1, 2};
 
@@ -139,40 +203,41 @@ void setup() {
     shaderProgram = SHARED_build_shader(vertex_shader_barycentric_wireframe(), fragment_shader_barycentric_wireframe());
 }
 
-void draw() {
-    background(1.0f);
-
-    pushMatrix();
-    translate(width / 2.0f, height / 2.0f, 0.0f);
-    scale(100);
-    rotateX(frameCount * 0.01f);
-    rotateY(frameCount * 0.027f);
-
-    glUseProgram(shaderProgram);
-
+void render_triangle() {
     glm::mat4 mvp = g->projection_matrix_3D * g->view_matrix * g->model_matrix_client;
     glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "uMVP"), 1, GL_FALSE, glm::value_ptr(mvp));
-    glUniform3f(glGetUniformLocation(shaderProgram, "uLineColor"), 1.0f, 0.0f, 0.0f); // White lines
+    glUniform4f(glGetUniformLocation(shaderProgram, "uLineColor"), 1.0f, 0.5f, 0.0f, 0.9f);
     glUniform1f(glGetUniformLocation(shaderProgram, "uLineWidth"), mouseX / width * 20);
+    glUniform1f(glGetUniformLocation(shaderProgram, "uFeatherWidth"), mouseY / height * 3);
 
     glBindVertexArray(VAO);
 
     glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
+}
+void draw() {
+    background(0.85f);
+
+    fill(0);
+    g->debug_text("FPS: " + nf(frameRate,2), 20, 20);
+
+    pushMatrix();
+    translate(width / 2.0f, height / 2.0f, 0.0f);
+    scale(100);
+    // rotateX(frameCount * 0.01f);
+    // rotateY(frameCount * 0.027f);
+
+    glUseProgram(shaderProgram);
+
+    render_triangle();
+    translate(0.5f,0.0f);
+    rotateZ(PI);
+    render_triangle();
+    rotateZ(PI);
+    translate(0.5f,0.0f);
+    render_triangle();
 
     popMatrix();
-
-    // stroke(0.0f);
-    // fill(0.5f, 0.85f, 1.0f);
-    // beginShape(POLYGON);
-    // vertex(412, 204);
-    // vertex(522, 204);
-    // vertex(mouseX, mouseY);
-    // vertex(632, 314);
-    // vertex(632, 424);
-    // vertex(412, 424);
-    // vertex(312, 314);
-    // endShape();
 }
 
 void keyPressed() {
