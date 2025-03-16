@@ -70,9 +70,14 @@ void setup() {
 void draw() {
     background(1.0); // TODO should this flush everything?!?
 
+    noStroke();
+    fill(1, 0, 0);
+    g->debug_text("FPS: " + to_string(frameRate), 10, height - 20);
+    popMatrix();
+
     /* rects */
 
-    stroke(0);
+    stroke(0); // TODO fix non-closing rects and QUADS
     noFill();
     rect(10, 10, 40, 40);
 
@@ -115,18 +120,20 @@ void draw() {
     /* bezier */
 
     stroke(0);
-    noFill();
     strokeWeight(6);
+    noFill();
     bezier(width, height, mouseX, mouseY, mouseX, mouseY, 0, 0);
     strokeWeight(1);
 
     /* triangle */
 
     stroke(0);
+    strokeWeight(3);
     fill(1, 0, 0);
     triangle(width * 0.66f + 5, height * 0.33f, 0,
              width * 0.66f + 5, height * 0.66f, 0,
              mouseX, mouseY, 0);
+    strokeWeight(1);
 
     /* shape */
 
@@ -142,7 +149,7 @@ void draw() {
     endShape(CLOSE);
     strokeWeight(1);
 
-    /* m_image */
+    /* image */
 
     fill(1);
     noStroke();
@@ -161,13 +168,18 @@ void draw() {
     fill(1);
     texture(m_image);
     // TODO textured polygon only works in `polygon_triangulation_strategy = POLYGON_TRIANGULATION_FASTER`
-    beginShape(POLYGON);
-    vertex(10, 110, 0, 1, 1);
-    vertex(10 + m_image->width, 110, 0, 0, 1);
-    vertex(10 + m_image->width, 110 + m_image->height, 0, 0, 0);
-    // vertex(10, 110 + m_image->height, 0, 1, 0);
-    vertex(mouseX, mouseY, 0, 1, 0);
-    endShape(CLOSE);
+    // beginShape(POLYGON);
+    // beginShape(QUADS);
+    // vertex(10, 110, 0, 1, 1);
+    // vertex(10 + m_image->width, 110, 0, 0, 1);
+    // vertex(10 + m_image->width, 110 + m_image->height, 0, 0, 0);
+    // // vertex(10, 110 + m_image->height, 0, 1, 0);
+    // vertex(mouseX, mouseY, 0, 1, 0);
+    // endShape(CLOSE);
+    quad(10, 110, 0,
+         10 + m_image->width, 110, 0,
+         10 + m_image->width, 110 + m_image->height, 0,
+         mouseX, mouseY, 0);
 
     /* points + pointSize */
 
@@ -191,6 +203,23 @@ void draw() {
     // TODO change this to std::string
     text(to_string("( ", static_cast<int>(mouseX), ", ", static_cast<int>(mouseY), " )").c_str(), 0, 0);
     popMatrix();
+
+    /* box + sphere */
+
+    texture(); // TODO this should not be necessary
+    strokeJoin(NONE);
+    strokeCap(NONE);
+    stroke(0);
+    strokeWeight(2);
+    fill(1, 0, 0);
+    pushMatrix();
+    translate(mouseX, mouseY);
+    rotateX(frameCount * 0.01f);
+    rotateY(frameCount * 0.027f);
+    box(100);
+    sphere(120);
+    popMatrix();
+    strokeWeight(1);
 
     /* -------------------- CUT BELOW THE LINE --- */
 
