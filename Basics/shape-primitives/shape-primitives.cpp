@@ -1,7 +1,6 @@
-#include <glm/glm.hpp>
-
 #include "Umgebung.h"
 #include "Geometry.h"
+#include "PMesh.h"
 
 using namespace umgebung;
 
@@ -16,7 +15,9 @@ using namespace umgebung;
 
 int   stroke_join_mode = ROUND;
 int   stroke_cap_mode  = ROUND;
-float stroke_weight    = 20;
+float stroke_weight    = 15.0f;
+
+PMesh mesh_shape;
 
 void settings() {
     size(1024, 768);
@@ -30,14 +31,39 @@ void settings() {
 
 void setup() {
     hint(HINT_ENABLE_SMOOTH_LINES);
+    // mesh_shape = new PMesh();
 }
 
 void draw() {
-    background(1.0f);
+    background(0.85f);
+
+    for (auto& v: mesh_shape.vertices_data()) {
+        v.position.x += random(-1, 1);
+        v.position.y += random(-1, 1);
+        v.position.z += random(-1, 1);
+    }
+    if (!isMousePressed) {
+        for (int i = 0; i < 256; ++i) {
+            mesh_shape.add_vertex(Vertex(glm::vec3(mouseX + random(-10, 10), mouseY + random(-10, 10), random(-10, 10)),
+                                          glm::vec4(random(1.0f), random(1.0f), random(1.0f), 1.0f),
+                                          glm::vec2(0.0f)));
+        }
+        mesh_shape.update();
+    }
+
+    pushMatrix();
+    translate(width * 0.5f, height * 0.5f);
+    rotateX(sin(frameCount * 0.07f) * 0.07f);
+    rotateY(sin(frameCount * 0.1f) * 0.1f);
+    rotateZ(sin(frameCount * 0.083f) * 0.083f);
+    translate(-width * 0.5f, -height * 0.5f);
+    mesh(&mesh_shape);
+    popMatrix();
 
     fill(0);
     g->debug_text("FPS: " + nf(frameRate, 1), 10, 10);
     g->debug_text(nf(mouseX, 0) + ", " + nf(mouseY, 0), 10, 20);
+    g->debug_text(to_string(mesh_shape.vertices_data().size()), 10, 30);
 
     stroke(0.0f);
     fill(0.5f, 0.85f, 1.0f);
@@ -166,9 +192,18 @@ void draw() {
     vertex(340, 80);
     endShape();
     popMatrix();
+
+    translate(280, 0);
+    bezier(120, 80, 120, 300, 340, 80, 340, 300);
+
+    translate(280, 0);
+    circle(230, 190, 220);
 }
 
 void keyPressed() {
+    if (key == ' ') {
+        mesh_shape.clear();
+    }
     if (key == '-') {
         stroke_weight -= 0.25f;
         if (stroke_weight < 0) { stroke_weight = 0; }

@@ -206,7 +206,7 @@ void setup() {
 void render_triangle() {
     glm::mat4 mvp = g->projection_matrix_3D * g->view_matrix * g->model_matrix_client;
     glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "uMVP"), 1, GL_FALSE, glm::value_ptr(mvp));
-    glUniform4f(glGetUniformLocation(shaderProgram, "uLineColor"), 1.0f, 0.5f, 0.0f, 0.9f);
+    glUniform4f(glGetUniformLocation(shaderProgram, "uLineColor"), 0.5f, 0.85f, 1.0f, 0.9f);
     glUniform1f(glGetUniformLocation(shaderProgram, "uLineWidth"), mouseX / width * 20);
     glUniform1f(glGetUniformLocation(shaderProgram, "uFeatherWidth"), mouseY / height * 3);
 
@@ -215,31 +215,36 @@ void render_triangle() {
     glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 }
+
+int counter = 0;
+
 void draw() {
     background(0.85f);
 
     fill(0);
-    g->debug_text("FPS: " + nf(frameRate,2), 20, 20);
+    g->debug_text("FPS: " + nf(frameRate, 2), 20, 20);
 
     pushMatrix();
     translate(width / 2.0f, height / 2.0f, 0.0f);
-    scale(100);
-    // rotateX(frameCount * 0.01f);
-    // rotateY(frameCount * 0.027f);
+    translate(0.75f, 0, 0);
+    scale(200);
+    rotateX(counter * 0.01f);
+    rotateY(counter * 0.027f);
+
+    if (isKeyPressed && key == ' ') {
+        counter++;
+    }
 
     glUseProgram(shaderProgram);
 
     render_triangle();
-    translate(0.5f,0.0f);
+    translate(0.5f, 0.0f);
     rotateZ(PI);
     render_triangle();
     rotateZ(PI);
-    translate(0.5f,0.0f);
+    translate(0.5f, 0.0f);
+    rotateY(PI);
     render_triangle();
 
     popMatrix();
-}
-
-void keyPressed() {
-    if (key == ' ') {}
 }

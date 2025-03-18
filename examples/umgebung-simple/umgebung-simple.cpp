@@ -53,7 +53,7 @@ void settings() {
     retina_support = true;
     // headless              = false;
     // no_audio              = false;
-    render_to_buffer   = false;
+    render_to_buffer   = true;
     subsystem_graphics = umgebung_create_subsystem_graphics_openglv33();
 }
 
@@ -151,7 +151,8 @@ void draw() {
     /* image */
 
     fill(1);
-    noStroke();
+    stroke(1,0,0);
+    strokeWeight(10);
     pushMatrix();
     translate(width - m_image->width, m_image->height);
     rotateX(frameCount * 0.007f);
@@ -160,6 +161,7 @@ void draw() {
     image(m_image, 0, 0, 80, 80);
     rectMode(CORNER);
     popMatrix();
+    strokeWeight(1);
 
     /* textured shape */
 
@@ -179,6 +181,7 @@ void draw() {
          10 + m_image->width, 110, 0,
          10 + m_image->width, 110 + m_image->height, 0,
          mouseX, mouseY, 0);
+    texture(); // TODO texture needs to be deactivated again … not cool
 
     /* points + pointSize */
 
@@ -205,6 +208,7 @@ void draw() {
 
     /* box + sphere */
 
+    texture();
     strokeJoin(NONE);
     strokeCap(NONE);
     stroke(0);

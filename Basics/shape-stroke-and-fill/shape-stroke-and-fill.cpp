@@ -19,7 +19,7 @@ void settings() {
     render_to_buffer   = false;
     retina_support     = true;
     enable_audio       = false;
-    subsystem_graphics = umgebung_create_subsystem_graphics_openglv20();
+    subsystem_graphics = umgebung_create_subsystem_graphics_openglv33();
 }
 
 void setup() {
@@ -33,7 +33,7 @@ void setup() {
 }
 
 void draw() {
-    background(1.0f);
+    background(0.85f);
 
     if (!is_mouse_pressed) {
         stroke(0.0f);
