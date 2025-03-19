@@ -204,7 +204,7 @@ void setup() {
 }
 
 void render_triangle() {
-    glm::mat4 mvp = g->projection_matrix_3D * g->view_matrix * g->model_matrix_client;
+    glm::mat4 mvp = g->projection_matrix_3D * g->view_matrix * g->model_matrix;
     glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "uMVP"), 1, GL_FALSE, glm::value_ptr(mvp));
     glUniform4f(glGetUniformLocation(shaderProgram, "uLineColor"), 0.5f, 0.85f, 1.0f, 0.9f);
     glUniform1f(glGetUniformLocation(shaderProgram, "uLineWidth"), mouseX / width * 20);

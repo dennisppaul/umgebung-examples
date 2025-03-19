@@ -1,6 +1,9 @@
+#include <GL/glew.h>
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb_image_write.h"
+
 #include "Umgebung.h"
 #include "Geometry.h"
-#include "PMesh.h"
 
 using namespace umgebung;
 
@@ -17,53 +20,53 @@ int   stroke_join_mode = ROUND;
 int   stroke_cap_mode  = ROUND;
 float stroke_weight    = 15.0f;
 
-PMesh mesh_shape;
+#include <string>
+
+void saveFrame(const std::string& filename, const int width, const int height) {
+    // Allocate memory for pixel data (RGBA)
+    std::vector<unsigned char> pixels(width * height * 4);
+
+    // Read pixels from OpenGL framebuffer (GL_RGBA, GL_UNSIGNED_BYTE)
+    glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, pixels.data());
+
+    // glBindFramebuffer(GL_READ_FRAMEBUFFER, fboID); // Bind the correct framebuffer
+    // glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, pixels.data());
+    // glBindFramebuffer(GL_READ_FRAMEBUFFER, 0); // Restore default framebuffer
+
+    // Flip the image vertically because OpenGL's origin is bottom-left
+    std::vector<unsigned char> flippedPixels(width * height * 4);
+    for (int y = 0; y < height; ++y) {
+        memcpy(&flippedPixels[(height - 1 - y) * width * 4], &pixels[y * width * 4], width * 4);
+    }
+
+    // Save as PNG using stb_image_write
+    if (ends_with(filename, ".png")) {
+        stbi_write_png((filename).c_str(), width, height, 4, flippedPixels.data(), width * 4);
+    }
+    if (ends_with(filename, ".jpg")) {
+        stbi_write_jpg((filename).c_str(), width, height, 4, flippedPixels.data(), 100);
+    }
+}
 
 void settings() {
     size(1024, 768);
     display            = 0;
     antialiasing       = 8;
-    render_to_buffer   = false;
+    render_to_buffer   = true;
     retina_support     = true;
-    enable_audio       = false;
     subsystem_graphics = umgebung_create_subsystem_graphics_openglv33();
 }
 
 void setup() {
     hint(HINT_ENABLE_SMOOTH_LINES);
-    // mesh_shape = new PMesh();
 }
 
 void draw() {
     background(0.85f);
 
-    for (auto& v: mesh_shape.vertices_data()) {
-        v.position.x += random(-1, 1);
-        v.position.y += random(-1, 1);
-        v.position.z += random(-1, 1);
-    }
-    if (!isMousePressed) {
-        for (int i = 0; i < 256; ++i) {
-            mesh_shape.add_vertex(Vertex(glm::vec3(mouseX + random(-10, 10), mouseY + random(-10, 10), random(-10, 10)),
-                                          glm::vec4(random(1.0f), random(1.0f), random(1.0f), 1.0f),
-                                          glm::vec2(0.0f)));
-        }
-        mesh_shape.update();
-    }
-
-    pushMatrix();
-    translate(width * 0.5f, height * 0.5f);
-    rotateX(sin(frameCount * 0.07f) * 0.07f);
-    rotateY(sin(frameCount * 0.1f) * 0.1f);
-    rotateZ(sin(frameCount * 0.083f) * 0.083f);
-    translate(-width * 0.5f, -height * 0.5f);
-    mesh(&mesh_shape);
-    popMatrix();
-
     fill(0);
     g->debug_text("FPS: " + nf(frameRate, 1), 10, 10);
     g->debug_text(nf(mouseX, 0) + ", " + nf(mouseY, 0), 10, 20);
-    g->debug_text(to_string(mesh_shape.vertices_data().size()), 10, 30);
 
     stroke(0.0f);
     fill(0.5f, 0.85f, 1.0f);
@@ -202,7 +205,8 @@ void draw() {
 
 void keyPressed() {
     if (key == ' ') {
-        mesh_shape.clear();
+        saveFrame("screenshot-" + nfs(frameCount, 4) + ".png", width * 2, height * 2);
+        saveFrame("screenshot-" + nfs(frameCount, 4) + ".jpg", width * 2, height * 2);
     }
     if (key == '-') {
         stroke_weight -= 0.25f;
