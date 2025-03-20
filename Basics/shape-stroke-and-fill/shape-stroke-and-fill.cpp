@@ -16,7 +16,7 @@ void settings() {
     size(1024, 768);
     display            = 0;
     antialiasing       = 8;
-    render_to_buffer   = false;
+    render_to_buffer   = true;
     retina_support     = true;
     enable_audio       = false;
     subsystem_graphics = umgebung_create_subsystem_graphics_openglv33();
@@ -35,7 +35,7 @@ void setup() {
 void draw() {
     background(0.85f);
 
-    if (!is_mouse_pressed) {
+    if (!isMousePressed) {
         stroke(0.0f);
         fill(0.5f, 0.85f, 1.0f);
         beginShape(POLYGON);

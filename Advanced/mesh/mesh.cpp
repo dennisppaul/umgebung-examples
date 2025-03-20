@@ -30,7 +30,7 @@ void settings() {
 }
 
 void setup() {
-    hint(HINT_ENABLE_SMOOTH_LINES);
+    hint(ENABLE_SMOOTH_LINES);
 }
 
 void draw() {
@@ -61,11 +61,20 @@ void draw() {
 
     fill(0);
     g->debug_text("FPS   : " + nf(frameRate, 1), 10, 10);
-    g->debug_text("SHAPES: " + to_string(mesh_shape.vertices_data().size()), 10, 20);
+    g->debug_text("SHAPES: " + to_string(mesh_shape.vertices_data().size()), 10, 25);
 }
 
 void keyPressed() {
     if (key == ' ') {
         mesh_shape.clear();
+    }
+    if (key == '1') {
+        mesh_shape.set_shape(TRIANGLES);
+    }
+    if (key == '2') {
+        mesh_shape.set_shape(LINES);
+    }
+    if (key == '3') {
+        mesh_shape.set_shape(LINE_STRIP);
     }
 }

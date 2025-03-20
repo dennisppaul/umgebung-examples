@@ -52,7 +52,7 @@ void settings() {
     size(1024, 768);
     display            = 0;
     antialiasing       = 8;
-    render_to_buffer   = true;
+    render_to_buffer   = false;
     retina_support     = true;
     subsystem_graphics = umgebung_create_subsystem_graphics_openglv33();
 }
