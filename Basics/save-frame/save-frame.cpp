@@ -46,8 +46,13 @@ void draw() {
 }
 
 void keyPressed() {
-    if (key == ' ') {
-        saveFrame("fast-uncompressed-frame.bmp");
+    if (key == '1') {
         saveFrame();
+    }
+    if (key == '2') {
+        const std::string save_path = selectFolder("Choose a folder");
+        if (!save_path.empty()) {
+            saveFrame(save_path + "fast-uncompressed-frame.bmp");
+        }
     }
 }
