@@ -1,7 +1,3 @@
-#include <GL/glew.h>
-#define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "stb_image_write.h"
-
 #include "Umgebung.h"
 #include "Geometry.h"
 
@@ -20,45 +16,12 @@ int   stroke_join_mode = ROUND;
 int   stroke_cap_mode  = ROUND;
 float stroke_weight    = 15.0f;
 
-#include <string>
-
-void saveFrame(const std::string& filename, const int width, const int height) {
-    // Allocate memory for pixel data (RGBA)
-    std::vector<unsigned char> pixels(width * height * 4);
-
-    // Read pixels from OpenGL framebuffer (GL_RGBA, GL_UNSIGNED_BYTE)
-    glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, pixels.data());
-
-    // glBindFramebuffer(GL_READ_FRAMEBUFFER, fboID); // Bind the correct framebuffer
-    // glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, pixels.data());
-    // glBindFramebuffer(GL_READ_FRAMEBUFFER, 0); // Restore default framebuffer
-
-    // Flip the image vertically because OpenGL's origin is bottom-left
-    std::vector<unsigned char> flippedPixels(width * height * 4);
-    for (int y = 0; y < height; ++y) {
-        memcpy(&flippedPixels[(height - 1 - y) * width * 4], &pixels[y * width * 4], width * 4);
-    }
-
-    // Save as PNG using stb_image_write
-    if (ends_with(filename, ".png")) {
-        stbi_write_png((filename).c_str(), width, height, 4, flippedPixels.data(), width * 4);
-    }
-    if (ends_with(filename, ".jpg")) {
-        stbi_write_jpg((filename).c_str(), width, height, 4, flippedPixels.data(), 100);
-    }
-}
-
 void settings() {
     size(1024, 768);
-    display            = 0;
-    antialiasing       = 8;
-    render_to_buffer   = false;
-    retina_support     = true;
-    subsystem_graphics = umgebung_create_subsystem_graphics_openglv33();
 }
 
 void setup() {
-    hint(HINT_ENABLE_SMOOTH_LINES);
+    hint(ENABLE_SMOOTH_LINES);
 }
 
 void draw() {
@@ -204,10 +167,6 @@ void draw() {
 }
 
 void keyPressed() {
-    if (key == ' ') {
-        saveFrame("screenshot-" + nfs(frameCount, 4) + ".png", width * 2, height * 2);
-        saveFrame("screenshot-" + nfs(frameCount, 4) + ".jpg", width * 2, height * 2);
-    }
     if (key == '-') {
         stroke_weight -= 0.25f;
         if (stroke_weight < 0) { stroke_weight = 0; }
@@ -270,7 +229,7 @@ void keyPressed() {
         console("SQUARE");
     }
     if (key == ',') {
-        g->stroke_mode(STROKE_RENDER_MODE_TRIANGULATE);
+        g->stroke_mode(STROKE_RENDER_MODE_TRIANGULATE_2D);
     }
     if (key == '.') {
         g->stroke_mode(STROKE_RENDER_MODE_NATIVE);

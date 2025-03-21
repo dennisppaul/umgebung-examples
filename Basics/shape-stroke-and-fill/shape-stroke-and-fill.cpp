@@ -27,7 +27,7 @@ void setup() {
     strokeCap(stroke_cap_mode);
     strokeWeight(stroke_weight);
 
-    hint(HINT_ENABLE_SMOOTH_LINES);
+    hint(ENABLE_SMOOTH_LINES);
     g->stroke_properties(radians(10), radians(10), 179);
     g->stroke_mode(STROKE_RENDER_MODE_TRIANGULATE);
 }

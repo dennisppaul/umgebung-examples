@@ -139,7 +139,7 @@ GLuint VAO, VBO, EBO;
 // }
 
 void setup() {
-    hint(HINT_ENABLE_SMOOTH_LINES);
+    hint(ENABLE_SMOOTH_LINES);
     shader_barycentric_wireframe = loadShader(shader_source_barycentric_wireframe.vertex, shader_source_barycentric_wireframe.fragment);
     // shader_barycentric_wireframe = new PShader();
     // shader_barycentric_wireframe->load(vertex_shader_barycentric_wireframe(), fragment_shader_barycentric_wireframe());

@@ -60,7 +60,7 @@ void settings() {
 void setup() {
     add_generic_subsystem();
 
-    hint(HINT_ENABLE_SMOOTH_LINES);
+    hint(ENABLE_SMOOTH_LINES);
 
     m_image = loadImage(sketchPath() + "../image.png");
     font    = loadFont("../InterDisplay-Light.otf", 64);
