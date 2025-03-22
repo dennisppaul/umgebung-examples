@@ -172,13 +172,12 @@ void create_line_strip_random() {
 
 void create_line_strip_rect() {
     line_points.clear();
-    // RECT -200, -200 to 200, 200
     line_points.emplace_back(-200, -200, 0);
     line_points.emplace_back(200, -200, 0);
-    // line_points.emplace_back(300, 0, 0);
+    line_points.emplace_back(300, 0, 0);
     line_points.emplace_back(200, 200, 0);
     line_points.emplace_back(-200, 200, 0);
-    // line_points.emplace_back(-300, 0, 0);
+    line_points.emplace_back(-300, 0, 0);
 }
 
 glm::vec3 computeScreenAlignedNormalModelSpace(
@@ -196,6 +195,72 @@ glm::vec3 computeScreenAlignedNormalModelSpace(
 }
 
 std::vector<glm::vec3> extrudeLineStripToRibbon(
+    const std::vector<glm::vec3>& points,
+    float                         width,
+    const glm::mat4&              modelMatrix,
+    const glm::mat4&              viewMatrix,
+    const glm::mat4&              projectionMatrix,
+    bool                          closed = true) {
+
+    std::vector<glm::vec3> ribbonVertices;
+    size_t n = points.size();
+    if (n < 2) return ribbonVertices;
+
+    // compute per-point normals (averaged from adjacent segments)
+    std::vector<glm::vec3> normals(n);
+
+    for (size_t i = 0; i < n; ++i) {
+        size_t iPrev = (i == 0) ? (closed ? n - 1 : 0) : i - 1;
+        size_t iNext = (i == n - 1) ? (closed ? 0 : n - 1) : i + 1;
+
+        if (i == 0 && !closed) {
+            normals[i] = computeScreenAlignedNormalModelSpace(points[0], points[1], modelMatrix, viewMatrix, projectionMatrix);
+        } else if (i == n - 1 && !closed) {
+            normals[i] = computeScreenAlignedNormalModelSpace(points[n - 2], points[n - 1], modelMatrix, viewMatrix, projectionMatrix);
+        } else {
+            glm::vec3 n0 = computeScreenAlignedNormalModelSpace(points[iPrev], points[i], modelMatrix, viewMatrix, projectionMatrix);
+            glm::vec3 n1 = computeScreenAlignedNormalModelSpace(points[i], points[iNext], modelMatrix, viewMatrix, projectionMatrix);
+            normals[i] = glm::normalize(n0 + n1);
+        }
+    }
+
+    // number of segments
+    size_t segmentCount = closed ? n : n - 1;
+    ribbonVertices.reserve(segmentCount * 6);
+
+    for (size_t i = 0; i < segmentCount; ++i) {
+        size_t i0 = i;
+        size_t i1 = (i + 1) % n;
+
+        const glm::vec3& p0 = points[i0];
+        const glm::vec3& p1 = points[i1];
+
+        const glm::vec3& n0 = normals[i0];
+        const glm::vec3& n1 = normals[i1];
+
+        glm::vec3 offset0 = n0 * (width * 0.5f);
+        glm::vec3 offset1 = n1 * (width * 0.5f);
+
+        glm::vec3 p0a = p0 + offset0;
+        glm::vec3 p0b = p0 - offset0;
+        glm::vec3 p1a = p1 + offset1;
+        glm::vec3 p1b = p1 - offset1;
+
+        // triangle 1
+        ribbonVertices.push_back(p0a);
+        ribbonVertices.push_back(p1a);
+        ribbonVertices.push_back(p0b);
+
+        // triangle 2
+        ribbonVertices.push_back(p0b);
+        ribbonVertices.push_back(p1a);
+        ribbonVertices.push_back(p1b);
+    }
+
+    return ribbonVertices;
+}
+
+std::vector<glm::vec3> _extrudeLineStripToRibbon(
     const std::vector<glm::vec3>& points,
     float                         width,
     const glm::mat4&              modelMatrix,
@@ -375,7 +440,7 @@ void draw() {
     pushMatrix();
     translate(width / 2.0f, height / 2.0f);
 
-    fill(0.5f, 0.85f, 1.0f);
+    fill(0.5f, 0.85f, 1.0f, 0.5f);
     box(400, 400, 10);
 
     rotateX(frame_counter * 0.01f);
@@ -415,7 +480,11 @@ void draw() {
 
     fill(0);
     beginShape(TRIANGLES);
+    int i = 0;
     for (const auto v: extruded_vertices) {
+        const glm::vec4 c = colors[(i / 3) % 3];
+        // fill(c.r, c.g, c.b);
+        i++;
         vertex(v.x, v.y, v.z);
     }
     endShape();
