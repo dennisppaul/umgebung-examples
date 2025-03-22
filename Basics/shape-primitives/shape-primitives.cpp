@@ -20,9 +20,7 @@ void settings() {
     size(1024, 768);
 }
 
-void setup() {
-    hint(ENABLE_SMOOTH_LINES);
-}
+void setup() {}
 
 void draw() {
     background(0.85f);
