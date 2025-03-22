@@ -14,92 +14,253 @@ void settings() {
     size(1024, 768);
 }
 
-std::vector<glm::vec3> generateRibbonTriangles(
+// std::vector<glm::vec3> generateRibbonTriangles(
+//     const std::vector<glm::vec3>& points,
+//     const glm::mat4&              modelMatrix,
+//     const glm::mat4&              viewMatrix,
+//     float                         width  = 0.1f,
+//     bool                          closed = false) {
+//     std::vector<glm::vec3> ribbonVertices;
+//     size_t                 n = points.size();
+//     if (n < 2) {
+//         return ribbonVertices;
+//     }
+//
+//     glm::vec3 camForward_world = glm::normalize(glm::vec3(-viewMatrix[0][2], -viewMatrix[1][2], -viewMatrix[2][2]));
+//     auto      normalMatrix     = glm::mat3(glm::transpose(glm::inverse(modelMatrix)));
+//     glm::vec3 camForward_model = glm::normalize(normalMatrix * camForward_world);
+//
+//     std::vector<glm::vec3> offsetPoints;
+//     glm::vec3              prevNormal;
+//
+//     constexpr float epsilon = 1e-4f;
+//
+//     for (size_t i = 0; i < n; ++i) {
+//         glm::vec3 tangent;
+//         if (i == 0) {
+//             tangent = closed ? glm::normalize(points[1] - points[n - 1]) : glm::normalize(points[1] - points[0]);
+//         } else if (i == n - 1) {
+//             tangent = closed ? glm::normalize(points[0] - points[n - 2]) : glm::normalize(points[n - 1] - points[n - 2]);
+//         } else {
+//             tangent = glm::normalize(points[i + 1] - points[i - 1]);
+//         }
+//
+//         glm::vec3 normal;
+//
+//         if (i == 0) {
+//             normal = glm::normalize(glm::cross(tangent, camForward_model));
+//         } else {
+//             glm::vec3 projected = prevNormal - tangent * glm::dot(prevNormal, tangent);
+//             float     len       = glm::length(projected);
+//
+//             if (len < epsilon) {
+//                 normal = glm::normalize(glm::cross(tangent, camForward_model));
+//             } else {
+//                 normal = projected / len;
+//             }
+//         }
+//
+//         prevNormal = normal;
+//
+//         // ensure offset isn't too small
+//         glm::vec3 offset = normal * (width * 0.5f);
+//
+//         // fallback if offset is still too small (edge case)
+//         if (glm::length(offset) < epsilon) {
+//             offset = glm::normalize(glm::cross(tangent, camForward_model)) * (width * 0.5f);
+//         }
+//
+//         glm::vec3 left  = points[i] - offset;
+//         glm::vec3 right = points[i] + offset;
+//
+//         offsetPoints.push_back(left);
+//         offsetPoints.push_back(right);
+//     }
+//
+//     size_t maxIndex = closed ? n : n - 1;
+//     for (size_t i = 0; i < maxIndex; ++i) {
+//         size_t i0 = i;
+//         size_t i1 = (i + 1) % n;
+//
+//         glm::vec3 v0 = offsetPoints[2 * i0];
+//         glm::vec3 v1 = offsetPoints[2 * i0 + 1];
+//         glm::vec3 v2 = offsetPoints[2 * i1];
+//         glm::vec3 v3 = offsetPoints[2 * i1 + 1];
+//
+//         // triangle 1
+//         ribbonVertices.push_back(v0);
+//         ribbonVertices.push_back(v2);
+//         ribbonVertices.push_back(v1);
+//
+//         // triangle 2
+//         ribbonVertices.push_back(v1);
+//         ribbonVertices.push_back(v2);
+//         ribbonVertices.push_back(v3);
+//     }
+//
+//     return ribbonVertices;
+// }
+//
+// void triangulate_line(const glm::vec3& lineStart, const glm::vec3& lineEnd, glm::vec3& resulting_normal) {
+//     // 1. Transform Line Endpoints to View Space:
+//     // • Multiply each endpoint of the line by the Model-View matrix to convert their coordinates from Model Space to View Space.
+//     const glm::vec4 viewSpaceStart = g->view_matrix * g->model_matrix * glm::vec4(lineStart, 1.0);
+//     const glm::vec4 viewSpaceEnd   = g->view_matrix * g->model_matrix * glm::vec4(lineEnd, 1.0);
+//
+//     // 2. Compute the Line Direction in View Space:
+//     // • Subtract the transformed start point from the end point to get the direction vector of the line in View Space.
+//     const glm::vec3 lineDir = glm::normalize(glm::vec3(viewSpaceEnd - viewSpaceStart));
+//
+//     // 3. Determine the Up Vector:
+//     // • Choose an arbitrary up vector in View Space.
+//     auto upVector = glm::vec3(0.0f, 0.0f, 1.0f);
+//
+//     // 4. Calculate the Normal Vector:
+//     // • Compute the normal vector by taking the cross product of the line direction and the up vector. This vector will be perpendicular to both and lie in the plane defined by them.
+//     glm::vec3 normal = glm::normalize(glm::cross(lineDir, upVector));
+//
+//     // 5. Handle Edge Cases:
+//     // If the line direction is parallel to the up vector, the cross product will be zero, resulting in a zero normal vector. To handle this, you can choose an alternative up vector, such as the Z-axis.
+//     if (glm::length(normal) < 0.001f) {
+//         upVector = glm::vec3(0.0f, 0.0f, 1.0f);
+//         normal   = glm::normalize(glm::cross(lineDir, upVector));
+//     }
+//
+//     // 6. Transform the Normal Back to Model Space (Optional):
+//     // If you need the normal in Model Space, multiply it by the inverse transpose of the Model matrix.
+//     const glm::mat3 normalMatrix     = glm::transpose(glm::inverse(glm::mat3(g->model_matrix)));
+//     const glm::vec3 modelSpaceNormal = glm::normalize(normalMatrix * normal);
+//     // resulting_normal                 = normal;
+//     resulting_normal = modelSpaceNormal;
+// }
+//
+// void triangulate_line_strip(const std::vector<glm::vec3>& line_vertices, std::vector<Vertex>& vertices) {
+//     if (line_vertices.size() < 2) {
+//         return;
+//     }
+//
+//     vertices.clear();
+//
+//     glm::vec3 normal;
+//     for (int i = 0; i < line_vertices.size() - 1; ++i) {
+//         glm::vec3 p0 = line_vertices[i];
+//         glm::vec3 p1 = line_vertices[i + 1];
+//         triangulate_line(p0, p1, normal);
+//         normal *= line_width;
+//         vertices.emplace_back(p0 - normal, glm::vec4(1, 0, 0, 1));
+//         vertices.emplace_back(p1 - normal, glm::vec4(1, 0, 0, 1));
+//         vertices.emplace_back(p1 + normal, glm::vec4(1, 0, 0, 1));
+//
+//         vertices.emplace_back(p1 + normal, glm::vec4(0, 1, 0, 1));
+//         vertices.emplace_back(p0 + normal, glm::vec4(0, 1, 0, 1));
+//         vertices.emplace_back(p0 - normal, glm::vec4(0, 1, 0, 1));
+//     }
+// }
+
+void create_line_strip_random() {
+    line_points.clear();
+    float x = 0;
+    float y = 0;
+    float z = 0;
+    for (int i = 0; i < 10; ++i) {
+        x += random(-200, 200);
+        y += random(-200, 200);
+        z += random(-50, 50);
+        line_points.emplace_back(x, y, z);
+    }
+}
+
+void create_line_strip_rect() {
+    line_points.clear();
+    // RECT -200, -200 to 200, 200
+    line_points.emplace_back(-200, -200, 0);
+    line_points.emplace_back(200, -200, 0);
+    // line_points.emplace_back(300, 0, 0);
+    line_points.emplace_back(200, 200, 0);
+    line_points.emplace_back(-200, 200, 0);
+    // line_points.emplace_back(-300, 0, 0);
+}
+
+glm::vec3 computeScreenAlignedNormalModelSpace(
+    const glm::vec3& p0,
+    const glm::vec3& p1,
+    const glm::mat4& modelMatrix,
+    const glm::mat4& viewMatrix,
+    const glm::mat4& projectionMatrix) {
+    const auto      p0s          = glm::vec3(modelMatrix * viewMatrix * projectionMatrix * glm::vec4(p0, 1.0));
+    const auto      p1s          = glm::vec3(modelMatrix * viewMatrix * projectionMatrix * glm::vec4(p1, 1.0));
+    const glm::vec3 segmentDir   = glm::normalize(p1s - p0s);
+    const auto      normal       = glm::vec3(segmentDir.y, -segmentDir.x, 0.0f);
+    const auto      normalMatrix = glm::mat3(glm::transpose(glm::inverse(modelMatrix)));
+    return glm::normalize(normal * normalMatrix);
+}
+
+std::vector<glm::vec3> extrudeLineStripToRibbon(
     const std::vector<glm::vec3>& points,
+    float                         width,
     const glm::mat4&              modelMatrix,
     const glm::mat4&              viewMatrix,
-    float                         width  = 0.1f,
-    bool                          closed = false) {
-    std::vector<glm::vec3> ribbonVertices;
-    size_t                 n = points.size();
-    if (n < 2) {
-        return ribbonVertices;
+    const glm::mat4&              projectionMatrix) {
+    std::vector<glm::vec3> allQuads;
+
+    if (points.size() < 2) {
+        return allQuads;
     }
 
-    glm::vec3 camForward_world = glm::normalize(glm::vec3(-viewMatrix[0][2], -viewMatrix[1][2], -viewMatrix[2][2]));
-    glm::mat3 normalMatrix     = glm::mat3(glm::transpose(glm::inverse(modelMatrix)));
-    glm::vec3 camForward_model = glm::normalize(normalMatrix * camForward_world);
+    allQuads.reserve((points.size() - 1) * 6); // 6 vertices per segment
 
-    std::vector<glm::vec3> offsetPoints;
-    glm::vec3              prevNormal;
+    for (size_t i = 0; i < points.size() - 1; ++i) {
+        const glm::vec3& p0 = points[i];
+        const glm::vec3& p1 = points[i + 1];
 
-    constexpr float epsilon = 1e-4f;
-
-    for (size_t i = 0; i < n; ++i) {
-        glm::vec3 tangent;
-        if (i == 0) {
-            tangent = closed ? glm::normalize(points[1] - points[n - 1]) : glm::normalize(points[1] - points[0]);
-        } else if (i == n - 1) {
-            tangent = closed ? glm::normalize(points[0] - points[n - 2]) : glm::normalize(points[n - 1] - points[n - 2]);
-        } else {
-            tangent = glm::normalize(points[i + 1] - points[i - 1]);
-        }
-
-        glm::vec3 normal;
-
-        if (i == 0) {
-            normal = glm::normalize(glm::cross(tangent, camForward_model));
-        } else {
-            glm::vec3 projected = prevNormal - tangent * glm::dot(prevNormal, tangent);
-            float     len       = glm::length(projected);
-
-            if (len < epsilon) {
-                normal = glm::normalize(glm::cross(tangent, camForward_model));
-            } else {
-                normal = projected / len;
-            }
-        }
-
-        prevNormal = normal;
-
-        // ensure offset isn't too small
+        glm::vec3 normal = computeScreenAlignedNormalModelSpace(p0, p1, modelMatrix, viewMatrix, projectionMatrix);
         glm::vec3 offset = normal * (width * 0.5f);
 
-        // fallback if offset is still too small (edge case)
-        if (glm::length(offset) < epsilon) {
-            offset = glm::normalize(glm::cross(tangent, camForward_model)) * (width * 0.5f);
-        }
-
-        glm::vec3 left  = points[i] - offset;
-        glm::vec3 right = points[i] + offset;
-
-        offsetPoints.push_back(left);
-        offsetPoints.push_back(right);
-    }
-
-    size_t maxIndex = closed ? n : n - 1;
-    for (size_t i = 0; i < maxIndex; ++i) {
-        size_t i0 = i;
-        size_t i1 = (i + 1) % n;
-
-        glm::vec3 v0 = offsetPoints[2 * i0];
-        glm::vec3 v1 = offsetPoints[2 * i0 + 1];
-        glm::vec3 v2 = offsetPoints[2 * i1];
-        glm::vec3 v3 = offsetPoints[2 * i1 + 1];
+        glm::vec3 p0a = p0 + offset;
+        glm::vec3 p0b = p0 - offset;
+        glm::vec3 p1a = p1 + offset;
+        glm::vec3 p1b = p1 - offset;
 
         // triangle 1
-        ribbonVertices.push_back(v0);
-        ribbonVertices.push_back(v2);
-        ribbonVertices.push_back(v1);
+        allQuads.push_back(p0a);
+        allQuads.push_back(p1a);
+        allQuads.push_back(p0b);
 
         // triangle 2
-        ribbonVertices.push_back(v1);
-        ribbonVertices.push_back(v2);
-        ribbonVertices.push_back(v3);
+        allQuads.push_back(p0b);
+        allQuads.push_back(p1a);
+        allQuads.push_back(p1b);
     }
 
-    return ribbonVertices;
+    return allQuads;
 }
+
+// std::vector<glm::vec3> extrudeSegmentToQuad(const glm::vec3& p0,
+//                                             const glm::vec3& p1,
+//                                             const float      width) {
+//     const glm::vec3        normal = computeScreenAlignedNormalModelSpace(p0, p1, g->model_matrix, g->view_matrix, g->projection_matrix);
+//     std::vector<glm::vec3> quadVertices;
+//     quadVertices.reserve(6); // 2 triangles
+//
+//     const glm::vec3 offset = normal * (width * 0.5f);
+//
+//     const glm::vec3 p0a = p0 + offset;
+//     const glm::vec3 p0b = p0 - offset;
+//     const glm::vec3 p1a = p1 + offset;
+//     const glm::vec3 p1b = p1 - offset;
+//
+//     // triangle 1
+//     quadVertices.push_back(p0a);
+//     quadVertices.push_back(p1a);
+//     quadVertices.push_back(p0b);
+//
+//     // triangle 2
+//     quadVertices.push_back(p0b);
+//     quadVertices.push_back(p1a);
+//     quadVertices.push_back(p1b);
+//
+//     return quadVertices;
+// }
 
 std::vector<glm::vec3> generateTubeMesh(
     const std::vector<glm::vec3>& points,
@@ -199,86 +360,6 @@ std::vector<glm::vec3> generateTubeMesh(
     return tubeVertices;
 }
 
-void triangulate_line(const glm::vec3& lineStart, const glm::vec3& lineEnd, glm::vec3& resulting_normal) {
-    // 1. Transform Line Endpoints to View Space:
-    // • Multiply each endpoint of the line by the Model-View matrix to convert their coordinates from Model Space to View Space.
-    const glm::vec4 viewSpaceStart = g->view_matrix * g->model_matrix * glm::vec4(lineStart, 1.0);
-    const glm::vec4 viewSpaceEnd   = g->view_matrix * g->model_matrix * glm::vec4(lineEnd, 1.0);
-
-    // 2. Compute the Line Direction in View Space:
-    // • Subtract the transformed start point from the end point to get the direction vector of the line in View Space.
-    const glm::vec3 lineDir = glm::normalize(glm::vec3(viewSpaceEnd - viewSpaceStart));
-
-    // 3. Determine the Up Vector:
-    // • Choose an arbitrary up vector in View Space.
-    glm::vec3 upVector = glm::vec3(0.0f, 0.0f, 1.0f);
-
-    // 4. Calculate the Normal Vector:
-    // • Compute the normal vector by taking the cross product of the line direction and the up vector. This vector will be perpendicular to both and lie in the plane defined by them.
-    glm::vec3 normal = glm::normalize(glm::cross(lineDir, upVector));
-
-    // 5. Handle Edge Cases:
-    // If the line direction is parallel to the up vector, the cross product will be zero, resulting in a zero normal vector. To handle this, you can choose an alternative up vector, such as the Z-axis.
-    if (glm::length(normal) < 0.001f) {
-        upVector = glm::vec3(0.0f, 0.0f, 1.0f);
-        normal   = glm::normalize(glm::cross(lineDir, upVector));
-    }
-
-    // 6. Transform the Normal Back to Model Space (Optional):
-    // If you need the normal in Model Space, multiply it by the inverse transpose of the Model matrix.
-    const glm::mat3 normalMatrix     = glm::transpose(glm::inverse(glm::mat3(g->model_matrix)));
-    const glm::vec3 modelSpaceNormal = glm::normalize(normalMatrix * normal);
-    // resulting_normal                 = normal;
-    resulting_normal = modelSpaceNormal;
-}
-
-void triangulate_line_strip(const std::vector<glm::vec3>& line_vertices, std::vector<Vertex>& vertices) {
-    if (line_vertices.size() < 2) {
-        return;
-    }
-
-    vertices.clear();
-
-    glm::vec3 normal;
-    for (int i = 0; i < line_vertices.size() - 1; ++i) {
-        glm::vec3 p0 = line_vertices[i];
-        glm::vec3 p1 = line_vertices[i + 1];
-        triangulate_line(p0, p1, normal);
-        normal *= line_width;
-        vertices.emplace_back(p0 - normal, glm::vec4(1, 0, 0, 1));
-        vertices.emplace_back(p1 - normal, glm::vec4(1, 0, 0, 1));
-        vertices.emplace_back(p1 + normal, glm::vec4(1, 0, 0, 1));
-
-        vertices.emplace_back(p1 + normal, glm::vec4(0, 1, 0, 1));
-        vertices.emplace_back(p0 + normal, glm::vec4(0, 1, 0, 1));
-        vertices.emplace_back(p0 - normal, glm::vec4(0, 1, 0, 1));
-    }
-}
-
-void create_line_strip_random() {
-    line_points.clear();
-    float x = 0;
-    float y = 0;
-    float z = 0;
-    for (int i = 0; i < 10; ++i) {
-        x += random(-200, 200);
-        y += random(-200, 200);
-        z += random(-50, 50);
-        line_points.emplace_back(x, y, z);
-    }
-}
-
-void create_line_strip_rect() {
-    line_points.clear();
-    // RECT -200, -200 to 200, 200
-    line_points.emplace_back(-200, -200, 0);
-    line_points.emplace_back(200, -200, 0);
-    // line_points.emplace_back(300, 0, 0);
-    line_points.emplace_back(200, 200, 0);
-    line_points.emplace_back(-200, 200, 0);
-    // line_points.emplace_back(-300, 0, 0);
-}
-
 void setup() {
     hint(ENABLE_DEPTH_TEST);
     create_line_strip_rect();
@@ -317,13 +398,25 @@ void draw() {
         glm::vec4(0, 1, 0, 1),
         glm::vec4(0, 0, 1, 1)};
     fill(0);
+    // beginShape(TRIANGLES);
+    // int i = 0;
+    // for (const auto v: vertices) {
+    //     // const glm::vec4 c = colors[(i / 3) % 3];
+    //     // fill(c.r, c.g, c.b);
+    //     vertex(v.x, v.y, v.z);
+    //     i++;
+    // }
+    // endShape();
+
+    // glm::vec3              p0                = glm::vec3{10, 10, 0};
+    // glm::vec3              p1                = glm::vec3{mouseX, mouseY, 0};
+    // std::vector<glm::vec3> extruded_vertices = extrudeSegmentToQuad(p0, p1, line_width);
+    const std::vector<glm::vec3> extruded_vertices = extrudeLineStripToRibbon(line_points, line_width, g->model_matrix, g->view_matrix, g->projection_matrix);
+
+    fill(0);
     beginShape(TRIANGLES);
-    int i = 0;
-    for (const auto v: vertices) {
-        // const glm::vec4 c = colors[(i / 3) % 3];
-        // fill(c.r, c.g, c.b);
+    for (const auto v: extruded_vertices) {
         vertex(v.x, v.y, v.z);
-        i++;
     }
     endShape();
 
