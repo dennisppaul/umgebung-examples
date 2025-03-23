@@ -203,8 +203,10 @@ std::vector<glm::vec3> extrudeLineStripToRibbon(
     bool                          closed = true) {
 
     std::vector<glm::vec3> ribbonVertices;
-    size_t n = points.size();
-    if (n < 2) return ribbonVertices;
+    size_t                 n = points.size();
+    if (n < 2) {
+        return ribbonVertices;
+    }
 
     // compute per-point normals (averaged from adjacent segments)
     std::vector<glm::vec3> normals(n);
@@ -220,7 +222,7 @@ std::vector<glm::vec3> extrudeLineStripToRibbon(
         } else {
             glm::vec3 n0 = computeScreenAlignedNormalModelSpace(points[iPrev], points[i], modelMatrix, viewMatrix, projectionMatrix);
             glm::vec3 n1 = computeScreenAlignedNormalModelSpace(points[i], points[iNext], modelMatrix, viewMatrix, projectionMatrix);
-            normals[i] = glm::normalize(n0 + n1);
+            normals[i]   = glm::normalize(n0 + n1);
         }
     }
 
@@ -463,15 +465,15 @@ void draw() {
         glm::vec4(0, 1, 0, 1),
         glm::vec4(0, 0, 1, 1)};
     fill(0);
-    // beginShape(TRIANGLES);
-    // int i = 0;
-    // for (const auto v: vertices) {
-    //     // const glm::vec4 c = colors[(i / 3) % 3];
-    //     // fill(c.r, c.g, c.b);
-    //     vertex(v.x, v.y, v.z);
-    //     i++;
-    // }
-    // endShape();
+    beginShape(TRIANGLES);
+    int i = 0;
+    for (const auto v: vertices) {
+        // const glm::vec4 c = colors[(i / 3) % 3];
+        // fill(c.r, c.g, c.b);
+        vertex(v.x, v.y, v.z);
+        i++;
+    }
+    endShape();
 
     // glm::vec3              p0                = glm::vec3{10, 10, 0};
     // glm::vec3              p1                = glm::vec3{mouseX, mouseY, 0};
@@ -479,8 +481,9 @@ void draw() {
     const std::vector<glm::vec3> extruded_vertices = extrudeLineStripToRibbon(line_points, line_width, g->model_matrix, g->view_matrix, g->projection_matrix);
 
     fill(0);
+    rotateX(HALF_PI);
     beginShape(TRIANGLES);
-    int i = 0;
+    i = 0;
     for (const auto v: extruded_vertices) {
         const glm::vec4 c = colors[(i / 3) % 3];
         // fill(c.r, c.g, c.b);
