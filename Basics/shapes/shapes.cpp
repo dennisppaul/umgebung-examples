@@ -9,8 +9,12 @@ using namespace umgebung;
  */
 
 // TODO: the following combinations are partly broken:
-//      - stroke_join_mode: BEVEL+MITER+POINTED
-//      - stroke_join_mode: BEVEL+MITER+ROUND
+//      - stroke_cap_mode : PROJECT + POINTED
+//      - stroke_join_mode: BEVEL + MITER
+// TODO: in OpenGL 2.0 stroke weight is limited and strokeJoin + strokeCap are not supported
+
+const int light_blue = color(0.5f, 0.85f, 1.0f);
+const int soft_red   = color(1.0f, 0.25f, 0.35f);
 
 int   stroke_join_mode = ROUND;
 int   stroke_cap_mode  = ROUND;
@@ -30,7 +34,7 @@ void draw() {
     g->debug_text(nf(mouseX, 0) + ", " + nf(mouseY, 0), 10, 20);
 
     stroke(0.0f);
-    fill(0.5f, 0.85f, 1.0f);
+    fill_color(light_blue);
     strokeWeight(stroke_weight);
     pointSize(stroke_weight);
     strokeJoin(stroke_join_mode);
@@ -92,7 +96,7 @@ void draw() {
     endShape(CLOSE);
 
     stroke(0.0f);
-    fill(0.5f, 0.85f, 1.0f);
+    fill_color(soft_red);
 
     translate(280, 0);
     beginShape(TRIANGLES);
@@ -158,10 +162,10 @@ void draw() {
     popMatrix();
 
     translate(280, 0);
-    bezier(120, 80, 120, 300, 340, 80, 340, 300);
+    circle(230, 190, 220);
 
     translate(280, 0);
-    circle(230, 190, 220);
+    bezier(120, 80 - 560, 120, 300 - 560, 340, 80, 340, 300);
 }
 
 void keyPressed() {

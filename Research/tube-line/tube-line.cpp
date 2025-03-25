@@ -329,7 +329,7 @@ std::vector<glm::vec3> _extrudeLineStripToRibbon(
 //     return quadVertices;
 // }
 
-std::vector<glm::vec3> generateTubeMesh(
+std::vector<glm::vec3> _generateTubeMesh(
     const std::vector<glm::vec3>& points,
     float                         radius = 0.05f,
     bool                          closed = false) {
@@ -459,7 +459,7 @@ void draw() {
     //                                                                 g->model_matrix,
     //                                                                 g->view_matrix,
     //                                                                 line_width, true);
-    const std::vector<glm::vec3> vertices = generateTubeMesh(line_points, line_width, true);
+    const std::vector<glm::vec3> vertices = _generateTubeMesh(line_points, line_width, true);
     const std::vector<glm::vec4> colors   = {
         glm::vec4(1, 0, 0, 1),
         glm::vec4(0, 1, 0, 1),

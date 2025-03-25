@@ -54,11 +54,12 @@ void settings() {
     // headless              = false;
     // no_audio              = false;
     render_to_buffer   = true;
-    subsystem_graphics = umgebung_create_subsystem_graphics_openglv33();
+    subsystem_graphics = umgebung_create_subsystem_graphics_openglv20();
 }
 
 void setup() {
     add_generic_subsystem();
+    g->set_render_mode(RENDER_MODE_SHAPE);
 
     hint(ENABLE_SMOOTH_LINES);
 
@@ -73,7 +74,6 @@ void draw() {
     noStroke();
     fill(1, 0, 0);
     g->debug_text("FPS: " + to_string(frameRate), 10, height - 20);
-
     /* rects */
 
     stroke(0);
@@ -151,7 +151,7 @@ void draw() {
     /* image */
 
     fill(1);
-    stroke(1,0,0);
+    stroke(1, 0, 0);
     strokeWeight(10);
     pushMatrix();
     translate(width - m_image->width, m_image->height);
@@ -315,7 +315,7 @@ void keyPressed() {
         exit();
     }
     if (key == ',') {
-        g->stroke_mode(STROKE_RENDER_MODE_TRIANGULATE);
+        g->stroke_mode(STROKE_RENDER_MODE_TRIANGULATE_2D);
     }
     if (key == '.') {
         g->stroke_mode(STROKE_RENDER_MODE_NATIVE);
