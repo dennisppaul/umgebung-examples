@@ -208,7 +208,6 @@ void draw() {
 
     /* box + sphere */
 
-    texture();
     strokeJoin(NONE);
     strokeCap(NONE);
     stroke(0);

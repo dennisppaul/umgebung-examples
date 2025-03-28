@@ -1,21 +1,18 @@
 #include "Umgebung.h"
+#include "PVector.h"
 
 using namespace umgebung;
 
 PFont*  mFont;
 PImage* mImage;
 PVector mVector{16, 16};
-PShape  mShape;
 int     mouseMoveCounter = 0;
+// PShape mShape; // TODO not working ATM
 
 void settings() {
     size(1024, 768);
-    audio_devices(DEFAULT_AUDIO_DEVICE, DEFAULT_AUDIO_DEVICE);
-    antialiasing          = 8;
-    enable_retina_support = true;
-    headless              = false;
-    no_audio              = false;
-    monitor               = DEFAULT;
+    audio(1, 2);
+    antialiasing = 8;
 }
 
 void setup() {
@@ -24,40 +21,37 @@ void setup() {
         println("... exiting");
         exit();
     }
-    if (!headless) {
-        mImage = loadImage(sketchPath() + "../image.png");
 
-        uint32_t pixels[64 * 64];
-        for (int i = 0; i < 64 * 64; ++i) {
-            pixels[i] = color(random(1), random(1), random(1), 0.5f);
-        }
-        mImage->update(pixels, 64, 64, 32, 32);
+    mImage = loadImage(sketchPath() + "../image.png");
 
-        mFont = loadFont(sketchPath() + "../RobotoMono-Regular.ttf", 48);
-        textFont(mFont);
+    uint32_t pixels[64 * 64];
+    for (int i = 0; i < 64 * 64; ++i) {
+        pixels[i] = color(random(1), random(1), random(1), 0.5f);
     }
+    mImage->update(g, pixels, 64, 64, 32, 32);
+
+    mFont = loadFont(sketchPath() + "../RobotoMono-Regular.ttf", 48);
+    textFont(mFont);
 
     /* fill PShape with triangles */
-    for (int i = 0; i < 81; ++i) {
-        mShape.beginShape(TRIANGLES);
-        mShape.vertex(random(width / 16.0), random(width / 16.0), 0, random(1), random(1), random(1));
-        mShape.endShape();
-    }
+    // for (int i = 0; i < 81; ++i) {
+    //     mShape.beginShape(TRIANGLES);
+    //     mShape.vertex(random(width / 16.0), random(width / 16.0), 0, random(1), random(1), random(1));
+    //     mShape.endShape();
+    // }
 
     println("width : ", width);
     println("height: ", height);
 }
 
 void draw() {
-    if (headless) {
-        return;
-    }
     background(1);
 
-    /* rectangle */
     const float padding = width / mVector.x;
     const float grid    = width / mVector.x;
     const float spacing = grid + width / mVector.x * 2;
+
+    /* rectangle */
 
     stroke(1, 0, 0);
     noFill();
@@ -72,10 +66,13 @@ void draw() {
     rect(padding + 2 * spacing, padding, grid, grid);
 
     /* line */
+
     stroke(0.0f);
     line(padding + 3 * spacing, padding, padding + 3 * spacing + grid, padding + grid);
     line(padding + 3 * spacing, padding + grid, padding + 3 * spacing + grid, padding);
+
     /* text + nf + push/popMatrix */
+
     fill(0.0f);
     noStroke();
     textSize(48);
@@ -86,10 +83,11 @@ void draw() {
     rotate(PI * 0.25);
     textSize(11);
     fill(0, 0.5, 1);
-    text(to_string((int) mouseX, ", ", (int) mouseY, " > ", nf(mouseMoveCounter * 0.01, 2)), 0, 0);
+    text(to_string((int) mouseX, ", ", (int) mouseY, " > ", nf(mouseMoveCounter * 0.01, 2)).c_str(), 0, 0);
     popMatrix();
 
     /* image */
+
     constexpr int length = 64 * 64 * 4; // number of channels is always 4
     float         pixels[length];
     for (int i = 0; i < length; i += 4) {
@@ -99,7 +97,7 @@ void draw() {
         pixels[i + 2] = 1.0;
         pixels[i + 3] = 0.5;
     }
-    mImage->update(pixels, 64, 64, 32, 32);
+    mImage->update(g, pixels, 64, 64, 32, 32);
 
     fill(1.0f);
     image(mImage, padding, padding + spacing, grid, grid);
@@ -113,7 +111,7 @@ void draw() {
         float y    = i / grid;
         float grey = noise(x / (float) grid, y / (float) grid);
         stroke(grey);
-        point(x, y, 1);
+        // point(x, y, 1); // TODO this is sooooo slow … really need to impove rendering performance
     }
     popMatrix();
 
@@ -123,11 +121,11 @@ void draw() {
     vertex(padding, padding + 3 * spacing + grid);
     vertex(padding + grid, padding + 3 * spacing + grid);
     vertex(padding + grid, padding + 3 * spacing);
-    endShape();
+    endShape(CLOSE);
 
     pushMatrix();
     translate(padding + spacing, padding + 3 * spacing);
-    mShape.draw();
+    // mShape.draw();
     popMatrix();
 
     noFill();
@@ -140,38 +138,26 @@ void draw() {
     strokeWeight(1);
 }
 
-void audioblock(float** input, float** output, int length) {
-    // NOTE length is the number of samples per channel
-    // TODO change to `void audioblock(float** input_signal, float** output_signal) {}`
+void audioEvent() {
     static float phase     = 0.0;
     const float  frequency = 220.0 + sin(frameCount * 0.1) * 110.0;
     const float  amplitude = 0.5;
 
-    for (int i = 0; i < length; i++) {
+    for (int i = 0; i < audio_buffer_size; i++) {
         float sample = amplitude * sin(phase);
-        phase += (TWO_PI * frequency) / DEFAULT_AUDIO_SAMPLE_RATE;
+        phase += (TWO_PI * frequency) / sample_rate;
 
         if (phase >= TWO_PI) {
             phase -= TWO_PI;
         }
 
-#ifdef USE_INTERLEAVED_BUFFER
         float mInput = 0;
-        for (int j = 0; j < audio_input_channels; ++j) {
-            mInput += input[i * audio_input_channels + j];
+        for (int j = 0; j < input_channels; ++j) {
+            mInput += audio_input_buffer[i * input_channels + j];
         }
-        for (int j = 0; j < audio_output_channels; ++j) {
-            output[i * audio_output_channels + j] = sample + mInput * 0.5f;
+        for (int j = 0; j < output_channels; ++j) {
+            audio_output_buffer[i * output_channels + j] = sample + mInput * 0.5f;
         }
-#else
-        float mInput = 0;
-        for (int j = 0; j < audio_input_channels; ++j) {
-            mInput += input[j][i];
-        }
-        for (int j = 0; j < audio_output_channels; ++j) {
-            output[j][i] = sample + mInput * 0.5f;
-        }
-#endif
     }
 }
 

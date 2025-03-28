@@ -1,13 +1,11 @@
 #include "Umgebung.h"
 #include "Geometry.h"
 
-using namespace umgebung;
-
 /*
  * this example shows how to use `saveFrame()` to save the current frame to a file.
  */
 
-// TODO does not work with `render_to_buffer` set to `true`
+using namespace umgebung;
 
 void settings() {
     size(1024, 768);

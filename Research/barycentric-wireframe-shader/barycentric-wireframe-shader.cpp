@@ -6,7 +6,7 @@
 #include "ShaderSource.h"
 #include "VertexBuffer.h"
 #include "Geometry.h"
-#include "PMesh.h"
+#include "VertexBuffer.h"
 
 // see https://tchayen.github.io/posts/wireframes-with-barycentric-coordinates
 

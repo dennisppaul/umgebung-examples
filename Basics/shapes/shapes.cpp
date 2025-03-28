@@ -30,8 +30,8 @@ void draw() {
     background(0.85f);
 
     fill(0);
-    g->debug_text("FPS: " + nf(frameRate, 1), 10, 10);
-    g->debug_text(nf(mouseX, 0) + ", " + nf(mouseY, 0), 10, 20);
+    debug_text("FPS: " + nf(frameRate, 1), 10, 10);
+    debug_text(nf(mouseX, 0) + ", " + nf(mouseY, 0), 10, 20);
 
     stroke(0.0f);
     fill_color(light_blue);

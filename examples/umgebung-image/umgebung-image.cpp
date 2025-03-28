@@ -6,7 +6,7 @@ PImage* mImage;
 
 void settings() {
     size(1024, 768);
-    subsystem_graphics = umgebung_subsystem_graphics_create_openglv33();
+    subsystem_graphics = umgebung_create_subsystem_graphics_openglv20();
 }
 
 void setup() {
@@ -44,7 +44,7 @@ void draw() {
     image(mImage, mouseX, mouseY);
     // image(mImage, padding, padding + spacing, grid, grid);
 
-    if (is_mouse_pressed) {
+    if (isMousePressed) {
         console(".");
     }
 }

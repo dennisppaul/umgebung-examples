@@ -10,11 +10,9 @@ AudioFileReader audio_file_reader;
 PAudio*         second_audio_device = nullptr;
 bool            toggle_pause        = false;
 
-extern std::vector<AudioUnitInfo> get_audio_info();
-
 void settings() {
     size(1024, 768);
-    umgebung::subsystem_audio = umgebung_subsystem_audio_portaudio_create(); // NOTE use portaudio instead of SDL
+    umgebung::subsystem_audio = umgebung_create_subsystem_audio_portaudio(); // NOTE use portaudio instead of SDL
 
     // NOTE this function creates a audio device with 1 input, 2 output channels
     //      and a sample rate of 48000 with default values of 32-bit float buffer
@@ -50,17 +48,17 @@ void settings() {
 void write_WAV_file() {
     float wav_sample_buffer[audio_buffer_size];
     /* write sine wave with duartion approx 1sec + frequency 220Hz */
-    AudioFileWriter fAudioFileWriter;
-    fAudioFileWriter.open("../sine-220Hz.wav");
+    AudioFileWriter audio_file_writer;
+    audio_file_writer.open("../sine-220Hz.wav");
     float r = 0;
     for (int j = 0; j < sample_rate / audio_buffer_size; ++j) {
         for (int i = 0; i < audio_buffer_size; ++i) {
             wav_sample_buffer[i] = sin(r);
             r += TWO_PI * 220.0f / sample_rate;
         }
-        fAudioFileWriter.write(audio_buffer_size, wav_sample_buffer);
+        audio_file_writer.write(audio_buffer_size, wav_sample_buffer);
     }
-    fAudioFileWriter.close();
+    audio_file_writer.close();
 }
 
 void setup() {
