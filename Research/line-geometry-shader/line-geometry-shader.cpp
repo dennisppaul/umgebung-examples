@@ -118,7 +118,7 @@ void setup() {
     shader_line = loadShader(shader_source_line);
     hint(ENABLE_DEPTH_TEST);
 
-    mesh_shape = new PMesh();
+    mesh_shape = new VertexBuffer();
     mesh_shape->set_shape(GL_LINES_ADJACENCY);
 
     // const std::vector<glm::vec3> polyline = {

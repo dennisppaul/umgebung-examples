@@ -10,9 +10,9 @@ using namespace umgebung;
 void settings() {
     size(1024, 768);
     antialiasing       = 8;
-    render_to_buffer   = true;
+    render_to_buffer   = false;
     retina_support     = true;
-    subsystem_graphics = umgebung_create_subsystem_graphics_openglv33();
+    subsystem_graphics = umgebung_create_subsystem_graphics_openglv20();
 }
 
 void setup() {
@@ -45,7 +45,7 @@ void draw() {
 
     noStroke();
     fill(1.0f, 0.25f, 0.35f);
-    square(width * 0.5f, height * 0.5f, 55);
+    circle(width * 0.5f, height * 0.5f, 55);
 }
 
 void keyPressed() {

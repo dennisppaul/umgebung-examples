@@ -72,3 +72,7 @@ void draw() {
         mesh_shape->update();
     }
 }
+
+void mousePressed() {
+    popen("say -v \"Anna\" \"EI CAN DANCE!\"", "r");
+}
