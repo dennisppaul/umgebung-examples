@@ -3,15 +3,7 @@
 using namespace umgebung;
 
 void settings() {
-    size(1024, 768);
-    subsystem_graphics = umgebung_create_subsystem_graphics_openglv33();
-}
-
-void setup() {
-    noFill();
-    stroke(1.0f, 0.25f, 0.35f);
-    strokeJoin(ROUND);
-    strokeCap(ROUND);
+    size(1024, 768, OPENGL_3_3);
 }
 
 void draw() {
@@ -35,20 +27,20 @@ void draw() {
     arc(200, 200, 300, 300, 0, PI + QUARTER_PI, CHORD);
 
     translate(-640, 320);
-    ellipseMode(RADIUS);  // Set ellipseMode to RADIUS
-    fill(1.0f);  // Set fill to white
-    ellipse(200, 200, 120, 120);  // Draw white ellipse using RADIUS mode
+    ellipseMode(RADIUS);         // Set ellipseMode to RADIUS
+    fill(1.0f);                  // Set fill to white
+    ellipse(200, 200, 120, 120); // Draw white ellipse using RADIUS mode
 
-    ellipseMode(CENTER);  // Set ellipseMode to CENTER
-    fill(0.4f);  // Set fill to gray
-    ellipse(200, 200, 120, 120);  // Draw gray ellipse using CENTER mode
+    ellipseMode(CENTER);         // Set ellipseMode to CENTER
+    fill(0.4f);                  // Set fill to gray
+    ellipse(200, 200, 120, 120); // Draw gray ellipse using CENTER mode
 
     translate(320, 0);
-    ellipseMode(CORNER);  // Set ellipseMode is CORNER
-    fill(1.0f);  // Set fill to white
-    ellipse(100, 100, 200, 200);  // Draw white ellipse using CORNER mode
+    ellipseMode(CORNER);         // Set ellipseMode is CORNER
+    fill(1.0f);                  // Set fill to white
+    ellipse(100, 100, 200, 200); // Draw white ellipse using CORNER mode
 
-    ellipseMode(CORNERS);  // Set ellipseMode to CORNERS
-    fill(0.4f);  // Set fill to gray
-    ellipse(100, 100, 200, 200);  // Draw gray ellipse using CORNERS mode
+    ellipseMode(CORNERS);        // Set ellipseMode to CORNERS
+    fill(0.4f);                  // Set fill to gray
+    ellipse(100, 100, 200, 200); // Draw gray ellipse using CORNERS mode
 }
