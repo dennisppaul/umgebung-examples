@@ -13,8 +13,8 @@ using namespace umgebung;
 //      - stroke_join_mode: BEVEL + MITER
 // TODO: in OpenGL 2.0 stroke weight is limited and strokeJoin + strokeCap are not supported
 
-const int light_blue = color(0.5f, 0.85f, 1.0f);
-const int soft_red   = color(1.0f, 0.25f, 0.35f);
+const uint32_t light_blue = color(0.5f, 0.85f, 1.0f);
+const uint32_t soft_red   = color(1.0f, 0.25f, 0.35f);
 
 int   stroke_join_mode = ROUND;
 int   stroke_cap_mode  = ROUND;
@@ -146,8 +146,8 @@ void draw() {
     translate(280, 0);
     pushMatrix();
     translate(120, 80);
-    rotateY(frameCount * 0.027f);
-    rotateZ(frameCount * 0.01f);
+    rotateY((float) frameCount * 0.027f);
+    rotateZ((float) frameCount * 0.01f);
     translate(-120, -80);
     beginShape(LINE_STRIP);
     vertex(120, 80);
