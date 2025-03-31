@@ -1,3 +1,5 @@
+// TODO move this to library
+
 #include "Umgebung.h"
 
 using namespace umgebung;
@@ -8,7 +10,6 @@ using namespace umgebung;
 #include "ADSR.h"
 #include "Reverb.h"
 #include "Wavetable.h"
-
 
 PFont*                 mFont{};
 klangwellen::ADSR      fADSR;
@@ -27,6 +28,7 @@ void setup() {
 
     klangwellen::Wavetable::sawtooth(fWavetable.get_wavetable(), fWavetable.get_wavetable_size());
     fWavetable.set_frequency(55);
+    textAlign(CENTER);
 }
 
 void draw() {
