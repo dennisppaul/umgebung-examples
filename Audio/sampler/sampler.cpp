@@ -1,5 +1,5 @@
 #include "Umgebung.h"
-#include "audio/AudioFileReader.h"
+#include "audio/AudioUtilities.h"
 #include "audio/Sampler.h"
 #include "audio/LowPassFilter.h"
 #include "audio/ADSR.h"
@@ -8,43 +8,21 @@
 
 using namespace umgebung;
 
-AudioFileReader audio_file_reader;
-Sampler*        sampler;
-LowPassFilter*  filter;
-ADSR*           adsr;
-Reverb*         reverb;
-Wavetable*      wavetable_oscillator;
+Sampler*       sampler;
+LowPassFilter* filter;
+ADSR*          adsr;
+Reverb*        reverb;
+Wavetable*     wavetable_oscillator;
 
 void settings() {
     size(1024, 768);
     audio(0, 2);
-}
-
-Sampler* loadSample(const std::string& filename) {
-    unsigned int channels;
-    unsigned int sample_rate;
-    drwav_uint64 length;
-    float*       sample_buffer = audio_file_reader.load(filename, channels, sample_rate, length);
-    console("loading sample: ");
-    console("channels   : ", channels);
-    console("sample_rate: ", sample_rate);
-    console("length     : ", length);
-    console("size       : ", channels * length);
-    if (channels > 1) {
-        warning("only mono samples are supported for sampler. using first channel only.");
-        const auto single_buffer = new float[length];
-        for (int i = 0; i < length; i++) {
-            single_buffer[i] = sample_buffer[i * channels];
-        }
-        delete[] sample_buffer;
-        sample_buffer = single_buffer;
-    }
-    const auto sampler = new Sampler(sample_buffer, length, sample_rate);
-    return sampler;
+    subsystem_audio = umgebung_create_subsystem_audio_sdl();
 }
 
 void setup() {
     sampler = loadSample("../teilchen.wav");
+    sampler->resample(48000, 48000 * 2);
 
     const float sample_rate = sampler->get_sample_rate();
     filter                  = new LowPassFilter(sample_rate);
