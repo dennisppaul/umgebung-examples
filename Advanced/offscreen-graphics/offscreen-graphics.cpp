@@ -1,6 +1,7 @@
 #include "Umgebung.h"
 #include "PGraphics.h"
-#include "PShader.h"
+
+// TODO coordinates are flipped
 
 using namespace umgebung;
 
@@ -8,6 +9,7 @@ PGraphics* pg = nullptr;
 
 void settings() {
     size(200, 200);
+    // TODO for debugging, remove these ASAP
     render_to_buffer   = true;
     antialiasing       = 0;
     subsystem_graphics = umgebung_create_subsystem_graphics_openglv33();

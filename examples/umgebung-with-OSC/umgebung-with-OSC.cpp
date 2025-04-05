@@ -1,15 +1,15 @@
+// TODO add callback for application
+
 #include "Umgebung.h"
-#include "osc/OSC.h"
+#include "OSC.h"
 
 using namespace umgebung;
 
-class UmgebungExampleAppWithOSC : public PApplet, OSCListener {
+class MOSCListener final : public OSCListener {
+public:
+    bool message_event = false;
 
-    OSC  mOSC{"127.0.0.1", 7001, 7000};
-    bool message_event   = false;
-    int  message_counter = 0;
-
-    void receive(const OscMessage& msg) {
+    void receive(const OscMessage& msg) override {
         if (msg.typetag() == "ifs") {
             println("received address pattern: ",
                     msg.addrPattern(),
@@ -27,53 +27,53 @@ class UmgebungExampleAppWithOSC : public PApplet, OSCListener {
             println("could not parse OSC message: ", msg.typetag());
         }
     }
-
-    void settings() {
-        size(1024, 768);
-        no_audio = true;
-    }
-
-    void setup() {
-        mOSC.callback(this);
-        background(0);
-
-        println("sizeof(int): ", sizeof(int));
-    }
-
-    void draw() {
-        if (message_event) {
-            message_event = false;
-            fill(1.0f);
-            constexpr int num_rects = 20;
-            const float   size_rect = width / num_rects;
-            const float   x         = (message_counter % num_rects) * size_rect;
-            const float   y         = (message_counter / num_rects) * size_rect;
-            rect(x, y, size_rect, size_rect);
-            message_counter++;
-            if (message_counter > num_rects * num_rects) {
-                message_counter = 0;
-                background(0);
-            }
-        }
-    }
-
-    void keyPressed() {
-        if (key == 'q') {
-            exit();
-        }
-        if (key == 's') {
-            std::cout << "send OSC message" << std::endl;
-            mOSC.send("/test_send_1", 23, "hello", 42);
-
-            OscMessage msg("/test_send_2");
-            msg.add(mouseY);
-            mOSC.send(msg, NetAddress("localhost", 8000));
-
-            message_event = true;
-        }
-    }
 };
 
-PApplet* umgebung::instance() {
-    return new UmgebungExampleAppWithOSC();
+MOSCListener osc_listener;
+
+OSC mOSC{"127.0.0.1", 7000, 7001};
+int message_counter = 0;
+
+void settings() {
+    size(1024, 768);
+}
+
+void setup() {
+    mOSC.callback(&osc_listener);
+    background(0.0f);
+
+    println("sizeof(int): ", sizeof(int));
+}
+
+void draw() {
+    if (osc_listener.message_event) {
+        osc_listener.message_event = false;
+        fill(1.0f);
+        constexpr int num_rects = 20;
+        const float   size_rect = width / num_rects;
+        const float   x         = (message_counter % num_rects) * size_rect;
+        const float   y         = (message_counter / num_rects) * size_rect;
+        rect(x, y, size_rect, size_rect);
+        message_counter++;
+        if (message_counter > num_rects * num_rects) {
+            message_counter = 0;
+            background(0.0f);
+        }
+    }
+}
+
+void keyPressed() {
+    if (key == 'q') {
+        exit();
+    }
+    if (key == 's') {
+        std::cout << "send OSC message" << std::endl;
+        mOSC.send("/test_send_1", 23, "hello", 42);
+
+        OscMessage msg("/test_send_2");
+        msg.add(mouseY);
+        mOSC.send(msg, NetAddress("localhost", 8000));
+
+        osc_listener.message_event = true;
+    }
 }

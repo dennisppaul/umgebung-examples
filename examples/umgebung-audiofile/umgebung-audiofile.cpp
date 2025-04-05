@@ -2,8 +2,8 @@
 
 using namespace umgebung;
 
-#include "AudioFileReader.h"
-#include "AudioFileWriter.h"
+#include "audio/AudioFileReader.h"
+#include "audio/AudioFileWriter.h"
 #include "PAudio.h"
 
 AudioFileReader audio_file_reader;
