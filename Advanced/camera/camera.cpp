@@ -1,6 +1,7 @@
-#include "Umgebung.h"
-
+// TODO merge with umgebung-capture
 // NOTE WIP there are still a lot of things very broken here …
+
+#include "Umgebung.h"
 
 using namespace umgebung;
 
@@ -11,8 +12,6 @@ using namespace umgebung;
 
 void settings() {
     size(1024, 768);
-    render_to_buffer   = true;
-    subsystem_graphics = umgebung_create_subsystem_graphics_openglv33();
 }
 
 void setup() {

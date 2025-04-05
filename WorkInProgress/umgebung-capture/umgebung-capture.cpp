@@ -1,3 +1,5 @@
+// TODO merge with camera example
+
 #include "Umgebung.h"
 #include "Capture.h"
 
