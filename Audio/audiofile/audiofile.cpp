@@ -1,3 +1,5 @@
+// TODO split up the example into multiple topics ( streaming WAV, multiple devices, etc. )
+
 #include "Umgebung.h"
 
 using namespace umgebung;
