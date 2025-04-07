@@ -24,11 +24,11 @@ void setup() {
     sampler = loadSample("../teilchen.wav");
     sampler->resample(48000, 48000 * 2);
 
-    const float sample_rate = sampler->get_sample_rate();
-    filter                  = new LowPassFilter(sample_rate);
-    adsr                    = new ADSR(sample_rate);
-    reverb                  = new Reverb();
-    wavetable_oscillator    = new Wavetable(1024, sample_rate);
+    const float sampler_sample_rate = sampler->get_sample_rate();
+    filter                          = new LowPassFilter(sampler_sample_rate);
+    adsr                            = new ADSR(sampler_sample_rate);
+    reverb                          = new Reverb();
+    wavetable_oscillator            = new Wavetable(1024, sampler_sample_rate);
 
     wavetable_oscillator->set_waveform(WAVEFORM_TRIANGLE);
     wavetable_oscillator->set_frequency(220.0f);
