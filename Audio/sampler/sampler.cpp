@@ -1,4 +1,4 @@
-#include "Umgebung.h"
+#include "Umfeld.h"
 #include "audio/AudioUtilities.h"
 #include "audio/Sampler.h"
 #include "audio/LowPassFilter.h"
@@ -6,7 +6,7 @@
 #include "audio/Wavetable.h"
 #include "audio/Reverb.h"
 
-using namespace umgebung;
+using namespace umfeld;
 
 Sampler*       sampler;
 LowPassFilter* filter;
@@ -17,7 +17,7 @@ Wavetable*     wavetable_oscillator;
 void settings() {
     size(1024, 768);
     audio(0, 2);
-    subsystem_audio = umgebung_create_subsystem_audio_sdl();
+    subsystem_audio = umfeld_create_subsystem_audio_sdl();
 }
 
 void setup() {

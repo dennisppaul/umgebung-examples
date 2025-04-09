@@ -1,8 +1,8 @@
 // TODO split up the example into multiple topics ( streaming WAV, multiple devices, etc. )
 
-#include "Umgebung.h"
+#include "Umfeld.h"
 
-using namespace umgebung;
+using namespace umfeld;
 
 #include "audio/AudioFileReader.h"
 #include "audio/AudioFileWriter.h"
@@ -14,7 +14,7 @@ bool            toggle_pause        = false;
 
 void settings() {
     size(1024, 768);
-    umgebung::subsystem_audio = umgebung_create_subsystem_audio_portaudio(); // NOTE use portaudio instead of SDL
+    umfeld::subsystem_audio = umfeld_create_subsystem_audio_portaudio(); // NOTE use portaudio instead of SDL
 
     // NOTE this function creates a audio device with 1 input, 2 output channels
     //      and a sample rate of 48000 with default values of 32-bit float buffer

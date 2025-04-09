@@ -1,11 +1,11 @@
-#include "Umgebung.h"
+#include "Umfeld.h"
 #include "VertexBuffer.h"
 
 /*
  * this example shows how to load an OBJ and display it as a mesh.
  */
 
-using namespace umgebung;
+using namespace umfeld;
 
 void settings() {
     size(1024, 768);

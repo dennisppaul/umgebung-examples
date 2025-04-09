@@ -1,9 +1,9 @@
-[submodule "WorkInProgress/umgebung-with-klangwellen/klangwellen"]
-	path = WorkInProgress/umgebung-with-klangwellen/klangwellen
+[submodule "WorkInProgress/umfeld-with-klangwellen/klangwellen"]
+	path = WorkInProgress/umfeld-with-klangwellen/klangwellen
 	url = https://github.com/dennisppaul/klangwellen.git
-[submodule "WorkInProgress/umgebung-with-paulstretch/klangwellen"]
-	path = WorkInProgress/umgebung-with-paulstretch/klangwellen
+[submodule "WorkInProgress/umfeld-with-paulstretch/klangwellen"]
+	path = WorkInProgress/umfeld-with-paulstretch/klangwellen
 	url = https://github.com/dennisppaul/klangwellen.git
-[submodule "WorkInProgress/umgebung-with-paulstretch/paulstretch"]
-	path = WorkInProgress/umgebung-with-paulstretch/paulstretch
+[submodule "WorkInProgress/umfeld-with-paulstretch/paulstretch"]
+	path = WorkInProgress/umfeld-with-paulstretch/paulstretch
 	url = https://github.com/dennisppaul/paulstretch.git

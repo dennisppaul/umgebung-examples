@@ -1,9 +1,9 @@
 #include <glm/glm.hpp>
 
-#include "Umgebung.h"
+#include "Umfeld.h"
 #include "Geometry.h"
 
-using namespace umgebung;
+using namespace umfeld;
 
 int   stroke_join_mode = MITER;
 int   stroke_cap_mode  = ROUND;
@@ -17,7 +17,7 @@ void settings() {
     render_to_buffer   = true;
     retina_support     = true;
     enable_audio       = false;
-    subsystem_graphics = umgebung_create_subsystem_graphics_openglv33();
+    subsystem_graphics = umfeld_create_subsystem_graphics_openglv33();
 }
 
 void setup() {

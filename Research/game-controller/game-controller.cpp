@@ -2,10 +2,10 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <SDL3/SDL.h>
 
-#include "Umgebung.h"
+#include "Umfeld.h"
 #include "Geometry.h"
 
-using namespace umgebung;
+using namespace umfeld;
 
 #define MOTION_EVENT_COOLDOWN 40
 

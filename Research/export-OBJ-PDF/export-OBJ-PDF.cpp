@@ -6,10 +6,10 @@
 #include <cairo/cairo.h>
 #include <vector>
 
-#include "Umgebung.h"
+#include "Umfeld.h"
 #include "Geometry.h"
 
-using namespace umgebung;
+using namespace umfeld;
 
 int                    frame_counter = 0;
 std::vector<glm::vec3> line_vertices;

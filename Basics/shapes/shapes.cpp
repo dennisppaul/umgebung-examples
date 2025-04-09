@@ -1,7 +1,7 @@
-#include "Umgebung.h"
+#include "Umfeld.h"
 #include "Geometry.h"
 
-using namespace umgebung;
+using namespace umfeld;
 
 /*
  * this example shows how to use the beginShape() + endShape() functions to draw a shape with different vertex types.

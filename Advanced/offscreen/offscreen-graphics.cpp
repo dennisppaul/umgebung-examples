@@ -1,9 +1,9 @@
-#include "Umgebung.h"
+#include "Umfeld.h"
 #include "PGraphics.h"
 
 // TODO coordinates are flipped
 
-using namespace umgebung;
+using namespace umfeld;
 
 PGraphics* pg = nullptr;
 
@@ -12,7 +12,7 @@ void settings() {
     // TODO for debugging, remove these ASAP
     render_to_buffer   = true;
     antialiasing       = 0;
-    subsystem_graphics = umgebung_create_subsystem_graphics_openglv33();
+    subsystem_graphics = umfeld_create_subsystem_graphics_openglv33();
 }
 
 void setup() {

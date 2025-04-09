@@ -1,7 +1,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "Umgebung.h"
+#include "Umfeld.h"
 #include "PShader.h"
 #include "ShaderSource.h"
 #include "VertexBuffer.h"
@@ -10,7 +10,7 @@
 
 // see https://tchayen.github.io/posts/wireframes-with-barycentric-coordinates
 
-using namespace umgebung;
+using namespace umfeld;
 
 ShaderSource shader_source_barycentric_wireframe{
     .vertex   = R"(
@@ -82,7 +82,7 @@ void settings() {
     render_to_buffer   = false;
     retina_support     = true;
     enable_audio       = false;
-    subsystem_graphics = umgebung_create_subsystem_graphics_openglv33();
+    subsystem_graphics = umfeld_create_subsystem_graphics_openglv33();
 }
 
 void setup() {

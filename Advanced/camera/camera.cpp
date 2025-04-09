@@ -1,9 +1,9 @@
-// TODO merge with umgebung-capture
+// TODO merge with umfeld-capture
 // NOTE WIP there are still a lot of things very broken here …
 
-#include "Umgebung.h"
+#include "Umfeld.h"
 
-using namespace umgebung;
+using namespace umfeld;
 
 /*
  * this example shows how to use the camera

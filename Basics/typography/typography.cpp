@@ -1,7 +1,7 @@
-#include "Umgebung.h"
+#include "Umfeld.h"
 #include "CircularBuffer.h"
 
-using namespace umgebung;
+using namespace umfeld;
 
 /*
  * this example shows how to render text and work with typographic attributes

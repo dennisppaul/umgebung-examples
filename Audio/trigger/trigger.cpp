@@ -1,9 +1,9 @@
-#include "Umgebung.h"
+#include "Umfeld.h"
 #include "audio/ADSR.h"
 #include "audio/Trigger.h"
 #include "audio/Wavetable.h"
 
-using namespace umgebung;
+using namespace umfeld;
 
 Wavetable*        wavetable_oscillator;
 Wavetable*        lfo;

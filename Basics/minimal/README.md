@@ -20,13 +20,13 @@ $ rm -rf build
 
 ## template for a CMake file
 
-this minimal cmake example shows how to configure CMake to build an umgebung application. the only *really* important thing is to set the `UMGEBUNG_PATH` variable to the location of the umgebung repository ( i.e the folder containing `LICENSE.md`, `README.md`, `src` etcetera ) e.g `$HOME/Documents/dev/umgebung/git/umgebung`. all other lines should be fine as they are:
+this minimal cmake example shows how to configure CMake to build an umfeld application. the only *really* important thing is to set the `UMFELD_PATH` variable to the location of the umfeld repository ( i.e the folder containing `LICENSE.md`, `README.md`, `src` etcetera ) e.g `$HOME/Documents/dev/umfeld/git/umfeld`. all other lines should be fine as they are:
 
 ```cmake
 cmake_minimum_required(VERSION 3.12)
 
 project(minimal)                                                   # set application name
-set(UMGEBUNG_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../../../umgebung") # set path to umgebung library
+set(UMFELD_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../../../umfeld") # set path to umfeld library
 
 # --------- no need to change anything below this line ------------
 
@@ -37,8 +37,8 @@ include_directories(".")                                           # add all `.h
 file(GLOB SOURCE_FILES "*.cpp")                                    # collect all `.cpp` source files from this directory
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})                    # add source files to application
 
-add_subdirectory(${UMGEBUNG_PATH} ${CMAKE_BINARY_DIR}/umgebung-lib-${PROJECT_NAME}) # add umgebung location
-add_umgebung_libs()                                                # add umgebung library
+add_subdirectory(${UMFELD_PATH} ${CMAKE_BINARY_DIR}/umfeld-lib-${PROJECT_NAME}) # add umfeld location
+add_umfeld_libs()                                                # add umfeld library
 ```
 
 ## BONUS: custom run target

@@ -1,18 +1,18 @@
-#include "Umgebung.h"
+#include "Umfeld.h"
 #include "Geometry.h"
 
 /*
  * this example shows how to use `saveFrame()` to save the current frame to a file.
  */
 
-using namespace umgebung;
+using namespace umfeld;
 
 void settings() {
     size(1024, 768);
     antialiasing       = 8;
     render_to_buffer   = false;
     retina_support     = true;
-    subsystem_graphics = umgebung_create_subsystem_graphics_openglv20();
+    subsystem_graphics = umfeld_create_subsystem_graphics_openglv20();
 }
 
 void setup() {
