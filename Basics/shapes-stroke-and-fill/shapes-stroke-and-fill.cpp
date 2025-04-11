@@ -1,5 +1,3 @@
-#include <glm/glm.hpp>
-
 #include "Umfeld.h"
 #include "Geometry.h"
 

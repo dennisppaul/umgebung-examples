@@ -57,12 +57,6 @@ void note_off(int, int) {
     println("received note_off via callback");
 }
 
-void keyPressed() {
-    if (key == 'q') {
-        exit();
-    }
-}
-
 void midi_message(const std::vector<unsigned char>& message) {
     if (message.size() > 0) {
         print("received midi_message via callback: ");

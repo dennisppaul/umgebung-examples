@@ -1,17 +1,17 @@
-#include "Umfeld.h"
-#include "Geometry.h"
-
-using namespace umfeld;
-
 /*
  * this example shows how to use the beginShape() + endShape() functions to draw a shape with different vertex types.
  * from https://processing.org/reference/beginShape_.html
  */
 
+#include "Umfeld.h"
+#include "Geometry.h"
+
 // TODO: the following combinations are partly broken:
 //      - stroke_cap_mode : PROJECT + POINTED
 //      - stroke_join_mode: BEVEL + MITER
 // TODO: in OpenGL 2.0 stroke weight is limited and strokeJoin + strokeCap are not supported
+
+using namespace umfeld;
 
 const uint32_t light_blue = color(0.5f, 0.85f, 1.0f);
 const uint32_t soft_red   = color(1.0f, 0.25f, 0.35f);
