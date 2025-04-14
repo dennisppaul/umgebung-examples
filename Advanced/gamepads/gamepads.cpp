@@ -51,7 +51,7 @@ void draw() {
     circle(circle_blue.position.x, circle_blue.position.y, circle_blue.size);
 }
 
-void gamepadAxis(const int id, const int axis, const float value) {
+void gamepad_axis(const int id, const int axis, const float value) {
     /*
      * right/red joy-con: ↑2↓ ←3→
      * left/blue joy-con: ↑0↓ ←1→
@@ -70,7 +70,7 @@ void gamepadAxis(const int id, const int axis, const float value) {
     }
 }
 
-void gamepadButton(const int id, const int button, const bool down) {
+void gamepad_button(const int id, const int button, const bool down) {
     /*
      * right/red joy-con: ↑2  ←0  →3  ↓1  + 8
      * left/blue joy-con: ↑14 ←11 →12 ↓13 + 7
