@@ -1,18 +1,16 @@
+/*
+ * this example demonstrates how to load a sample and apply a low pass filter
+ * to it. it also shows how to resample a sample to a different sample rate.
+ */
+
 #include "Umfeld.h"
-#include "audio/AudioUtilities.h"
 #include "audio/Sampler.h"
 #include "audio/LowPassFilter.h"
-#include "audio/ADSR.h"
-#include "audio/Wavetable.h"
-#include "audio/Reverb.h"
 
 using namespace umfeld;
 
 Sampler*       sampler;
 LowPassFilter* filter;
-ADSR*          adsr;
-Reverb*        reverb;
-Wavetable*     wavetable_oscillator;
 
 void settings() {
     size(1024, 768);
@@ -26,13 +24,6 @@ void setup() {
 
     const float sampler_sample_rate = sampler->get_sample_rate();
     filter                          = new LowPassFilter(sampler_sample_rate);
-    adsr                            = new ADSR(sampler_sample_rate);
-    reverb                          = new Reverb();
-    wavetable_oscillator            = new Wavetable(1024, sampler_sample_rate);
-
-    wavetable_oscillator->set_waveform(WAVEFORM_TRIANGLE);
-    wavetable_oscillator->set_frequency(220.0f);
-    wavetable_oscillator->set_amplitude(0.7f);
 
     sampler->set_looping();
     sampler->play();
@@ -48,28 +39,19 @@ void draw() {
     line(x - size, y - size, x + size, y + size);
     line(x - size, y + size, x + size, y - size);
 
-    wavetable_oscillator->set_frequency(map(mouseX, 0, width, 20.0f, 880.0f));
     filter->set_frequency(map(mouseX, 0, width, 20.0f, 8000.0f));
     filter->set_resonance(map(mouseY, 0, height, 0.1f, 0.9f));
 }
 
 void keyPressed() {
     if (key == '1') {
-        if (adsr->is_idle()) {
-            adsr->start();
-        }
-    }
-    if (key == '2') {
         sampler->rewind();
         sampler->play();
     }
 }
 
 void keyReleased() {
-    if (key == '1') {
-        adsr->stop();
-    }
-    if (key == '3') {
+    if (key == '2') {
         sampler->stop();
     }
 }
@@ -77,21 +59,14 @@ void keyReleased() {
 void audioEvent() {
     float sample_buffer[audio_buffer_size];
     for (int i = 0; i < audio_buffer_size; i++) {
-        float osc        = wavetable_oscillator->process();
-        osc              = adsr->process(osc);
-        osc              = reverb->process(osc);
         float sample     = sampler->process();
         sample           = filter->process(sample);
-        sample_buffer[i] = sample + osc;
+        sample_buffer[i] = sample;
     }
     merge_interleaved_stereo(sample_buffer, sample_buffer, audio_output_buffer, audio_buffer_size);
 }
 
 void shutdown() {
-    delete[] sampler->get_buffer();
     delete sampler;
     delete filter;
-    delete adsr;
-    delete reverb;
-    delete wavetable_oscillator;
 }

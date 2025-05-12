@@ -68,7 +68,6 @@
 
 #include <stdint.h>
 #include <stdio.h>
-
 #include <vector>
 
 #include "KlangWellen.h"
@@ -104,14 +103,13 @@ namespace klangwellen {
              */
             float value;
 
-            Stage(float pValue = 0.0, float pDuration = 0.0) {
+            explicit Stage(const float pValue = 0.0, const float pDuration = 0.0) {
                 duration = pDuration;
                 value    = pValue;
             }
         };
 
-        Envelope(uint32_t sample_rate = KlangWellen::DEFAULT_SAMPLE_RATE) : fSampleRate(sample_rate) {
-        }
+        explicit Envelope(const uint32_t sample_rate = KlangWellen::DEFAULT_SAMPLE_RATE) : fSampleRate(sample_rate) {}
 
         /**
          * enable looping of envelope. once the last stage has completed the envelope is reset to the first stage and
@@ -119,7 +117,7 @@ namespace klangwellen {
          *
          * @param pLoop flag to enable looping.
          */
-        void enable_loop(bool pLoop) {
+        void enable_loop(const bool pLoop) {
             fLoop = pLoop;
         }
 
@@ -129,6 +127,10 @@ namespace klangwellen {
          * @return current value
          */
         float process() {
+            if (fEnvelopeStages.empty()) {
+                fEnvelopeDone = true;
+                return 0;
+            }
             if (!fEnvelopeDone) {
                 const int mNumberOfStages = fEnvelopeStages.size();
                 if (fEnvStage < mNumberOfStages) {
@@ -164,7 +166,7 @@ namespace klangwellen {
          * @param pEndValue   end value of ramp
          * @param pDuration   duration of ramp
          */
-        void ramp(float pStartValue, float pEndValue, float pDuration) {
+        void ramp(const float pStartValue, const float pEndValue, const float pDuration) {
             fEnvelopeStages.clear();
             add_stage(pStartValue, pDuration);
             add_stage(pEndValue);
@@ -177,7 +179,7 @@ namespace klangwellen {
          * @param pValue    end value of ramp
          * @param pDuration duration of ramp
          */
-        void ramp_to(float pValue, float pDuration) {
+        void ramp_to(const float pValue, const float pDuration) {
             fEnvelopeStages.clear();
             add_stage(fValue, pDuration);
             add_stage(pValue);
@@ -194,14 +196,14 @@ namespace klangwellen {
          * @param pValue    value of stage
          * @param pDuration duration of stage
          */
-        void add_stage(float pValue, float pDuration) {
+        void add_stage(const float pValue, const float pDuration) {
             fEnvelopeStages.push_back(Stage(pValue, pDuration));
         }
 
         /**
          * @param pValue value of stage
          */
-        void add_stage(float pValue) {
+        void add_stage(const float pValue) {
             fEnvelopeStages.push_back(Stage(pValue, 0.0f));
         }
 
@@ -231,31 +233,44 @@ namespace klangwellen {
         }
 
         /**
-         * @return time scale in seconds
+         * @return timescale in seconds
          */
-        float get_time_scale() {
+        float get_time_scale() const {
             return fTimeScale;
         }
 
         /**
-         * @param pTimeScale time scale in seconds
+         * @param pTimeScale timescale in seconds
          */
-        void set_time_scale(float pTimeScale) {
+        void set_time_scale(const float pTimeScale) {
             fTimeScale = pTimeScale;
         }
 
         /**
          * @return current value
          */
-        float get_current_value() {
+        float get_current_value() const {
             return fValue;
         }
 
         /**
          * @param pValue set current value
          */
-        void set_current_value(float pValue) {
+        void set_current_value(const float pValue) {
             fValue = pValue;
+        }
+        /**
+         * helper functions for ADSR envelopes
+         * @param attack
+         * @param decay
+         * @param sustain
+         * @param release
+         */
+        void set_adsr(const float attack, const float decay, const float sustain, const float release) {
+            clear_stages();
+            add_stage(0.0f, attack);
+            add_stage(1.0f, decay);
+            add_stage(sustain, release);
         }
 
     private:
@@ -269,7 +284,7 @@ namespace klangwellen {
         float              fTimeScale     = 1.0f;
         float              fValue         = 0.0f;
 
-        float compute_delta_fraction(float pDelta, float pDuration) {
+        float compute_delta_fraction(const float pDelta, const float pDuration) const {
             return pDuration > 0 ? (pDelta / fSampleRate) / pDuration : pDelta;
         }
 
@@ -279,12 +294,12 @@ namespace klangwellen {
             }
         }
 
-        void finished_stage(int stage) {
+        void finished_stage(const int stage) {
             (void) stage;
             // TODO implement stage finished callback
         }
 
-        void prepareNextStage(int stage, float fraction) {
+        void prepareNextStage(const int stage, const float fraction) {
             fEnvStage      = stage;
             fStageDuration = 0.0f;
             // @TODO maybe keep fractional part.
@@ -296,7 +311,7 @@ namespace klangwellen {
             }
         }
 
-        void setDelta(int pEnvStage) {
+        void setDelta(const int pEnvStage) {
             const float mDeltaTMP = fEnvelopeStages[pEnvStage + 1].value - fEnvelopeStages[pEnvStage].value;
             fDelta                = compute_delta_fraction(mDeltaTMP, fEnvelopeStages[fEnvStage].duration);
         }
