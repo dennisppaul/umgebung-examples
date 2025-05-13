@@ -41,8 +41,6 @@ void settings() {
 void setup() {
     mOSC.callback(&osc_listener);
     background(0.0f);
-
-    println("sizeof(int): ", sizeof(int));
 }
 
 void draw() {
@@ -63,9 +61,6 @@ void draw() {
 }
 
 void keyPressed() {
-    if (key == 'q') {
-        exit();
-    }
     if (key == 's') {
         std::cout << "send OSC message" << std::endl;
         mOSC.send("/test_send_1", 23, "hello", 42);

@@ -15,7 +15,7 @@ LowPassFilter* filter;
 void settings() {
     size(1024, 768);
     audio(0, 2);
-    subsystem_audio = umfeld_create_subsystem_audio_sdl();
+    // subsystem_audio = umfeld_create_subsystem_audio_sdl();
 }
 
 void setup() {

@@ -17,7 +17,7 @@ int   stroke_join_mode = ROUND;
 int   stroke_cap_mode  = ROUND;
 float stroke_weight    = 15.0f;
 
-PMesh mesh_shape;
+VertexBuffer mesh_shape;
 
 void settings() {
     size(1024, 768);
@@ -31,6 +31,11 @@ void settings() {
 
 void setup() {
     hint(ENABLE_SMOOTH_LINES);
+    for (int i = 0; i < 2048; ++i) {
+        mesh_shape.add_vertex(Vertex(glm::vec3(width / 2 + random(-10, 10), height / 2 + random(-10, 10), random(-10, 10)),
+                                     glm::vec4(random(1.0f), random(1.0f), random(1.0f), 1.0f),
+                                     glm::vec2(0.0f)));
+    }
 }
 
 void draw() {
@@ -42,11 +47,14 @@ void draw() {
             v.position.y += random(-1, 1);
             v.position.z += random(-1, 1);
         }
+        // TODO adding vertices dynamically is currently not working on windows
+#ifndef SYSTEM_WIN32
         for (int i = 0; i < 256; ++i) {
             mesh_shape.add_vertex(Vertex(glm::vec3(mouseX + random(-10, 10), mouseY + random(-10, 10), random(-10, 10)),
                                          glm::vec4(random(1.0f), random(1.0f), random(1.0f), 1.0f),
                                          glm::vec2(0.0f)));
         }
+#endif
         mesh_shape.update();
     }
 

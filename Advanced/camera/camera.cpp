@@ -1,4 +1,3 @@
-// TODO merge with umfeld-capture
 // NOTE WIP there are still a lot of things very broken here …
 
 #include "Umfeld.h"
