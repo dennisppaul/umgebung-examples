@@ -8,7 +8,7 @@
 cmake_minimum_required(VERSION 3.12)
 
 project(minimal)                                                   # set application name
-set(UMFELD_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../../../umfeld") # set path to umfeld library
+set(UMFELD_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../../../umfeld")     # set path to umfeld library
 
 # --------- no need to change anything below this line ------------
 
@@ -19,5 +19,6 @@ include_directories(".")                                           # add all `.h
 file(GLOB SOURCE_FILES "*.cpp")                                    # collect all `.cpp` source files from this directory
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})                    # add source files to application
 
+#set(UMFELD_OPENGL_VERSION "2.0")                                   # set OpenGL version. currently available: "2.0", "core3.3" or "es3.0"
 add_subdirectory(${UMFELD_PATH} ${CMAKE_BINARY_DIR}/umfeld-lib-${PROJECT_NAME}) # add umfeld location
-add_umfeld_libs()                                                # add umfeld library
+add_umfeld_libs()                                                  # add umfeld library
