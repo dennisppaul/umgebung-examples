@@ -74,7 +74,7 @@ void draw() {
 }
 
 void mousePressed() {
-#ifndef SYSTEM_WIN32
+#ifndef SYSTEM_WINDOWS
     popen("say -v \"Anna\" \"EI CAN DANCE!\"", "r");
 #endif
 }
