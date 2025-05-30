@@ -20,7 +20,7 @@ void settings() {
 
 void setup() {
     sampler = loadSample("../teilchen.wav");
-    sampler->resample(48000, 48000 * 2);
+    // sampler->resample(48000, 48000 * 2);
 
     const float sampler_sample_rate = sampler->get_sample_rate();
     filter                          = new LowPassFilter(sampler_sample_rate);
