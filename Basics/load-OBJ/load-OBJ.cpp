@@ -1,18 +1,18 @@
-#include "Umfeld.h"
-#include "VertexBuffer.h"
-
 /*
  * this example shows how to load an OBJ and display it as a mesh.
  */
 
+#include "Umfeld.h"
+#include "VertexBuffer.h"
+
 using namespace umfeld;
+
+VertexBuffer* mesh_shape;
+int           number_vertices = 0;
 
 void settings() {
     size(1024, 768);
 }
-
-VertexBuffer* mesh_shape;
-int           number_vertices = 0;
 
 void setup() {
     hint(ENABLE_DEPTH_TEST);

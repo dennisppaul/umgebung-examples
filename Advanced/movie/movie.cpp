@@ -1,8 +1,12 @@
+
+/*
+ * this example shows how to use playback of a video file ( without sound ).
+*/
+
 #include "Umfeld.h"
 #include "Movie.h"
 
 using namespace umfeld;
-
 
 class MyMovieListener final : public MovieListener {
     void movieVideoEvent(Movie* m, float* audio_buffer, int length, int channels) override {}

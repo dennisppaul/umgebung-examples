@@ -1,9 +1,13 @@
+/*
+ * this example shows how to use primitive shapes like arcs and ellipses.
+ */
+
 #include "Umfeld.h"
 
 using namespace umfeld;
 
 void settings() {
-    size(1024, 768, OPENGL_3_3);
+    size(1024, 768);
 }
 
 void draw() {

@@ -1,7 +1,12 @@
+// TODO coordinates are flipped
+
+/*
+ * this example shows how to use the offscreen graphics subsystem
+ * to render to a PGraphics object using OpenGL.
+ */
+
 #include "Umfeld.h"
 #include "PGraphics.h"
-
-// TODO coordinates are flipped
 
 using namespace umfeld;
 
@@ -10,15 +15,15 @@ PGraphics* pg = nullptr;
 void settings() {
     size(200, 200);
     // TODO for debugging, remove these ASAP
-    render_to_buffer   = true;
-    antialiasing       = 0;
-    subsystem_graphics = umfeld_create_subsystem_graphics_openglv33();
+    render_to_buffer = true;
+    antialiasing     = 0;
+    // subsystem_graphics = umfeld_create_subsystem_graphics_openglv33();
 }
 
 void setup() {
     noFill();
     stroke(1.0f, 0.25f, 0.35f);
-    pg = createGraphics(100, 100, OPENGL);
+    pg = createGraphics(100, 100, RENDERER_OPEN_GL); // TODO add option to deduce renderer from `g` or settings
 }
 
 void draw() {

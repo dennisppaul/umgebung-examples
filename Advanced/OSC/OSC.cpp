@@ -1,5 +1,9 @@
 // TODO add callback for application
 
+/*
+ * this example shows how to use the OSC to send and receive OSC messages.
+ */
+
 #include "Umfeld.h"
 #include "OSC.h"
 

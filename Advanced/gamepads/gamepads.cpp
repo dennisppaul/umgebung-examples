@@ -1,5 +1,5 @@
 /*
- * this example demonstrates how to integrate game controllers i.e Nintendo Joy-Con in detached mode.
+ * this example demonstrates how to integrate game controllers i.e Nintendo Joy-Con ( in detached mode ).
  */
 
 #include "Umfeld.h"

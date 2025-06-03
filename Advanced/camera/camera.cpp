@@ -1,13 +1,13 @@
-// NOTE WIP there are still a lot of things very broken here …
-
-#include "Umfeld.h"
-
-using namespace umfeld;
+// TODO WIP there are still a lot of things very broken here …
 
 /*
  * this example shows how to use the camera
  * from https://processing.org/reference/camera_.html
  */
+
+#include "Umfeld.h"
+
+using namespace umfeld;
 
 void settings() {
     size(1024, 768);

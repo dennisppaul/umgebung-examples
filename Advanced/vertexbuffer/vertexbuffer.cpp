@@ -34,7 +34,7 @@ void setup() {
     for (int i = 0; i < 2048; ++i) {
         mesh_shape.add_vertex(Vertex(glm::vec3(width / 2 + random(-10, 10), height / 2 + random(-10, 10), random(-10, 10)),
                                      glm::vec4(random(1.0f), random(1.0f), random(1.0f), 1.0f),
-                                     glm::vec2(0.0f)));
+                                     glm::vec3(0.0f)));
     }
 }
 
@@ -52,7 +52,7 @@ void draw() {
         for (int i = 0; i < 256; ++i) {
             mesh_shape.add_vertex(Vertex(glm::vec3(mouseX + random(-10, 10), mouseY + random(-10, 10), random(-10, 10)),
                                          glm::vec4(random(1.0f), random(1.0f), random(1.0f), 1.0f),
-                                         glm::vec2(0.0f)));
+                                         glm::vec3(0.0f)));
         }
 #endif
         mesh_shape.update();

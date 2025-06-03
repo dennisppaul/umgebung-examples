@@ -1,17 +1,17 @@
-#include "Umfeld.h"
-#include "Geometry.h"
-
 /*
  * this example shows how to use `saveFrame()` to save the current frame to a file.
  */
+
+#include "Umfeld.h"
+#include "Geometry.h"
 
 using namespace umfeld;
 
 void settings() {
     size(1024, 768);
-    antialiasing       = 8;
-    render_to_buffer   = false;
-    retina_support     = true;
+    antialiasing     = 8;
+    render_to_buffer = false;
+    retina_support   = true;
 }
 
 void setup() {

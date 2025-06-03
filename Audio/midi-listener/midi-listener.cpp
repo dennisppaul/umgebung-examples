@@ -1,3 +1,7 @@
+/*
+ * this example shows how to use the MIDIListener interface
+ */
+
 #include "Umfeld.h"
 #include "MIDI.h"
 

@@ -15,7 +15,6 @@ void settings() {
     render_to_buffer   = true;
     retina_support     = true;
     enable_audio       = false;
-    subsystem_graphics = umfeld_create_subsystem_graphics_openglv33();
 }
 
 void setup() {

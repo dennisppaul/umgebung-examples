@@ -1,5 +1,10 @@
 // TODO split up the example into multiple topics ( streaming WAV, multiple devices, etc. )
 
+/*
+ * this example demonstrates how to use the audio file reader and writer.
+ * it reads a WAV file, plays it back and writes a sine wave to a new WAV file.
+ */
+
 #include "Umfeld.h"
 
 using namespace umfeld;

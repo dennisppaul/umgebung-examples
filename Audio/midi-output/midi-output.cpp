@@ -1,3 +1,7 @@
+/*
+ * this example shows how to send MIDI messages using the MIDI class
+ */
+
 #include "Umfeld.h"
 #include "MIDI.h"
 

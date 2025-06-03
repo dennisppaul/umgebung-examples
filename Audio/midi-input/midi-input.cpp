@@ -1,3 +1,7 @@
+/*
+ * this example shows how to use the MIDI to receive MIDI messages
+ */
+
 #include "Umfeld.h"
 #include "MIDI.h"
 
@@ -26,7 +30,7 @@ void setup() {
 void draw() {
     background(0.85f);
     for (int i = 0; i < PAD_COUNT; ++i) {
-        float circle_size ;
+        float circle_size;
         if (pad_pressed[i]) {
             circle_size = 100;
             if (i >= PAD_COUNT / 2) {
