@@ -6,6 +6,7 @@
 #include "Umfeld.h"
 #include "PShader.h"
 #include "ShaderSource.h"
+#include "PGraphicsOpenGL.h"
 
 using namespace umfeld;
 
@@ -17,7 +18,7 @@ inline ShaderSource shader_source_color_texture_lights{
                     layout(location = 0) in vec4 aPosition;
                     layout(location = 1) in vec4 aNormal;
                     layout(location = 2) in vec4 aColor;
-                    layout(location = 3) in vec2 aTexCoord;
+                    layout(location = 3) in vec3 aTexCoord;
                     layout(location = 4) in float userdata;
 
                     uniform mat4 uProjection;
@@ -25,7 +26,6 @@ inline ShaderSource shader_source_color_texture_lights{
                     uniform mat4 uModelMatrix;
 
                     uniform mat4 texMatrix;
-                    uniform mat4 transformMatrix;  // optional override, otherwise compute as uProjection * uViewMatrix * uModelMatrix
                     uniform mat3 normalMatrix;
 
                     uniform vec4 ambient;
@@ -138,7 +138,7 @@ inline ShaderSource shader_source_color_texture_lights{
                                         vec4(totalBackSpecular, 0.0) * specular +
                                         vec4(emissive.rgb, 0.0);
 
-                        vertTexCoord = texMatrix * vec4(aTexCoord, 1.0, 1.0);
+                        vertTexCoord = texMatrix * vec4(aTexCoord, 1.0);
                     }
         )",
     .fragment = R"(#version 330 core
@@ -159,46 +159,75 @@ inline ShaderSource shader_source_color_texture_lights{
 
 void settings() {
     size(400, 400);
+    render_to_buffer = false;
 }
 
 void setup() {
-    background(0.0f);
     noStroke();
-    shader_lights = loadShader(shader_source_color_texture_lights.vertex, shader_source_color_texture_lights.fragment);
+    fill(1.0f);
+    sphereDetail(30);
+    shader_lights = loadShader(shader_source_color_texture_lights.vertex,
+                               shader_source_color_texture_lights.fragment);
+}
+
+void WIP_lights() {
+    if (isMousePressed) {
+        hint(DISABLE_DEPTH_TEST);
+    } else {
+        hint(ENABLE_DEPTH_TEST); // TODO lighting needs depth testing for spheres to be rendered correctly
+    }
+
+    shader(shader_lights);
+    shader_lights->use();
+    checkOpenGLError("shader_lights->use()");
+
+    shader_lights->set_uniform(SHADER_UNIFORM_MODEL_MATRIX, g->model_matrix);
+    shader_lights->set_uniform(SHADER_UNIFORM_VIEW_MATRIX, g->view_matrix);
+    shader_lights->set_uniform(SHADER_UNIFORM_PROJECTION_MATRIX, g->projection_matrix);
+    shader_lights->set_uniform(SHADER_UNIFORM_TEXTURE_UNIT, 0);
+    shader_lights->set_uniform("normalMatrix", glm::mat3(glm::transpose(glm::inverse(g->view_matrix * g->model_matrix))));
+    shader_lights->set_uniform("texMatrix", glm::mat4(1.0f));                  // or a real matrix if you’re transforming texCoords
+    shader_lights->set_uniform("ambient", glm::vec4(0.2f, 0.2f, 0.2f, 1.0f));  // base ambient reflectance
+    shader_lights->set_uniform("specular", glm::vec4(0.5f, 0.5f, 0.5f, 1.0f)); // specular highlight color
+    shader_lights->set_uniform("emissive", glm::vec4(0.1f, 0.1f, 0.1f, 1.0f)); // emission/self-lighting
+    shader_lights->set_uniform("shininess", 64.0f);                            // specular exponent
+    shader_lights->set_uniform("lightCount", 1);
+    shader_lights->set_uniform("lightPosition[0]", glm::vec4(0, 0, -2.0f * height, 1.0f));
+    shader_lights->set_uniform("lightNormal[0]", glm::vec3(0.0f, -1.0f, 0.0f)); // ignored for point lights
+    shader_lights->set_uniform("lightAmbient[0]", glm::vec3(0.05f));
+    shader_lights->set_uniform("lightDiffuse[0]", glm::vec3(1.0f));
+    shader_lights->set_uniform("lightSpecular[0]", glm::vec3(1.0f));
+    shader_lights->set_uniform("lightFalloff[0]", glm::vec3(1.0f, 0.0f, 0.0f)); // constant falloff
+    shader_lights->set_uniform("lightSpot[0]", glm::vec2(-1.0f, 0.0f));         // disables spotlight
+    checkOpenGLError("set_uniform()");
+}
+
+void WIP_update_light_shader() {
+    shader_lights->set_uniform(SHADER_UNIFORM_MODEL_MATRIX, g->model_matrix);
+    shader_lights->set_uniform(SHADER_UNIFORM_VIEW_MATRIX, g->view_matrix);
+    shader_lights->set_uniform("normalMatrix", glm::mat3(glm::transpose(glm::inverse(g->view_matrix * g->model_matrix))));
 }
 
 void draw() {
+    background(0.0f);
     // Include lights() at the beginning
     // of draw() to keep them persistent
 
-    lights();
-    shader_lights->use();
-    // shader_lights->set_uniform(SHADER_UNIFORM_MODEL_MATRIX, g->model_matrix);
-    // shader_lights->set_uniform(SHADER_UNIFORM_VIEW_MATRIX, g->view_matrix);
-    // shader_lights->set_uniform(SHADER_UNIFORM_PROJECTION_MATRIX, g->projection_matrix);
-    // shader_lights->set_uniform(SHADER_UNIFORM_TEXTURE_UNIT, 0);
-    //
-    // shader_lights->set_uniform("normalMatrix", glm::mat3(glm::transpose(glm::inverse(g->view_matrix * g->model_matrix))));
-    // shader_lights->set_uniform("texMatrix", glm::mat4(1.0f)); // or a real matrix if you’re transforming texCoords
-    //
-    // shader_lights->set_uniform("ambient", glm::vec4(0.2f, 0.2f, 0.2f, 1.0f));  // base ambient reflectance
-    // shader_lights->set_uniform("specular", glm::vec4(0.5f, 0.5f, 0.5f, 1.0f)); // specular highlight color
-    // shader_lights->set_uniform("emissive", glm::vec4(0.0f, 0.0f, 0.0f, 1.0f)); // emission/self-lighting
-    // shader_lights->set_uniform("shininess", 32.0f);                            // specular exponent
-    // shader_lights->set_uniform("lightCount", 1);
-    //
-    // shader_lights->set_uniform("lightPosition[0]", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f)); // w=1 → point light
-    // shader_lights->set_uniform("lightNormal[0]", glm::vec3(0.0f, -1.0f, 0.0f));        // ignored for point lights
-    //
-    // shader_lights->set_uniform("lightAmbient[0]", glm::vec3(0.1f));
-    // shader_lights->set_uniform("lightDiffuse[0]", glm::vec3(1.0f));
-    // shader_lights->set_uniform("lightSpecular[0]", glm::vec3(1.0f));
-    //
-    // shader_lights->set_uniform("lightFalloff[0]", glm::vec3(1.0f, 0.0f, 0.0f)); // constant falloff
-    // shader_lights->set_uniform("lightSpot[0]", glm::vec2(-1.0f, 0.0f));         // disables spotlight
+    WIP_lights(); // lights();
 
+    pushMatrix();
     translate(80, 200, 0);
+    rotateY(frameCount * 0.023f);
+    rotateX(frameCount * 0.01f);
+    WIP_update_light_shader(); // TODO how to handle this?!?
     sphere(120);
-    translate(240, 0, 0);
+    popMatrix();
+
+    pushMatrix();
+    translate(320, 200, 0);
+    rotateX(frameCount * 0.023f);
+    rotateY(frameCount * 0.01f);
+    WIP_update_light_shader(); // TODO how to handle this?!?
     sphere(120);
+    popMatrix();
 }

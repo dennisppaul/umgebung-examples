@@ -10,6 +10,7 @@ void settings() {
 
 void setup() {
     umfeld_image = loadImage("../umfeld.png");
+    rectMode(CENTER);
 }
 
 void draw() {
@@ -31,9 +32,14 @@ void draw() {
     rotateX(mouseY * 0.05f);
     rotateY(mouseX * 0.05f);
     sphereDetail(mouseX / 40);
-    sphere(width * 0.25f);
+    sphere(width * 0.125f);
     popMatrix();
 
     fill(1.0f);
     image(umfeld_image, mouseX, mouseY);
+    noFill();
+    stroke(0.0f);
+    strokeWeight(10);
+    circle(mouseX, mouseY, 512.0f);
+    strokeWeight(1);
 }

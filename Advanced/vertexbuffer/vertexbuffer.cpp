@@ -1,21 +1,17 @@
+/*
+ * this example shows how to draw a mesh by using a vertex buffer. the mesh data is
+ * uploaded to the GPU and rendered in 3D space. the vertices can be dynamically
+ * added to the mesh, and the mesh will be updated accordingly. this is very fast
+ * for high numbers of vertices.
+ */
+
+// TODO adding vertices dynamically is currently not working on Windows
+
 #include "Umfeld.h"
 #include "Geometry.h"
 #include "VertexBuffer.h"
 
 using namespace umfeld;
-
-/*
- * this example shows how to use the beginShape() + endShape() functions to draw a shape with different vertex types.
- * from https://processing.org/reference/beginShape_.html
- */
-
-// TODO: the following combinations are partly broken:
-//      - stroke_join_mode: BEVEL+MITER+POINTED
-//      - stroke_join_mode: BEVEL+MITER+ROUND
-
-int   stroke_join_mode = ROUND;
-int   stroke_cap_mode  = ROUND;
-float stroke_weight    = 15.0f;
 
 VertexBuffer mesh_shape;
 
@@ -47,7 +43,7 @@ void draw() {
             v.position.y += random(-1, 1);
             v.position.z += random(-1, 1);
         }
-        // TODO adding vertices dynamically is currently not working on windows
+        // TODO adding vertices dynamically is currently not working on Windows
 #ifndef SYSTEM_WINDOWS
         for (int i = 0; i < 256; ++i) {
             mesh_shape.add_vertex(Vertex(glm::vec3(mouseX + random(-10, 10), mouseY + random(-10, 10), random(-10, 10)),
