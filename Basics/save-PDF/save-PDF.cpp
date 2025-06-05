@@ -1,4 +1,4 @@
-/* this example shows how to export shapes as OBJ */
+/* this example shows how to export shapes as PDF */
 // TODO WIP a lot of things are not implemented yet and not tested
 
 #include "Umfeld.h"
@@ -17,7 +17,7 @@ void draw() {
     background(0.85f);
 
     if (isKeyPressed && key == ' ') {
-        beginRecord(OBJ, to_string("example-", frameCount, ".obj"));
+        beginRecord(PDF, to_string("example-", frameCount, ".pdf"));
     }
 
     pushMatrix();
