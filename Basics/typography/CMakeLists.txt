@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 
-project(typography)                                                # set application name
+project(typography)                                            # set application name
 set(UMFELD_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../../../umfeld") # set path to umfeld library
 
 # --------- no need to change anything below this line ------------
