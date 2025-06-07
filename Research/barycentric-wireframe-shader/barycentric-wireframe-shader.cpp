@@ -6,7 +6,6 @@
 #include "ShaderSource.h"
 #include "VertexBuffer.h"
 #include "Geometry.h"
-#include "VertexBuffer.h"
 
 // see https://tchayen.github.io/posts/wireframes-with-barycentric-coordinates
 
@@ -72,46 +71,44 @@ ShaderSource shader_source_barycentric_wireframe{
             }
         )"};
 
-PShader* shader_barycentric_wireframe;
-PMesh*   mesh_sphere;
-int      frame_counter = 0;
+PShader*      shader_barycentric_wireframe;
+VertexBuffer* mesh_sphere;
+int           frame_counter = 0;
 
 void settings() {
     size(1024, 768);
-    antialiasing       = 8;
-    render_to_buffer   = false;
-    retina_support     = true;
-    enable_audio       = false;
-    subsystem_graphics = umfeld_create_subsystem_graphics_openglv33();
+    antialiasing     = 8;
+    render_to_buffer = false;
+    retina_support   = true;
 }
 
 void setup() {
     shader_barycentric_wireframe = loadShader(shader_source_barycentric_wireframe.vertex, shader_source_barycentric_wireframe.fragment);
 
     /* use convenience function to generate a sphere */
-    std::vector<glm::vec3> points;
-    generate_sphere(points, 50, 50, height / 3.0f);
+    std::vector<Vertex> sphere_vertices;
+    generate_sphere(sphere_vertices, 50, 50);
 
     /* compile list of vertices with attributes like color,  */
     constexpr glm::vec4 color{0.5f, 0.85f, 1.0f, 1.0f};
-    constexpr glm::vec2 tex_coords{0.0f, 0.0f}; // not really used in this example
-    std::vector<Vertex> sphere_vertices(points.size());
+    const glm::vec4     scale{height / 3.0f, height / 3.0f, height / 3.0f, 1.0f};
     int                 cycle = 0;
-    for (auto& position: points) {
+    for (auto& vertex: sphere_vertices) {
+        vertex.position *= scale; // NOTE component 4 i.e `w` must not be scaled
+        vertex.color = color;
         /*
          * each vertex in a triangle needs to have barycentric coordinates (1,0,0), (0,1,0), or (0,0,1).
          * we use the normal information in the vertex to transmit them to the shader
          */
-        glm::vec4 barycentric_coordinates{
+        vertex.normal = {
             cycle == 0 ? 1.0f : 0.0f,
             cycle == 1 ? 1.0f : 0.0f,
             cycle == 2 ? 1.0f : 0.0f,
             0.0f};
-        sphere_vertices.emplace_back(Vertex{position, color, tex_coords, barycentric_coordinates});
         cycle = (cycle + 1) % 3;
     }
 
-    mesh_sphere = new PMesh();
+    mesh_sphere = new VertexBuffer();
     mesh_sphere->add_vertices(sphere_vertices);
     mesh_sphere->update();
 }

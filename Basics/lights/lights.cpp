@@ -202,6 +202,11 @@ void WIP_lights() {
     checkOpenGLError("set_uniform()");
 }
 
+void WIP_noLights() {
+    g->resetShader();
+    // TODO reload matrices?!?
+}
+
 void WIP_update_light_shader() {
     shader_lights->set_uniform(SHADER_UNIFORM_MODEL_MATRIX, g->model_matrix);
     shader_lights->set_uniform(SHADER_UNIFORM_VIEW_MATRIX, g->view_matrix);
@@ -230,4 +235,6 @@ void draw() {
     WIP_update_light_shader(); // TODO how to handle this?!?
     sphere(120);
     popMatrix();
+
+    WIP_noLights(); // noLights();
 }
