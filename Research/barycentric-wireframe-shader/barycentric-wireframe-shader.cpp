@@ -12,64 +12,62 @@
 using namespace umfeld;
 
 ShaderSource shader_source_barycentric_wireframe{
-    .vertex   = R"(
-            #version 330 core
+    .vertex   = R"(#version 330 core
 
-            layout(location = 0) in vec4 aPosition;
-            layout(location = 1) in vec4 aNormal;
-            layout(location = 2) in vec4 aColor;
-            layout(location = 3) in vec2 aTexCoord;
+                layout(location = 0) in vec4 aPosition;
+                layout(location = 1) in vec4 aNormal;
+                layout(location = 2) in vec4 aColor;
+                layout(location = 3) in vec2 aTexCoord;
 
-            out vec4 vColor;
-            out vec2 vTexCoord;
-            out vec3 vBarycentric;
+                out vec4 vColor;
+                out vec2 vTexCoord;
+                out vec3 vBarycentric;
 
-            uniform mat4 uProjection;
-            uniform mat4 uViewMatrix;
-            uniform mat4 uModelMatrix;
+                uniform mat4 uProjection;
+                uniform mat4 uViewMatrix;
+                uniform mat4 uModelMatrix;
 
-            void main() {
-                gl_Position = uProjection * uViewMatrix * uModelMatrix * aPosition;
-                vColor = aColor;
-                vTexCoord = aTexCoord;
-                vBarycentric = aNormal.xyz;
-            }
-        )",
-    .fragment = R"(
-            #version 330 core
+                void main() {
+                    gl_Position = uProjection * uViewMatrix * uModelMatrix * aPosition;
+                    vColor = aColor;
+                    vTexCoord = aTexCoord;
+                    vBarycentric = aNormal.xyz;
+                }
+    )",
+    .fragment = R"(#version 330 core
 
-            in vec4 vColor;
-            in vec2 vTexCoord;
-            in vec3 vBarycentric;
+                in vec4 vColor;
+                in vec2 vTexCoord;
+                in vec3 vBarycentric;
 
-            out vec4 FragColor;
+                out vec4 FragColor;
 
-            uniform float line_width;
-            uniform float feather_width;
+                uniform float line_width;
+                uniform float feather_width;
 
-            uniform sampler2D uTexture;
+                uniform sampler2D uTexture;
 
-            float edgefactor(vec3 bary, float width) {
-                vec3 d = fwidth(bary);
-                vec3 a3 = smoothstep(d * (width - 0.5), d * (width + 0.5), bary);
-                return 1.0 - min(min(a3.x, a3.y), a3.z);
-            }
+                float edgefactor(vec3 bary, float width) {
+                    vec3 d = fwidth(bary);
+                    vec3 a3 = smoothstep(d * (width - 0.5), d * (width + 0.5), bary);
+                    return 1.0 - min(min(a3.x, a3.y), a3.z);
+                }
 
-            float edgefactor_feather(vec3 bary, float width, float feather) {
-                float w1 = width - feather * 0.5;
-                vec3 d = fwidth(bary);
-                vec3 a3 = smoothstep(d * w1, d * (w1 + feather), bary);
-                return 1.0 - min(min(a3.x, a3.y), a3.z);
-            }
+                float edgefactor_feather(vec3 bary, float width, float feather) {
+                    float w1 = width - feather * 0.5;
+                    vec3 d = fwidth(bary);
+                    vec3 a3 = smoothstep(d * w1, d * (w1 + feather), bary);
+                    return 1.0 - min(min(a3.x, a3.y), a3.z);
+                }
 
-            void main() {
-                float alpha = edgefactor(vBarycentric, line_width);
-                //float alpha = edgefactor_feather(vBarycentric, line_width, feather_width);
-                alpha = clamp(alpha, 0.0, 1.0);
-                FragColor = texture(uTexture, vTexCoord) * vec4(vColor.rgb, vColor.a * alpha);
-                //FragColor = vec4(vColor.rgb, vColor.a * alpha);
-            }
-        )"};
+                void main() {
+                    float alpha = edgefactor(vBarycentric, line_width);
+                    //float alpha = edgefactor_feather(vBarycentric, line_width, feather_width);
+                    alpha = clamp(alpha, 0.0, 1.0);
+                    FragColor = texture(uTexture, vTexCoord) * vec4(vColor.rgb, vColor.a * alpha);
+                    //FragColor = vec4(vColor.rgb, vColor.a * alpha);
+                }
+    )"};
 
 PShader*      shader_barycentric_wireframe;
 VertexBuffer* mesh_sphere;
@@ -87,7 +85,7 @@ void setup() {
 
     /* use convenience function to generate a sphere */
     std::vector<Vertex> sphere_vertices;
-    generate_sphere(sphere_vertices, 50, 50);
+    generate_sphere(sphere_vertices, 10, 10);
 
     /* compile list of vertices with attributes like color,  */
     constexpr glm::vec4 color{0.5f, 0.85f, 1.0f, 1.0f};
@@ -143,7 +141,7 @@ void draw() {
     scale(0.5f);
     /* before drawing the mesh the model matrix needs to be sent to the shader */
     shader_barycentric_wireframe->set_uniform(SHADER_UNIFORM_MODEL_MATRIX, g->model_matrix);
-    mesh(mesh_sphere);
+    // mesh(mesh_sphere);
     popMatrix();
 
     pushMatrix();
@@ -151,7 +149,7 @@ void draw() {
     scale(2.0f);
     /* before drawing the mesh the model matrix needs to be sent to the shader */
     shader_barycentric_wireframe->set_uniform(SHADER_UNIFORM_MODEL_MATRIX, g->model_matrix);
-    mesh(mesh_sphere);
+    // mesh(mesh_sphere);
     popMatrix();
 
     /* reset the shader */
