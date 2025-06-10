@@ -10,6 +10,27 @@
 using namespace umfeld;
 
 ShaderSource shader_source_barycentric_wireframe{
+    /*
+  Part of the Processing project - http://processing.org
+
+  Copyright (c) 2012-21 The Processing Foundation
+  Copyright (c) 2004-12 Ben Fry and Casey Reas
+  Copyright (c) 2001-04 Massachusetts Institute of Technology
+
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation, version 2.1.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General
+  Public License along with this library; if not, write to the
+  Free Software Foundation, Inc., 59 Temple Place, Suite 330,
+  Boston, MA  02111-1307  USA
+*/
     .vertex   = R"(#version 330 core
 
                 layout(location = 0) in vec4 aPosition;
@@ -106,7 +127,7 @@ ShaderSource shader_source_barycentric_wireframe{
                 }
     )"};
 
-PShader*      shader_line;
+PShader*      shader_point;
 VertexBuffer* mesh_sphere;
 int           frame_counter = 0;
 
@@ -159,16 +180,15 @@ void add_line_quad(const glm::vec3& p0, const glm::vec3& p1, float thickness, st
 }
 
 void setup() {
-    shader_line = loadShader(shader_source_barycentric_wireframe.vertex, shader_source_barycentric_wireframe.fragment);
+    shader_point = loadShader(shader_source_barycentric_wireframe.vertex, shader_source_barycentric_wireframe.fragment);
 
     /* use convenience function to generate a sphere */
     std::vector<Vertex> sphere_vertices;
     generate_sphere(sphere_vertices, 10, 10);
 
-    /* compile list of vertices with attributes like color,  */
+    /* compile list of vertices with attributes like color */
     constexpr glm::vec4 color{0.5f, 0.85f, 1.0f, 1.0f};
     const glm::vec4     scale{height / 3.0f, height / 3.0f, height / 3.0f, 1.0f};
-
 
     for (auto& vertex: sphere_vertices) {
         vertex.position *= scale; // NOTE component 4 i.e w must not be scaled
@@ -177,7 +197,7 @@ void setup() {
 
     std::vector<Vertex> expanded;
 
-    float thickness = 3.0f;
+    constexpr float thickness = 3.0f;
     for (size_t i = 0; i + 1 < sphere_vertices.size(); i += 2) {
         glm::vec3 p0 = glm::vec3(sphere_vertices[i].position);
         glm::vec3 p1 = glm::vec3(sphere_vertices[i + 1].position);
@@ -209,17 +229,17 @@ void draw() {
         frame_counter++;
     }
 
-    shader(shader_line);
+    shader(shader_point);
     /* matrices need to be set every frame for the transforms to work */
-    shader_line->set_uniform(SHADER_UNIFORM_VIEW_MATRIX, g->view_matrix);
-    shader_line->set_uniform(SHADER_UNIFORM_PROJECTION_MATRIX, g->projection_matrix);
-    shader_line->set_uniform(SHADER_UNIFORM_MODEL_MATRIX, g->model_matrix);
-    shader_line->set_uniform("viewport", glm::vec4(0, 0, width, height));
-    shader_line->set_uniform("perspective", 0);
-    // shader_line->set_uniform("perspective", mouseY > height / 2 ? 1 : 0);
-    float scale_factor = map(mouseX, 0, width, 0.1f, 3.0f);
-    shader_line->set_uniform("scale", glm::vec3(scale_factor, scale_factor, scale_factor));
-    shader_line->set_uniform("line_width", map(mouseY, 0, height, 0.1f, 5.0f)); // NOTE added line width … might be helpful
+    shader_point->set_uniform(SHADER_UNIFORM_VIEW_MATRIX, g->view_matrix);
+    shader_point->set_uniform(SHADER_UNIFORM_PROJECTION_MATRIX, g->projection_matrix);
+    shader_point->set_uniform(SHADER_UNIFORM_MODEL_MATRIX, g->model_matrix);
+    shader_point->set_uniform("viewport", glm::vec4(0, 0, width, height));
+    shader_point->set_uniform("perspective", 0);
+    // shader_point->set_uniform("perspective", mouseY > height / 2 ? 1 : 0);
+    const float scale_factor = map(mouseX, 0, width, 0.1f, 3.0f);
+    shader_point->set_uniform("scale", glm::vec3(scale_factor, scale_factor, scale_factor));
+    shader_point->set_uniform("line_width", map(mouseY, 0, height, 0.1f, 5.0f)); // NOTE added line width … might be helpful
     mesh(mesh_sphere);
 
     /* reset the shader */
