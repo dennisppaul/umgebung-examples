@@ -1,4 +1,6 @@
-/* this example is based on the Processing example
+/*
+ * ⚠️⚠️⚠️ THIS IS WORK IN PROGRESS!!! ⚠️⚠️⚠️
+ * this example is based on the Processing example
  * https://processing.org/reference/lights_.html
  * and shows how to use light with 3D primitives in umfeld.
  */
