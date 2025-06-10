@@ -6,7 +6,6 @@
 #include "ShaderSource.h"
 #include "VertexBuffer.h"
 #include "Geometry.h"
-#include "VertexBuffer.h"
 
 using namespace umfeld;
 
@@ -88,9 +87,9 @@ ShaderSource shader_source_line{
             }
         )"};
 
-PShader* shader_line;
-int      frame_counter = 0;
-PMesh*   mesh_shape;
+PShader*      shader_line;
+int           frame_counter = 0;
+VertexBuffer* mesh_shape;
 
 void settings() {
     size(1024, 768);
@@ -119,7 +118,7 @@ void setup() {
     hint(ENABLE_DEPTH_TEST);
 
     mesh_shape = new VertexBuffer();
-    mesh_shape->set_shape(GL_LINES_ADJACENCY);
+    mesh_shape->set_shape(GL_LINES_ADJACENCY, false);
 
     // const std::vector<glm::vec3> polyline = {
     //     glm::vec3(-100.0f, 0.0f, 0.0f),    // P0
@@ -146,7 +145,7 @@ void setup() {
     /* compile list of vertices with attributes like color,  */
     constexpr glm::vec4 color{0.5f, 0.85f, 1.0f, 1.0f};
     constexpr glm::vec4 normal{0.0f, 0.0f, 1.0f, 1.0f};
-    constexpr glm::vec2 tex_coords{0.0f, 0.0f}; // not really used in this example
+    constexpr glm::vec3 tex_coords{0.0f, 0.0f, 0.0f}; // not really used in this example
     for (auto& position: lineSegments) {
         mesh_shape->add_vertex(Vertex{position, color, tex_coords, normal});
     }
