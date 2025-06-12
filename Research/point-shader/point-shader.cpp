@@ -10,7 +10,7 @@
 using namespace umfeld;
 
 ShaderSource shader_source_barycentric_wireframe{
-/*
+    /*
   Part of the Processing project - http://processing.org
 
   Copyright (c) 2012-21 The Processing Foundation
@@ -110,7 +110,7 @@ void setup() {
     std::vector<Vertex> expanded;
 
     float point_size = 10;
-    for (size_t i = 0; i + 1 < sphere_vertices.size(); i ++) {
+    for (size_t i = 0; i + 1 < sphere_vertices.size(); i++) {
         Vertex v0, v1, v2, v3;
 
         v0 = sphere_vertices[i];

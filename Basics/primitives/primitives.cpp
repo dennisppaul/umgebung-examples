@@ -32,19 +32,19 @@ void draw() {
 
     translate(-640, 320);
     ellipseMode(RADIUS);         // Set ellipseMode to RADIUS
-    fill(1.0f);                  // Set fill to white
+    fill(1.0f);                // Set fill to white
     ellipse(200, 200, 120, 120); // Draw white ellipse using RADIUS mode
 
     ellipseMode(CENTER);         // Set ellipseMode to CENTER
-    fill(0.4f);                  // Set fill to gray
+    fill(0.4f);                // Set fill to gray
     ellipse(200, 200, 120, 120); // Draw gray ellipse using CENTER mode
 
     translate(320, 0);
     ellipseMode(CORNER);         // Set ellipseMode is CORNER
-    fill(1.0f);                  // Set fill to white
+    fill(1.0f);                // Set fill to white
     ellipse(100, 100, 200, 200); // Draw white ellipse using CORNER mode
 
     ellipseMode(CORNERS);        // Set ellipseMode to CORNERS
-    fill(0.4f);                  // Set fill to gray
+    fill(0.4f);                // Set fill to gray
     ellipse(100, 100, 200, 200); // Draw gray ellipse using CORNERS mode
 }
