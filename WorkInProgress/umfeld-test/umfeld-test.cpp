@@ -10,13 +10,14 @@ void settings() {
 
 void setup() {
     umfeld_image = loadImage("../umfeld.png");
-    g->stroke_mode(STROKE_RENDER_MODE_LINE_SHADER);
-    g->point_mode(POINT_RENDER_MODE_SHADER);
+    g->set_stroke_render_mode(STROKE_RENDER_MODE_LINE_SHADER);
+    g->set_point_render_mode(POINT_RENDER_MODE_SHADER);
     hint(ENABLE_DEPTH_TEST);
     rectMode(CENTER);
 }
 
 void draw() {
+    UMFELD_EMIT_WARNING("this is great, isn't it?", "Umfeld Test");
     const float sphere_detail = mouseX / 40;
 
     background(0.85f);
@@ -56,12 +57,13 @@ void draw() {
 
     /* points */
 
+    hint(DISABLE_DEPTH_TEST);
     fill(0.0f);
     if (isMousePressed) {
-        g->point_mode(POINT_RENDER_MODE_SHADER);
+        g->set_point_render_mode(POINT_RENDER_MODE_SHADER);
         g->debug_text("POINT_MODE   : POINT_RENDER_MODE_SHADER", 10, 40);
     } else {
-        g->point_mode(POINT_RENDER_MODE_TRIANGULATE);
+        g->set_point_render_mode(POINT_RENDER_MODE_TRIANGULATE);
         g->debug_text("POINT_MODE   : POINT_RENDER_MODE_TRIANGULATE", 10, 40);
     }
     const float point_size = map(mouseX, 0, width, 1.0f, 20.0f);
@@ -78,4 +80,6 @@ void draw() {
         vertex(x, y, 0.0f);
     }
     endShape();
+    hint(ENABLE_DEPTH_TEST);
+
 }
