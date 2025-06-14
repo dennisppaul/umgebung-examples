@@ -17,7 +17,7 @@ void setup() {
 }
 
 void draw() {
-    UMFELD_EMIT_WARNING("this is great, isn't it?", "Umfeld Test");
+    UMFELD_EMIT_WARNING("emit warning only once", " ... in draw loop");
     const float sphere_detail = mouseX / 40;
 
     background(0.85f);
@@ -81,5 +81,11 @@ void draw() {
     }
     endShape();
     hint(ENABLE_DEPTH_TEST);
+}
 
+void keyPressed() {
+    if (key == 'q') {
+        //request_shutdown = true;
+        exit();
+    }
 }
