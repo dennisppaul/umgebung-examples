@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 
-project(line-shader)                                           # set application name
+project(load-image)                                            # set application name
 set(UMFELD_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../../../umfeld") # set path to umfeld library
 
 # --------- no need to change anything below this line ------------
@@ -12,5 +12,8 @@ include_directories(".")
 file(GLOB SOURCE_FILES "*.cpp")
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
+#set(UMFELD_OPENGL_VERSION "OPENGL_ES_3_0")
+#option(ENABLE_ANGLE "Enable ANGLE OpenGL ES emulation on macOS ( apple silicon )" ON)
+#set(UMFELD_OPENGL_VERSION "OPENGL_2_0")
 add_subdirectory(${UMFELD_PATH} ${CMAKE_BINARY_DIR}/umfeld-lib-${PROJECT_NAME})
 add_umfeld_libs()
