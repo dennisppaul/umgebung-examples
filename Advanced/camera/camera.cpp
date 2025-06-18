@@ -26,7 +26,7 @@ void draw() {
     background(0.85f);
 
     fill(0);
-    g->debug_text("FPS   : " + nf(frameRate, 1), 10, 10);
+    debug_text("FPS   : " + nf(frameRate, 1), 10, 10);
 
     camera();
 

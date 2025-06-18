@@ -23,8 +23,8 @@ void draw() {
     background(0.85f);
 
     fill(0.0f);
-    g->debug_text("FPS          : " + nf(frameRate, 3, 1), 10, 10);
-    g->debug_text("SPHERE DETAIL: " + nf(sphere_detail, 3, 1), 10, 25);
+    debug_text("FPS          : " + nf(frameRate, 3, 1), 10, 10);
+    debug_text("SPHERE DETAIL: " + nf(sphere_detail, 3, 1), 10, 25);
 
     pushMatrix();
     stroke(1.0f);
@@ -61,17 +61,17 @@ void draw() {
     fill(0.0f);
     if (isMousePressed) {
         g->set_point_render_mode(POINT_RENDER_MODE_SHADER);
-        g->debug_text("POINT_MODE   : POINT_RENDER_MODE_SHADER", 10, 40);
+        debug_text("POINT_MODE   : POINT_RENDER_MODE_SHADER", 10, 40);
     } else {
         g->set_point_render_mode(POINT_RENDER_MODE_TRIANGULATE);
-        g->debug_text("POINT_MODE   : POINT_RENDER_MODE_TRIANGULATE", 10, 40);
+        debug_text("POINT_MODE   : POINT_RENDER_MODE_TRIANGULATE", 10, 40);
     }
     const float point_size = map(mouseX, 0, width, 1.0f, 20.0f);
     pointSize(point_size);
-    g->debug_text(to_string("POINT_SIZE   : ", point_size), 10, 55);
+    debug_text(to_string("POINT_SIZE   : ", point_size), 10, 55);
     // TODO crashes at high number of points when resizing backing VBO?!?
     const int num_points = map(mouseY, 0, height, 1000, 25000);
-    g->debug_text(to_string("NUMBER POINTS: ", num_points), 10, 70);
+    debug_text(to_string("NUMBER POINTS: ", num_points), 10, 70);
     beginShape(POINTS);
     for (int i = 0; i < num_points; ++i) {
         stroke_color(HSBA(random(1.0f), 1.0f, 1.0f, 1.0f));

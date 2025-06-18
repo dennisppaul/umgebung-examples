@@ -39,9 +39,9 @@ void setup() {
 void draw() {
     background(0.85f);
 
+    noStroke();
     pushMatrix();
     translate(100, 100);
-    stroke(0);
     fill_color(light_blue);
     textSize(map(mouseX, 0, width, 10, 88));
     textAlign(CENTER, BOTTOM);

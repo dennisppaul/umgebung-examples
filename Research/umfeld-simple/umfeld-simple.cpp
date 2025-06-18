@@ -73,7 +73,7 @@ void draw() {
 
     noStroke();
     fill(1, 0, 0);
-    g->debug_text("FPS: " + to_string(frameRate), 10, height - 20);
+    debug_text("FPS: " + to_string(frameRate), 10, height - 20);
     /* rects */
 
     stroke(0);

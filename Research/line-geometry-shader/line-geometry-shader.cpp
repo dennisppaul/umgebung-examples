@@ -156,7 +156,7 @@ void draw() {
 
     fill(0);
     noStroke();
-    g->debug_text("FPS: " + nf(frameRate, 2), 20, 20);
+    debug_text("FPS: " + nf(frameRate, 2), 20, 20);
 
     pushMatrix();
 

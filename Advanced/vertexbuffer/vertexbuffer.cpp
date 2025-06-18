@@ -17,21 +17,17 @@ VertexBuffer mesh_shape;
 
 void settings() {
     size(1024, 768);
-    display            = 0;
-    antialiasing       = 8;
-    render_to_buffer   = false;
-    retina_support     = true;
-    enable_audio       = false;
-    subsystem_graphics = umfeld_create_subsystem_graphics_openglv33();
 }
 
 void setup() {
     hint(ENABLE_SMOOTH_LINES);
+    mesh_shape.set_shape(TRIANGLES);
     for (int i = 0; i < 2048; ++i) {
         mesh_shape.add_vertex(Vertex(glm::vec3(width / 2 + random(-10, 10), height / 2 + random(-10, 10), random(-10, 10)),
                                      glm::vec4(random(1.0f), random(1.0f), random(1.0f), 1.0f),
                                      glm::vec3(0.0f)));
     }
+    mesh_shape.update(); // NOTE this forces an update of the vertex buffer … it also called on first draw if required
 }
 
 void draw() {
@@ -51,7 +47,7 @@ void draw() {
                                          glm::vec3(0.0f)));
         }
 #endif
-        mesh_shape.update();
+        // NOTE vertices are uploaded to GPU next time mesh/vertexbuffer is drawn
     }
 
     pushMatrix();
@@ -64,8 +60,8 @@ void draw() {
     popMatrix();
 
     fill(0);
-    g->debug_text("FPS   : " + nf(frameRate, 1), 10, 10);
-    g->debug_text("SHAPES: " + to_string(mesh_shape.vertices_data().size()), 10, 25);
+    debug_text("FPS   : " + nf(frameRate, 1), 10, 10);
+    debug_text("SHAPES: " + to_string(mesh_shape.vertices_data().size()), 10, 25);
 }
 
 void keyPressed() {
