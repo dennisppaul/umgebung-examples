@@ -231,9 +231,9 @@ void keyPressed() {
         console("SQUARE");
     }
     if (key == ',') {
-        g->set_stroke_mode(STROKE_RENDER_MODE_TRIANGULATE_2D);
+        g->set_stroke_render_mode(STROKE_RENDER_MODE_TRIANGULATE_2D);
     }
     if (key == '.') {
-        g->set_stroke_mode(STROKE_RENDER_MODE_NATIVE);
+        g->set_stroke_render_mode(STROKE_RENDER_MODE_NATIVE);
     }
 }

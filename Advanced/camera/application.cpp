@@ -16,10 +16,10 @@ void settings() {
 void setup() {
     strokeWeight(3);
     rectMode(CENTER);
-    g->stroke_mode(STROKE_RENDER_MODE_NATIVE);
-    g->stroke_mode(STROKE_RENDER_MODE_TRIANGULATE_2D);
-    g->stroke_mode(STROKE_RENDER_MODE_TUBE_3D);
-    // g->set_render_mode(RENDER_MODE_SHAPE);
+    g->set_stroke_render_mode(STROKE_RENDER_MODE_NATIVE);
+    g->set_stroke_render_mode(STROKE_RENDER_MODE_TRIANGULATE_2D);
+    g->set_stroke_render_mode(STROKE_RENDER_MODE_TUBE_3D);
+    // g->set_stroke_render_mode(RENDER_MODE_SHAPE);
 }
 
 void draw() {

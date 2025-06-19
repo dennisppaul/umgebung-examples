@@ -10,11 +10,11 @@ bool  close_shape      = false;
 
 void settings() {
     size(1024, 768);
-    display            = 0;
-    antialiasing       = 8;
-    render_to_buffer   = true;
-    retina_support     = true;
-    enable_audio       = false;
+    display          = 0;
+    antialiasing     = 8;
+    render_to_buffer = true;
+    retina_support   = true;
+    enable_audio     = false;
 }
 
 void setup() {
@@ -24,7 +24,7 @@ void setup() {
 
     hint(ENABLE_SMOOTH_LINES);
     g->stroke_properties(radians(10), radians(10), 179);
-    g->stroke_mode(STROKE_RENDER_MODE_TRIANGULATE_2D);
+    g->set_stroke_render_mode(STROKE_RENDER_MODE_TRIANGULATE_2D);
 }
 
 void draw() {
