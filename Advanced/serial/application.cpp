@@ -8,7 +8,7 @@ using namespace umfeld;
 // > 2025/05/19 12:13:34 socat[58594] N PTY is /dev/ttys001
 // > 2025/05/19 12:13:34 socat[58594] N PTY is /dev/ttys002
 // echo -n "hello world" > /dev/ttys001 // send message to application
-// screen /dev/ttys003 115200 // listen to the virtual serial port
+// screen /dev/ttys001 115200 // listen to the virtual serial port
 
 Serial serial("/dev/ttys002", 115200);
 

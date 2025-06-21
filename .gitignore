@@ -5,3 +5,5 @@ Brewfile.lock.json
 examples/umfeld-application-bundle/libs/
 cmake-build-debug-event-trace
 .DS_Store
+build-test-examples/
+logs/
