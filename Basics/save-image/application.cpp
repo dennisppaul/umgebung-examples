@@ -13,7 +13,7 @@ void settings() {
 }
 
 void setup() {
-    umfeld_image = loadImage("../umfeld.png");
+    umfeld_image = loadImage("umfeld.png");
 }
 
 void draw() {

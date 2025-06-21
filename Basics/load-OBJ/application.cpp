@@ -17,7 +17,7 @@ void settings() {
 void setup() {
     hint(ENABLE_DEPTH_TEST);
 
-    const std::vector<Vertex> vertices = loadOBJ("../Panda.obj");
+    const std::vector<Vertex> vertices = loadOBJ("Panda.obj");
     number_vertices                    = vertices.size();
     mesh_shape                         = new VertexBuffer();
     mesh_shape->add_vertices(vertices);

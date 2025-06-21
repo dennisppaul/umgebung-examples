@@ -24,7 +24,7 @@ void setup() {
         exit();
     }
 
-    mImage = loadImage(sketchPath() + "../image.png");
+    mImage = loadImage("image.png");
 
     uint32_t pixels[64 * 64];
     for (int i = 0; i < 64 * 64; ++i) {

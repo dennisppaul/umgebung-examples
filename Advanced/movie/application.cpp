@@ -25,7 +25,7 @@ void settings() {
 }
 
 void setup() {
-    movie = new Movie("../video.mp4");
+    movie = new Movie("video.mp4");
     movie->play();
     movie->loop();
     movie->set_listener(&movie_listener);

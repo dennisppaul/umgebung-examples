@@ -28,11 +28,10 @@ PFont* font;
 
 void settings() {
     size(1024, 768);
-    antialiasing = 4;
 }
 
 void setup() {
-    font = loadFont("../RobotoMono-Regular.ttf", 44);
+    font = loadFont("RobotoMono-Regular.ttf", 44);
     textFont(font);
 }
 

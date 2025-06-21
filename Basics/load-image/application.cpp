@@ -10,14 +10,15 @@ void settings() {
 }
 
 void setup() {
-    umfeld_image = loadImage("../umfeld.png");
+    umfeld_image = loadImage("umfeld.png");
 
     // NOTE loading images also works with URLs
-    //      umfeld_image = loadImage("https://raw.githubusercontent.com/dennisppaul/umfeld-examples/52730a5113341dadb60046a7908bafa874ce8ab4/Basics/load-image/umfeld.png");
+    //      umfeld_image = loadImage("https://raw.githubusercontent.com/dennisppaul/umfeld-examples/52730a5113341dadb60046a7908bafa874ce8ab4/Basics/load-image/data/umfeld.png");
 
     rectMode(CENTER);
     noStroke();
 
+    // TODO move this to other example
     // const std::string msg = loadString("data:,Hello%20world");
     // std::string msg = loadString("data:text/html,%3Ch1%3EHello%20World%3C%2Fh1%3E");
     // const std::string msg = loadString("data:text/plain;base64,SGVsbG8gd29ybGQ=");
