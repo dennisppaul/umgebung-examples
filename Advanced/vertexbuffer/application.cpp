@@ -40,13 +40,11 @@ void draw() {
             v.position.z += random(-1, 1);
         }
         // TODO adding vertices dynamically is currently not working on Windows
-#ifndef SYSTEM_WINDOWS
         for (int i = 0; i < 256; ++i) {
             mesh_shape.add_vertex(Vertex(glm::vec3(mouseX + random(-10, 10), mouseY + random(-10, 10), random(-10, 10)),
                                          glm::vec4(random(1.0f), random(1.0f), random(1.0f), 1.0f),
                                          glm::vec3(0.0f)));
         }
-#endif
         // NOTE vertices are uploaded to GPU next time mesh/vertexbuffer is drawn
     }
 
