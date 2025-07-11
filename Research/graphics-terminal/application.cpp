@@ -4,26 +4,35 @@ using namespace umfeld;
 
 extern SubsystemGraphics* umfeld_create_subsystem_graphics_terminal();
 
+PImage* umfeld_image;
+
 void settings() {
     size(1024, 768); // TODO has no effect ATM
     create_subsystem_graphics = umfeld_create_subsystem_graphics_terminal;
 }
 
 void setup() {
-    noFill();                   // TODO has no effect ATM
-    stroke(1.0f, 0.25f, 0.35f); // TODO has no effect ATM
+    umfeld_image = loadImage("umfeld-logotype-16.png");
 }
 
 void draw() {
-    background(map(mouseX, 0, width, 0.2f, 1)); // TODO still very much WIP
+    background(0.2f); // TODO still very much WIP
 
+    stroke(0.5f, 0.85f, 1.0f);
     line(0, 0, mouseX, mouseY);
-    line(mouseX, mouseY, width, height);
-    rect(mouseX, mouseY, 19, 9);
-    point(mouseX + 9, mouseY + 4);
 
-    std::string debug = std::string("size: ") + to_string(g->width) + " x " + to_string(g->height);
-    text(debug, mouseX + 1, mouseY + 1);
+    stroke(1.0f, 0.25f, 0.35f);
+    point(mouseX, mouseY - 1);
+
+    fill(1.0f, 1.0f, 1.0f);
+    text(to_string("size: ", width, "x", height), 0, 0);
+    text(to_string("mouse: ", mouseX, "x", mouseY), mouseX, mouseY);
+    text(to_string("image: ", umfeld_image->width, "x", umfeld_image->height), mouseX, mouseY + 1);
+    fill(1.0f, 0.25f, 0.35f);
+    image(umfeld_image, mouseX, mouseY + 2, 32, 16);
+
+    stroke(1.0f, 1.0f, 1.0f);
+    rect(mouseX, mouseY + 2, 32, 16);
 
     // g->auto_refresh(bool auto_refresh);
     // g->simple_clear = false;
